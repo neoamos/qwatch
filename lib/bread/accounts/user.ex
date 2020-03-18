@@ -74,8 +74,6 @@ defmodule Bread.Accounts.User do
                       ++ coherence_fields)
     |> validate()
     |> validate_coherence(params)
-    |> block_emails()
-    |> set_api_key()
     IO.inspect(res)
     res
   end
@@ -110,26 +108,6 @@ defmodule Bread.Accounts.User do
     |> validate_length(:name, min: 1, max: 24)
     |> validate_length(:email, min: 3, max: 64)
     |> validate_inclusion(:gender, [1, 2])
-  end
-
-  def set_api_key(changeset) do
-    api_key = :crypto.strong_rand_bytes(15) |> Base.url_encode64 |> binary_part(0, 15)
-    case changeset.valid? do
-      true -> put_change(changeset, :api_key, api_key)
-      false -> changeset
-    end
-  end
-
-  def block_emails(changeset) do
-    case changeset.valid? do
-      true -> 
-        if String.contains?(changeset.changes.email, "@qq.com") do
-          add_error(changeset, :email, "")
-        else
-          changeset
-        end
-      false -> changeset
-    end
   end
 
   def process_avatar(changeset, attrs) do

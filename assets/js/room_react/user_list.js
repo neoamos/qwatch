@@ -23,7 +23,7 @@ export default class UserList extends React.Component{
         if(!userSet.has(this.props.connections[id].user_id)){
           users.push((
             <div className="user_item" key={this.props.connections[id].user_id}>
-              <div class="user_item__avatar"><img src="/images/avatar.png" /></div>
+              <div className="user_item__avatar"><img src="/images/avatar.png" /></div>
               <div className="user_item__name">{this.props.connections[id].name}</div>
            </div>
           ))

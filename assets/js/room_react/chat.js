@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 export default class Chat extends React.Component{
   constructor(props){
@@ -10,6 +11,7 @@ export default class Chat extends React.Component{
     }
 
     this.channel = this.props.channel
+
   }
 
   componentDidMount(){
@@ -50,23 +52,13 @@ export default class Chat extends React.Component{
     this.setState({value: e.target.value})
   }
 
-  render(){
-    console.log(this.state.messages)
-    let messages = this.state.messages.map(m => {
 
-  
-      return (
-        <div className="chat__item" v-for="message in messages" key={m.id}>
-        <div className="chat__username">{m.name}</div>
-        <div className="chat__message">{m.message}</div>
-        </div>
-      )
-    })
-    return (<div className="chat">
+  render(){
+
+    return (
+    <div className="chat">
     <h3 className="chat__header">{this.props.name}</h3>
-      <div className="chat__body">
-        {messages}
-      </div>
+      <MessageList messages={this.state.messages} />
 
       <div className="chat__input">
         <input type="textarea"
@@ -78,4 +70,40 @@ export default class Chat extends React.Component{
     </div>);
   }
 
+}
+
+class MessageList extends React.Component{
+  constructor(props){
+    super(props)
+  }
+
+  componentWillUpdate() {
+    const node = ReactDOM.findDOMNode(this)
+    this.shouldScrollToBottom = node.scrollTop + node.clientHeight >= node.scrollHeight
+  }
+
+  componentDidUpdate(){
+    if (this.shouldScrollToBottom) {
+      const node = ReactDOM.findDOMNode(this)
+      node.scrollTop = node.scrollHeight   
+  }
+  }
+
+  render(){
+
+    let messages = this.props.messages.map(m => {
+      return (
+        <div className="chat__item" v-for="message in messages" key={m.id}>
+        <div className="chat__username">{m.name}</div>
+        <div className="chat__message">{m.message}</div>
+        </div>
+      )
+    })
+
+    return (
+      <div className="chat__body">
+        {messages}
+      </div>
+    );
+  }
 }
