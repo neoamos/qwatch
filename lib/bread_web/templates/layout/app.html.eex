@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bread</title>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <%= csrf_meta_tag() %>
+    
+  </head>
+  <body>
+
+    <div class="application-wrap">
+      <nav class="menu">
+        <a href="/"><h1 class="menu__logo">Bread</h1></a>
+        <div class="menu__left">
+          <ul>
+            <li class="menu__btn"><a href="/room/new">Create Room</a></li>
+          </ul>
+        </div>
+        <div class="menu__right">
+          <ul>
+            <%= if !assigns[:current_user] do %>
+            <li class="menu__btn"><a href="/sessions/new">Sign In</a></li>
+            <li class="menu__btn menu__btn-green"><a href="/registrations/new">Sign Up</a></li>
+            <% else %>
+              <li class="menu__btn"><a href="/registrations/edit">Settings</a></li>
+              <li class="menu__btn"><%= link "Log out", to: "/sessions", method: :delete, class: "nav-link" %></li>
+              <img src="/images/avatar.png" class="avatar-sm">
+            <% end%>
+          </ul>
+        </div>
+      </nav>
+      <div id="messages">
+        <% 
+          error = get_flash(@conn, :error)
+          warning = get_flash(@conn, :warning)
+          info = get_flash(@conn, :info)
+          ok = get_flash(@conn, :ok)
+        %>
+        <%= if error do %>
+        <div class="error_message"><%= error %></div>
+        <% end %>
+        <%= if warning do %>
+        <div class="warning_message"><%= warning %></div>
+        <%= end %>
+        <%= if info do %>
+        <div class="info_message"><%= info %></div>
+        <%= end %>
+        <%= if ok do %>
+        <div class="ok_message"><%= ok %></div>
+        <%= end %>
+      </div>
+
+      <%= render @view_module, @view_template, assigns %>
+    </div>
+
+
+    <%= if assigns[:current_user] do %>
+    <script>
+    window.userToken = "<%= assigns[:user_token] %>";
+    window.userID = "<%= @current_user.id %>";
+    </script>
+    <% end %>
+
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

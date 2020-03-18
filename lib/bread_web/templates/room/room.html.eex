@@ -1,0 +1,42 @@
+
+<script>window.room_name = "<%= @room.name %>"</script>
+<div class="room" id="room" v-cloak>
+  <div class="video">
+    <div class="video__player" id="player_container">
+    <%# <iframe v-if="video_state.client_playing" :src="video_state.client_playing.link" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> %>
+    <%# <span v-else>Nothing currently playing</span> %>
+    </div>
+
+    <div class="video__under">
+
+      <div class="video__controls">
+        <input type="textarea" @keydown.enter="enqueueLink" placeholder="Enqueue a link">
+        <a href="#" @click.prevent="next">Next</a>
+        <a href="#" @click.prevent="toggleRemote">Has remote: {{ video_state.has_remote }}, remote avilabe: {{ video_state.remote_available }}</a>
+        <a href="#" @click.prevent="synchronize">Synchronized: {{ video_state.live }} </a>
+      </div>
+
+      <div class="video__queue">
+        <div :class="{tile: true, 'tile--server_playing': link == video_state.server_playing, 'tile--client_playing': link == video_state.client_playing}" v-for="link in video_state.link_queue" :title="link.link"  @click="selectLink(link.id)" >
+          <div class="tile_image-container">
+          <img class="tile__image" :src="link.image || '/images/cover2.jpg'">
+          </div>
+          <a href="#" @click="removeLink(link.id)">X</a>
+          <div class="tile__title">{{ link.title || "Some link" }}</div>
+          <div class="tile__subtitle">{{ link.site_name || "Some site"}}</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="chat" id="chat">
+    <%= render "chat.html", room: @room %>
+  </div>
+
+  <div class="users">
+    <h3>Users</h3>
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+<h3 class="chat__header"><%= if @room.title, do: @room.title, else: @room.user.name <> "'s room"%></h3>
+<div class="chat__body">
+  <%= render "chat_message.html" %>
+</div>
+
+<div class="chat__input">
+  <input type="textarea" @keydown.enter="sendMessage" placeholder="Sey something...">
+</div>

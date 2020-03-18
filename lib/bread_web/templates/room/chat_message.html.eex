@@ -1,0 +1,4 @@
+<div class="chat__item" v-for="message in messages" v-cloak>
+  <div class="chat__username">{{message.name}}</div>
+  <div class="chat__message">{{message.message}}</div>
+</div>

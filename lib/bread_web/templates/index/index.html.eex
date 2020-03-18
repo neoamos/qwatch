@@ -1,0 +1,26 @@
+<div class="content">
+<h1>Join a room!</h1>
+<div class="room_list">
+  <%= Enum.map(@rooms, fn room -> %>
+  <div class="room_item">
+  <a href="/r/<%= room.name %>"> 
+    <div class="room_item__image">
+      <img src="<%= if room.current_link, do: room.current_link.external_image, else: "images/no-image.png" %>">
+    </div>
+    <div class="room_item__title-wrap">
+    <div class="room_item__title">
+      <%= if room.current_link, do: room.current_link.title, else: room.title || (room.user.name <> "'s Room") %>
+    </div>
+    <div class="room_item__info">
+      <div class="room_item__info-item"><%= room.name %></div>
+      <div  class="room_item__info-item">
+      <span class="oi" data-glyph="people" title="people" aria-hidden="true"></span>
+       1
+      </div>
+    </div>
+    </div>
+  </a>
+  </div>
+  <% end) %>
+</div>
+</div>

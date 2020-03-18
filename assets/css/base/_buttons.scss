@@ -1,0 +1,27 @@
+.btn{
+  padding: 5px 10px;
+  border-radius: 5px;
+  height: 2em;
+  background-color: $btn-default;
+  color: #fff;
+  display: inline-block;
+  margin: 5px;
+
+  &:hover{
+    background-color: $btn-default-hover;
+    color: #fff;
+  }
+
+  & a{
+    text-decoration: none;
+    color: #fff;
+  }
+
+  &-red{
+    background-color: $btn-red;
+  }
+
+  &-red:hover{
+    background-color: $btn-red-hover;
+  }
+}

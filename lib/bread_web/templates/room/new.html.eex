@@ -1,0 +1,16 @@
+
+<div class="full_form">
+<%= form_for @changeset, "/room/create", [as: :room, method: :post], fn f  -> %>
+
+  Name:
+  <%= text_input f, :name, class: "textbox", id: "name" %>
+  <%= error_tag f, :name  %>
+
+  Title:
+  <%= text_input f, :title, class: "textbox", id: "title" %>
+  <%= error_tag f, :title  %>
+
+  <%= submit "Submit", class: "submit_form_button", value: "Submit", name: "submit"%>
+<% end %>
+
+</div>
