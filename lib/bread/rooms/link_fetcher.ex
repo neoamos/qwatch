@@ -7,7 +7,7 @@ defmodule Bread.LinkFetcher do
 
   def fetch link do
     cond do
-      Regex.match?(@youtube_match, link) -> 
+      Regex.match?(@youtube_regex, link) -> 
         # fetch_youtube(link)
         id = Enum.at(Regex.run(@youtube_regex, link), 7)
         fetch_generic("https://www.youtube.com/watch?v=" <> id)

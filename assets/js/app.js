@@ -10,18 +10,18 @@ import css from "../css/app.scss"
 // Import dependencies
 //
 import "phoenix_html"
-import feather from "feather-icons"
 import 'simplebar'
 import 'simplebar/dist/simplebar.css';
-import Room from "./room_vue/room.js"
 import {Socket} from "phoenix"
-import { createPopper } from '@popperjs/core';
 import RoomReact from './room_react/room.js'
 import ReactDOM from "react-dom";
 import React from "react";
 
-feather.replace({class: "feather-icon"})
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+import 'react-tippy/dist/tippy.css'
 
+let userID = parseInt(window.userID)
 let socket = new Socket("/socket", {params:  { token: window.userToken } })
 socket.connect();
 console.log(window.userToken)
@@ -31,19 +31,21 @@ console.log(window.userToken)
 
 let el = document.getElementById("root");
 
-ReactDOM.render(<RoomReact name={el.getAttribute('data-room-name')} socket={socket} />, el);
+if(el){
+  ReactDOM.render(<RoomReact name={el.getAttribute('data-room-name')} userID={userID} socket={socket} />, el);
+}
 
-
-const button = document.querySelector('#button');
-const tooltip = document.querySelector('#tooltip');
-
-// Pass the button, the tooltip, and some options, and Popper will do the
-// magic positioning for you:
-createPopper(button, tooltip, {
-  placement: 'right',
+tippy('[data-tippy-menu]', {
+  content(reference) {
+    const id = reference.getAttribute('data-tippy-menu');
+    const template = document.getElementById(id);
+    return template.innerHTML;
+  },
+  allowHTML: true,
+  interactive: true,
+  interactiveBorder: 30,
+  interactiveDebounce: 75,
+  trigger: 'click'
 });
 
-// Import local files
-//
-// Local files can be imported directly using relative paths, for example:
-// import socket from "./socket"
+tippy('[data-tippy-content]');

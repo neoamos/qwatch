@@ -1,0 +1,24 @@
+
+.user_item{
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+
+  &__avatar{
+    margin-right: 10px;
+    img{
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
+
+  &__name{
+    flex-grow: 1;
+    color: $user-green;
+    font-weight: bold;
+  }
+}

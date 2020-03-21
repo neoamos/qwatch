@@ -29,7 +29,7 @@ defmodule BreadWeb.Room do
   def handle_in("link:enqueue", %{"link" => link}, socket) do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
-      case RoomServer.enqueue_link(room, link, :front, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
+      case RoomServer.enqueue_link(room, link, :end, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
         {:accepted, state, link} -> 
           state = %{
             links: link,

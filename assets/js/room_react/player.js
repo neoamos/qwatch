@@ -41,6 +41,24 @@ export default class Player {
     }
   }
 
+  play(){
+    if(this.interface){
+      this.interface.play()
+    }
+  }
+
+  pause(){
+    if(this.interface){
+      this.interface.pause()
+    }
+  }
+
+  seek(seconds){
+    if(this.interface){
+      this.interface.seek(seconds)
+    }
+  }
+
   updatePosition(position){
     var self = this
     console.log("Player updating position")

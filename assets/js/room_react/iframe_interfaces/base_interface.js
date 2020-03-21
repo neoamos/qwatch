@@ -16,6 +16,10 @@ export default class BaseInterface {
     $('#player_container').empty();
   }
 
+  play(){}
+  pause(){}
+  seek(){}
+
   enable(url){
     var self = this;
     console.log("Enable video with url " + url.href)

@@ -12,22 +12,28 @@
   <body>
 
     <div class="application-wrap">
-      <nav class="menu">
-        <a href="/"><h1 class="menu__logo">Bread</h1></a>
-        <div class="menu__left">
+      <nav class="nav">
+        <a href="/"><h1 class="nav__logo">Bread</h1></a>
+        <div class="nav__left">
           <ul>
-            <li class="menu__btn"><a href="/room/new">Create Room</a></li>
+            <li class="nav__item"><a href="/room/new">Create Room</a></li>
           </ul>
         </div>
-        <div class="menu__right">
+        <div class="nav__right">
           <ul>
             <%= if !assigns[:current_user] do %>
-            <li class="menu__btn"><a href="/sessions/new">Sign In</a></li>
-            <li class="menu__btn menu__btn-green"><a href="/registrations/new">Sign Up</a></li>
+            <li class="nav__item"><a href="/sessions/new">Sign In</a></li>
+            <li class="nav__item nav__item-green"><a href="/registrations/new">Sign Up</a></li>
             <% else %>
+              <!--
               <li class="menu__btn"><a href="/registrations/edit">Settings</a></li>
               <li class="menu__btn"><%= link "Log out", to: "/sessions", method: :delete, class: "nav-link" %></li>
-              <img src="/images/avatar.png" class="avatar-sm">
+              -->
+              <img data-tippy-menu="user-menu" src="/images/avatar2.jpg" class="avatar-sm nav__item">
+              <div id="user-menu" style="display: none;">
+                <div class="nav__dropdown"><a href="/registrations/edit">Settings</a></div>
+                <div class="nav__dropdown"><%= link "Log out", to: "/sessions", method: :delete, class: "nav-link" %></div>
+              </div>
             <% end%>
           </ul>
         </div>

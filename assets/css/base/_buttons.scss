@@ -17,6 +17,25 @@
     color: #fff;
   }
 
+  &[disabled]{
+    color:  #999999;
+    cursor: default;
+  }
+
+  &[disabled]:hover{
+    background-color: $btn-default;
+  }
+
+  &-highlighted-orange,
+  &-highlighted-orange:hover{
+    color: $hightlight-color;
+  }
+
+  &-highlighted-red,
+  &-highlighted-red:hover{
+    color: $btn-red
+  }
+
   &-red{
     background-color: $btn-red;
   }
@@ -25,3 +44,4 @@
     background-color: $btn-red-hover;
   }
 }
+

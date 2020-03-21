@@ -20,6 +20,10 @@ export default class YoutubeInterface {
       self.enable(url, listeners, 1)
     }
 
+    this.play = this.play.bind(this)
+    this.pause = this.pause.bind(this)
+    this.seek = this.seek.bind(this)
+
   }
 
   // Interface API
@@ -66,6 +70,20 @@ export default class YoutubeInterface {
     }else{
       self.player.pauseVideo()
     }
+  }
+
+  play(){
+    console.log("Iframe received play")
+    this.player.playVideo()
+  }
+
+  pause(){
+    console.log("Iframe received pause")
+    this.player.pauseVideo()
+  }
+
+  seek(seconds){
+    this.player.seekTo(seconds, true)
   }
 
 

@@ -1,4 +1,4 @@
-.menu{
+.nav{
   display: flex;
   align-items: center;
   height: 48px;
@@ -11,6 +11,7 @@
 
   &__right{
     flex-grow: 1;
+    padding-right: 10px;
   }
 
   h1{
@@ -21,6 +22,8 @@
     color: $hightlight-color-secondary;
   }
 
+
+
   ul{
     display: flex;
     justify-content: flex-end;
@@ -30,26 +33,45 @@
   }
 
   li{
-    margin: 5px;
   }
 
-  &__btn a {
+  &__item{
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  &__item a {
     padding: 5px 10px;
     border-radius: 5px;
     background-color: $btn-default;
     color: #fff;
   }
 
-  &__btn a:hover{
+  &__item a:hover{
     background-color: $background-tile-hover;
   }
 
-  &__btn-green a{
+  &__item-green a{
     background-color: $btn-green;
   }
 
-  &__btn-green a:hover{
+  &__item-green a:hover{
     background-color: $btn-green-hover;
+  }
+
+  &__dropdown{
+    padding: 5px 10px;
+    height: 2em;
+  
+    &:hover{
+      background-color: $btn-default-hover;
+      color: #fff;
+    }
+  
+    & a{
+      text-decoration: none;
+      color: #fff;
+    }
   }
 
 

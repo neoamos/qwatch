@@ -1,6 +1,6 @@
 import React from "react";
 import Player from "./player.js"
-import Controls from "./video/controls.js"
+import Controller from "./video/controller.js"
 import Queue from "./video/queue.js"
 
 export default class Video extends React.Component{
@@ -20,15 +20,20 @@ export default class Video extends React.Component{
       remote_available: false,
       remote_holder_user_id: null,
       remote_holder_connection_id: null,
+      owner_id: null,
       live: true,
       player_ready: false,
       initial_sync: true
     }
 
     this.selectLink = this.selectLink.bind(this)
+    this.nextLink = this.nextLink.bind(this)
+    this.previousLink = this.previousLink.bind(this)
     this.deleteLink = this.deleteLink.bind(this)
     this.sendQueue = this.sendQueue.bind(this)
     this.toggleRemote = this.toggleRemote.bind(this)
+    this.togglePlay = this.togglePlay.bind(this)
+    this.seek = this.seek.bind(this)
     this.setLive = this.setLive.bind(this)
     this.updatePlayerState = this.updatePlayerState.bind(this)
     this.updatePosition = this.updatePosition.bind(this)
@@ -77,7 +82,9 @@ export default class Video extends React.Component{
         console.log(resp)
         let newState = resp.state
         this.setState({
-          connection_id: resp.connection_id
+          connection_id: resp.connection_id,
+          owner_id: newState.owner_id,
+          remote_available: newState.owner_id == this.props.userID
         })
         this.updateState(newState)
 
@@ -115,7 +122,9 @@ export default class Video extends React.Component{
     }
 
     if(newState.remote_available != null){
-      this.setState({remote_available: newState.remote_available})
+      if(this.state.owner_id != this.props.userID){
+        this.setState({remote_available: newState.remote_available})
+      }
     }
 
     if(newState.remote_holder_user_id != null){
@@ -190,6 +199,30 @@ export default class Video extends React.Component{
     }
   }
 
+  nextLink(){
+    console.log("next link")
+    let currId = this.state.client_playing.id
+    let currPosition = this.state.queue.findIndex(e => {
+      return currId == e.id
+    })
+    console.log(currPosition)
+    if(currPosition != -1 && this.state.queue[currPosition+1]){
+      this.selectLink(this.state.queue[currPosition+1])
+    }
+  }
+
+  previousLink(){
+    console.log("next link")
+    let currId = this.state.client_playing.id
+    let currPosition = this.state.queue.findIndex(e => {
+      return currId == e.id
+    })
+    console.log(currPosition)
+    if(currPosition != -1 && this.state.queue[currPosition-1]){
+      this.selectLink(this.state.queue[currPosition-1])
+    }
+  }
+
   deleteLink(link){
     if(this.state.has_remote){
       this.setState(state => {
@@ -250,6 +283,37 @@ export default class Video extends React.Component{
     }else{
       return false;
     }
+  }
+
+  togglePlay(){
+    if(!this.state.has_remote){
+      this.setState({live: false})
+    }
+    if(this.state.client_position.playing){
+      console.log("Pausing")
+      this.player.pause()
+    }else{
+      console.log("Playing")
+      this.player.play()
+    }
+  }
+
+  seek(seconds){
+    if(!this.state.has_remote){
+      this.setState({live: false})
+    }
+    this.setState(state => {
+      return {
+        client_position: {
+          seconds: seconds, 
+          duration: state.client_position.duration, 
+          playing: state.client_position.playing, 
+          at: Date.now(), 
+          link_id: state.client_position.link_id
+        }
+      }
+    })
+    this.player.seek(seconds)
   }
 
   calculateCurrentTime(position){
@@ -313,14 +377,29 @@ export default class Video extends React.Component{
     <div className="video">
       <div className="video__player" id="player_container" />
       <div className="video__under">
-        <div className="video__controls">
-          <div>
+        <div className="controller__wrapper">
+          {/* <div>
             <a href="#" className="btn" onClick={this.toggleRemote}>Request remote (Has: {String(this.state.has_remote)}, Available: {String(this.state.remote_available)}) </a>
             <a href="#" className="btn" onClick={this.setLive}>Toggle Live ({String(this.state.live)})</a>
           </div>
           <div>
             <NewLinkForm onEnter={this.enqueueLink} />
-          </div>
+          </div> */}
+          <Controller 
+            hasRemote={this.state.has_remote}
+            remoteAvailable={this.state.remote_available}
+            live={this.state.live}
+            playerReady={this.state.player_ready}
+            clientPosition={this.state.client_position}
+            serverPosition={this.state.server_position}
+            toggleRemote={this.toggleRemote}
+            setLive={this.setLive}
+            togglePlay={this.togglePlay}
+            seek={this.seek}
+            enqueueLink={this.enqueueLink}
+            nextLink={this.nextLink}
+            previousLink={this.previousLink}
+          />
         </div>
         <Queue 
           items={this.state.queue} 
@@ -334,39 +413,4 @@ export default class Video extends React.Component{
     );
   }
 
-}
-
-class NewLinkForm extends React.Component{
-  constructor(props){
-    super(props)
-
-    this.state = {
-      value: ""
-    }
-    this.handleChange = this.handleChange.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  handleChange(event){
-    this.setState({value: event.target.value})
-  }
-
-  onKeyDown(e){
-    console.log(e)
-    if (e.key === 'Enter') {
-      this.props.onEnter(this.state.value)
-      this.setState({value: ''})
-    }
-  }
-
-  render(){
-    return (
-      <input type="text" 
-        placeholder="Enter a link"
-        value={this.state.value}
-        onChange={this.handleChange}
-        onKeyDown={this.onKeyDown}
-      />
-    )
-  }
 }

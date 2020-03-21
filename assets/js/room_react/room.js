@@ -56,8 +56,8 @@ export default class RoomReact extends React.Component{
   render(){
     return (
       <div className="room">
-        <Video channel={this.video_channel} name={this.props.name} />
-        <Chat channel={this.chat_channel} name={this.props.name}/>
+        <Video channel={this.video_channel} name={this.props.name} userID={this.props.userID} />
+        <Chat channel={this.chat_channel} name={this.props.name} userID={this.props.userID}/>
         <UserList 
           connections={this.state.connections}
           name={this.props.name} />
