@@ -1,8 +1,6 @@
-<br \>
 
-<h3><%= dgettext "coherence", "Send Reset Password Instructions" %></h3>
-
-<%= form_for @changeset, Routes.password_path(@conn, :create), [as: :password], fn f  -> %>
+<%= form_for @changeset, Routes.password_path(@conn, :create), [as: :password, class: "full_form"], fn f  -> %>
+  <h3><%= dgettext "coherence", "Send Reset Password Instructions" %></h3>
 
   <div class="form-group">
     <%= required_label f, :email, class: "control-label" %>

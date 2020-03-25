@@ -14,11 +14,10 @@
     <div class="application-wrap">
       <%= render "header.html", assigns %>
 
-      <div class="content">
-        <%= render @view_module, @view_template, assigns %>
-      </div>
+      <%= render @view_module, @view_template, assigns %>
 
       <%= render "footer.html", assigns %>
     </div>
+
   </body>
 </html>

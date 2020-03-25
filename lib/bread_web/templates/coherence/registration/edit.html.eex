@@ -1,5 +1,4 @@
-<h3><%= dgettext "coherence", "Edit Account" %></h3>
-
 <%= render "form.html", changeset: @changeset,
                         label: dgettext("coherence", "Update"), required: [],
-                        action: Routes.registration_path(@conn, :update) %>
+                        action: Routes.registration_path(@conn, :update),
+                        title: "Edit Account" %>

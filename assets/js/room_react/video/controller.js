@@ -54,10 +54,10 @@ export default class Controller extends React.Component{
 
     return (
     <div className="controller">
-      <div class="controller__progress" onClick={this.onClickProgressBar}>
-        <div class="controller__progress-bar" style={{width: this.calculatePercent(this.props.clientPosition) + "%"}}></div>
+      <div className="controller__progress" onClick={this.onClickProgressBar}>
+        <div className="controller__progress-bar" style={{width: this.calculatePercent(this.props.clientPosition) + "%"}}></div>
       </div>
-      <div class="controller__buttons">
+      <div className="controller__buttons">
         <button className="controller__previous btn" onClick={this.props.previousLink}>
           <span className="oi" data-glyph="media-skip-backward" title="previous" aria-hidden="true"></span>
         </button>

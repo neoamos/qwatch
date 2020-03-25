@@ -18,7 +18,7 @@ defmodule BreadWeb.RoomController do
   def room_react(conn, %{"name" => name}) do
     room = Rooms.get_room({:name, name}, preload: [:user])
     if room do
-      render conn, "room_react.html", room: room
+      render conn, "room_react.html", room: room, layout: {BreadWeb.LayoutView, "room_layout.html"}
     else
       conn
       |> put_flash(:error, "Room does not exist")

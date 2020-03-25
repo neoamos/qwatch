@@ -1,0 +1,8 @@
+  <%= if assigns[:current_user] do %>
+  <script>
+  window.userToken = "<%= assigns[:user_token] %>";
+  window.userID = "<%= @current_user.id %>";
+  </script>
+  <% end %>
+
+  <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

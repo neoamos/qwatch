@@ -111,12 +111,15 @@ export default class Video extends React.Component{
 
     if(newState.link_queue){
       console.log("Updating link queue")
-      console.log(newState.link_queue)
       this.setState(state => {
         let queue = newState.link_queue.map(id => {
           return state.links[id]
         })
         return {queue: queue}
+      }, () => {
+        if(!this.state.client_playing.id && this.state.queue.length > 0 && this.state.has_remote){
+          this.selectLink(this.state.queue[0])
+        }
       })
 
     }
@@ -135,23 +138,27 @@ export default class Video extends React.Component{
       this.setState({remote_holder_connection_id: newState.remote_holder_connection_id})
       if(this.state.remote_holder_connection_id == this.state.connection_id){
         this.setState({has_remote: true});
-        this.channel.push('link:select', {link_id: this.state.client_playing.id})
+        if(this.state.client_playing.id){
+          this.channel.push('link:select', {link_id: this.state.client_playing.id})
+        }
         this.sendPosition()
       }else{
         this.setState({has_remote: false});
       }
     }
 
-    if(newState.server_playing != null){
+    if(newState.server_playing != undefined){
       console.log("Updating currently playing " + newState.server_playing)
+      let update = this.state.queue[newState.server_playing] || {}
       this.setState(state => {
         return {
-          server_playing: state.queue[newState.server_playing]
+          server_playing: state.queue[newState.server_playing] || {}
+        }
+      }, () => {
+        if(this.state.has_remote){
+          this.updateClientPlaying(this.state.server_playing)
         }
       })
-      if(this.state.has_remote){
-        this.updateClientPlaying(this.state.queue[newState.server_playing])
-      }
     }
 
     if(this.state.live && !this.state.has_remote && !this.checkSynced()){
@@ -162,7 +169,9 @@ export default class Video extends React.Component{
   updateClientPlaying(newLink){
     let oldLink = this.state.client_playing
     this.setState({client_playing: newLink, initial_sync: true})
-    if(oldLink.link != newLink.link){
+    if(!newLink.id){
+      this.player.disable()
+    }else if(!oldLink || oldLink.link != newLink.link){
       this.player.updateLink(newLink.link)
     }
   }
@@ -191,6 +200,7 @@ export default class Video extends React.Component{
 
   selectLink(link){
     console.log("select " + link.id)
+    
     if(this.state.has_remote){
       this.channel.push('link:select', {link_id: link.id})
     }else{
@@ -369,7 +379,9 @@ export default class Video extends React.Component{
 
   enqueueLink(link){
     console.log(link)
-    this.channel.push('link:enqueue', { link: link })
+    if(this.state.has_remote){
+      this.channel.push('link:enqueue', { link: link })
+    }
   }
 
   render(){

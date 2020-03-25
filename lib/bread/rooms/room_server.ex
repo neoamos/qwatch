@@ -80,7 +80,7 @@ defmodule Bread.Rooms.RoomServer do
         links: links,
         link_queue: queue,
         link_suggestions: [],
-        server_playing: room.server_playing || 0,
+        server_playing: room.server_playing,
         position: %{seconds: 0, duration: 0, playing: false, at: DateTime.utc_now(), link_id: nil},
         remote_available: false,
         remote_holder_user_id: room.remote_holder_id || room.user_id,
@@ -126,7 +126,7 @@ defmodule Bread.Rooms.RoomServer do
           else
             state
           end
-          persist_queue(state, %{queue: true})
+          persist_state(state, %{queue: true})
           Task.async(fn -> Rooms.get_link_info(link.id) end)
           {:reply, {:accepted, state, %{link.id => %{link: link.link, id: link.id}}}, state}
         {:error, _} -> {:reply, state, state}
@@ -145,14 +145,11 @@ defmodule Bread.Rooms.RoomServer do
 
       new_playing_index = Enum.find_index(state[:link_queue], fn l -> l == playing_id end)
 
-      state = if new_playing_index do
-        state
+      state = state
         |> Map.update!(:server_playing, fn _ -> new_playing_index end)
         |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: playing_id} end)
-      else
-        state
-      end
-      persist_queue(state, %{queue: true})
+
+      persist_state(state, %{queue: true})
 
       {:reply, {:accepted, state}, state}
     else
@@ -167,7 +164,7 @@ defmodule Bread.Rooms.RoomServer do
         state = state
         |> Map.update!(:server_playing, fn old -> old+1 end)
         |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: playing_id} end)
-        persist_queue(state, %{queue: false})
+        persist_state(state, %{queue: false})
         {:reply, {:accepted, state}, state}
       else
         {:reply, {:rejected, state}, state}
@@ -185,7 +182,7 @@ defmodule Bread.Rooms.RoomServer do
         state = state
         |> Map.update!(:server_playing, fn _ -> index end)
         |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: link_id} end)
-        persist_queue(state, %{queue: false})
+        persist_state(state, %{queue: false})
         {:reply, {:accepted, state}, state}
       else
         {:reply, {:rejected, state}, state}
@@ -205,13 +202,21 @@ defmodule Bread.Rooms.RoomServer do
     end
   end
 
-  defp persist_queue(state, params \\ %{}) do
-    if params[:queue] do
-      queue_string = Enum.reduce(state[:link_queue], "", fn l, acc -> inspect(l) <> "," <> acc end)
-      Rooms.update_room(state[:room_name], %{queue: queue_string, server_playing: state[:server_playing], current_link_id: Enum.at(state[:link_queue], state[:server_playing])})
+  defp persist_state(state, params \\ %{}) do
+    update = %{
+      server_playing: state[:server_playing], 
+      current_link_id: (if state[:server_playing], do: Enum.at(state[:link_queue], state[:server_playing]), else: nil)
+    }
+    update = if params[:queue] do
+      Map.put(update, :queue, Enum.reduce(state[:link_queue], "", fn l, acc -> acc <> inspect(l) <> "," end))
     else
-      Rooms.update_room(state[:room_name], %{server_playing: state[:server_playing], current_link_id: Enum.at(state[:link_queue], state[:server_playing])})
+      update
     end
+
+    Rooms.update_room(
+      state[:room_name], 
+      update
+    )
   end
 
   defp deserialize_queue(queue_string) do
@@ -230,7 +235,7 @@ defmodule Bread.Rooms.RoomServer do
 
   def handle_call({:update_position, position, user_id, connection_id}, _from, state) do
     IO.inspect(position)
-    if connection_id == state[:remote_holder_connection_id] do
+    if !!state[:server_playing] && connection_id == state[:remote_holder_connection_id] do
       new_position = %{
         seconds: position[:seconds],
         duration: position[:duration],

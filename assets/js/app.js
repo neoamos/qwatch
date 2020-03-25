@@ -10,8 +10,6 @@ import css from "../css/app.scss"
 // Import dependencies
 //
 import "phoenix_html"
-import 'simplebar'
-import 'simplebar/dist/simplebar.css';
 import {Socket} from "phoenix"
 import RoomReact from './room_react/room.js'
 import ReactDOM from "react-dom";

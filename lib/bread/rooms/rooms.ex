@@ -8,6 +8,13 @@ defmodule Bread.Rooms do
   alias Bread.Rooms.RoomServer
 
   def create_room attrs do
+    # attrs = if attrs["name"] == "" do
+    #   Map.put(attrs, "name", :crypto.strong_rand_bytes(10) |> Base.url_encode64 |> binary_part(0, 10))
+    # else
+    #   attrs
+    # end
+
+    attrs = Map.put(attrs, "privacy", (if attrs["privacy"] == true, do: 0, else: 1))
     %Room{}
     |> Room.changeset(attrs)
     |> Repo.insert()

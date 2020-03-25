@@ -1,11 +1,11 @@
 @supports(-webkit-appearance: none) or (-moz-appearance: none) {
   input[type='checkbox'],
   input[type='radio'] {
-    --active: #275EFE;
+    --active: #FE9000;
     --active-inner: #fff;
-    --focus: 2px rgba(39, 94, 254, .3);
-    --border: #BBC1E1;
-    --border-hover: #275EFE;
+    --focus: 2px rgb(224, 127, 0);
+    --border: rgb(225, 205, 187);
+    --border-hover: #FE9000;
     --background: #fff;
     --disabled: #F6F8FF;
     --disabled-inner: #E1E6F9;
@@ -145,9 +145,59 @@ input[type='textarea'] {
   border-radius: 0.2em;
 }
 
+textarea {
+  border: none;
+  background-color: $background-form;
+  color: $text-normal;
+  height: 5em;
+  padding: 1em;
+  border-radius: 0.2em;
+}
+
 button {
   border: none;
   height: 3em;
   padding: 0 1em;
   border-radius: 0.2em;
+}
+
+.full_form{
+  max-width: 500px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: $background-secondary;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid black;
+
+  & h1,  & h3{
+    padding-left: 0px;
+    margin-left: 0px;
+  }
+
+
+}
+
+.help-block{
+  color: rgb(241, 48, 48);
+}
+
+.form-group{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  &__split{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &:last-child{
+    margin-bottom: 0px;
+  }
+
+  & label{
+    
+  }
 }

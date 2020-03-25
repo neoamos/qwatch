@@ -6,6 +6,8 @@
   color: #fff;
   display: inline-block;
   margin: 5px;
+  text-align: center;
+  cursor: pointer;
 
   &:hover{
     background-color: $btn-default-hover;
