@@ -32,7 +32,12 @@ module.exports = (env, options) => ({
         test: /\.s?css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
-      { test: /\.(ttf|eot|otf|svg|woff)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
+      { test: /\.(ttf|eot|otf|svg|woff)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+        loader: "file-loader",
+        options : {
+          outputPath: '../css',
+        }
+      }
     ]
   },
   plugins: [
