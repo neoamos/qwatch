@@ -37,10 +37,12 @@ class QueueItem extends React.Component {
   }
 
   handleClick(e){
+    e.stopPropagation(); 
     this.props.handleClick(this.props.item)
   }
 
   handleDelete(e){
+    e.stopPropagation(); 
     this.props.handleDelete(this.props.item)
   }
 

@@ -86,6 +86,9 @@ export default class Video extends React.Component{
           owner_id: newState.owner_id,
           remote_available: newState.owner_id == this.props.userID
         })
+        this.props.updateRoomMetadata({
+          ownerID: newState.owner_id
+        })
         this.updateState(newState)
 
       })
