@@ -20,5 +20,13 @@
     flex-grow: 1;
     color: $user-green;
     font-weight: bold;
+    cursor: pointer;
+  }
+}
+
+.users{
+
+  &__count{
+    padding: 5px;
   }
 }

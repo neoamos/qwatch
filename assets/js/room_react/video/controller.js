@@ -90,9 +90,6 @@ export default class Controller extends React.Component{
         <button className="controller__settings btn">
           <span className="oi" data-glyph="cog" title="Room Settings" aria-hidden="true"></span>
         </button>
-        <button className="controller__more btn">
-          <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
-        </button>
       </div>
     </div>
     );

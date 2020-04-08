@@ -19,7 +19,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import 'react-tippy/dist/tippy.css'
 
-let userID = parseInt(window.userID)
+let userID = window.userID || null;
 let socket = new Socket("/socket", {params:  { token: window.userToken } })
 socket.connect();
 console.log(window.userToken)

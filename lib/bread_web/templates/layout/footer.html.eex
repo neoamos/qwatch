@@ -1,7 +1,7 @@
   <%= if assigns[:current_user] do %>
   <script>
   window.userToken = "<%= assigns[:user_token] %>";
-  window.userID = "<%= @current_user.id %>";
+  window.userID = <%= @current_user.id %>;
   </script>
   <% end %>
 

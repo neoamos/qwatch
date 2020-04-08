@@ -8,7 +8,11 @@ export default class RoomReact extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      connections: {}
+      connections: {},
+      title: null,
+      description: null,
+      ownerID: null,
+      ownsRoom: false
     }
 
     this.chat_channel = this.props.socket.channel("chat:" + props.name, {})
@@ -27,6 +31,7 @@ export default class RoomReact extends React.Component{
           connections: connections
       })
     }.bind(this))
+
 
     // On user list update
     this.chat_channel.on("presence_diff", function(payload) {
@@ -51,16 +56,44 @@ export default class RoomReact extends React.Component{
         }
       })
     }.bind(this))
+
+    this.updateRoomMetadata = this.updateRoomMetadata.bind(this)
+  }
+
+  updateRoomMetadata(update){
+    this.setState(state => {
+      let ownerID = update.ownerID || state.ownerID
+      let ownsRoom = false;
+      if(this.props.userID && (ownerID == this.props.userID)){
+        ownsRoom = true;
+      }
+      return {
+        title: update.title || state.title,
+        description: update.description || state.description,
+        ownerID: ownerID,
+        ownsRoom: ownsRoom
+      }
+    })
   }
 
   render(){
     return (
       <div className="room">
-        <Video channel={this.video_channel} name={this.props.name} userID={this.props.userID} />
-        <Chat channel={this.chat_channel} name={this.props.name} userID={this.props.userID}/>
+        <Video 
+          channel={this.video_channel} 
+          name={this.props.name} 
+          userID={this.props.userID}
+          updateRoomMetadata={this.updateRoomMetadata} />
+        <Chat 
+          channel={this.chat_channel} 
+          name={this.props.name} 
+          userID={this.props.userID}
+          ownsRoom={this.state.ownsRoom}/>
         <UserList 
           connections={this.state.connections}
-          name={this.props.name} />
+          name={this.props.name}
+          userID={this.props.userID}
+          ownsRoom={this.state.ownsRoom} />
       </div>
     );
   }
