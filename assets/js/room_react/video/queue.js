@@ -21,7 +21,10 @@ export default class Queue extends React.Component{
     })
     return (
     <div className="video__queue">
-      {queueItems}
+      {queueItems.length>0 ?
+      queueItems :
+      <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
+      }
     </div>
     );
   }

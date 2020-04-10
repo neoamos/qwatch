@@ -1,6 +1,12 @@
 <h1>Join a room!</h1>
+<%= if length(@rooms) > 0 do %>
 <div class="room_list">
   <%= Enum.map(@rooms, fn {room, count} -> %>
     <%= render BreadWeb.RoomView, "room_item.html", room: room, count: count %>
   <% end) %>
 </div>
+<% else %>
+<div class="placeholder_message">
+No active rooms currently.
+</div>
+<% end %>
