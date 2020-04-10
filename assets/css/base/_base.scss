@@ -77,3 +77,32 @@ a:hover{
   height: 30px;
   border-radius: 50%;
 }
+
+.avatar-lg {
+  vertical-align: middle;
+  width:200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.flash_message{
+  width: 100%;
+  padding: 10px 30px;
+  font-size: 20px;
+}
+
+.error_message {
+  background-color: rgb(221, 0, 0);
+}
+
+.ok_message {
+  background-color: $hightlight-color-green;
+}
+
+.warning_message {
+  background-color: yellow;
+}
+
+.info_message {
+  background-color: rgb(78, 78, 255);
+}

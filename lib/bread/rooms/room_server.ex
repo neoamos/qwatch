@@ -45,6 +45,10 @@ defmodule Bread.Rooms.RoomServer do
     GenServer.call(via_tuple(room_name), {:drop_remote, user_id, connection_id})
   end
 
+  def set_open(room_name, user_id, value) do
+    GenServer.call(via_tuple(room_name), {:set_open, user_id, value})
+  end
+
   def get_state(room_name) do
     GenServer.call(via_tuple(room_name), :get_state)
   end
@@ -85,7 +89,8 @@ defmodule Bread.Rooms.RoomServer do
         remote_available: false,
         remote_holder_user_id: room.remote_holder_id || room.user_id,
         remote_holder_connection_id: nil,
-        owner_id: room.user_id
+        owner_id: room.user_id,
+        open: room.open
       }
       {:ok, state}
     else
@@ -271,6 +276,19 @@ defmodule Bread.Rooms.RoomServer do
       state = state
       |> Map.update!(:remote_available, fn _ -> true end)
       |> Map.update!(:remote_holder_connection_id, fn _ -> nil end)
+
+      {:reply, {:accepted, state}, state}
+    else
+      {:reply, {:rejected, state}, state}
+    end
+  end
+
+  def handle_call({:set_open, user_id, value}, _from, state) do
+    if user_id == state[:owner_id] do
+      Rooms.set_open({:name, state.room_name}, value)
+
+      state = state
+      |> Map.update!(:open, fn _ -> value end)
 
       {:reply, {:accepted, state}, state}
     else

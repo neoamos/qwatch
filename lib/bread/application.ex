@@ -21,7 +21,7 @@ defmodule Bread.Application do
       Bread.Presence,
     ]
 
-    IO.inspect("dsf")
+    :ets.new(:users_online_count, [:set, :public, :named_table])
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

@@ -50,4 +50,6 @@ defmodule Coherence.Redirects do
   # Example usage
   # Uncomment the following line to return the user to the login form after logging out
   # def session_delete(conn, _), do: redirect(conn, to: session_path(conn, :new))
+
+  def registration_update(conn, _, user), do: redirect(conn, to: "/registrations/edit")
 end

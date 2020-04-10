@@ -61,7 +61,7 @@ class QueueItem extends React.Component {
           <img className="tile__image" src={this.props.item.image || "/images/no-image.png"} />
         </div>
         <div className="tile__title-wrap">
-          <div className="tile__title">{this.props.item.title || "Some title"}</div>
+          <div className="tile__title">{this.props.item.title || "Unknown title"}</div>
           <div className="tile__info">
             <div>{this.props.item.site_name}</div>
             { this.props.hasRemote && 

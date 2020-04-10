@@ -68,7 +68,7 @@ export default class Controller extends React.Component{
           <span className="oi" data-glyph="media-step-forward" title="next" aria-hidden="true"></span>
         </button>
 
-        <button className={remoteBtnClassName} disabled={!this.props.remoteAvailable} onClick={this.props.toggleRemote}>
+        <button className={remoteBtnClassName} disabled={!this.props.hasRemote && !this.props.remoteAvailable} onClick={this.props.toggleRemote}>
           R
         </button>
         <button className={liveBtnClassName} onClick={this.props.setLive}>
@@ -87,9 +87,20 @@ export default class Controller extends React.Component{
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
         </Tooltip>
-        <button className="controller__settings btn">
-          <span className="oi" data-glyph="cog" title="Room Settings" aria-hidden="true"></span>
-        </button>
+        {this.props.ownsServer &&
+          <Tooltip
+            trigger="click"
+            interactive
+            position="bottom" 
+            html={(
+              <SettingsMenu closeRoom={this.props.closeRoom} />
+            )}
+          >
+            <button className="controller__settings btn">
+              <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
+            </button>
+          </Tooltip>
+        }
       </div>
     </div>
     );
@@ -128,6 +139,24 @@ class NewLinkForm extends React.Component{
         onChange={this.handleChange}
         onKeyDown={this.onKeyDown}
       />
+    )
+  }
+}
+
+class SettingsMenu extends React.Component{
+  constructor(props){
+    super(props)
+
+    this.state = {}
+  }
+
+  render(){
+    return (
+      <div>
+        <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
+          Close Room
+        </div>
+      </div>
     )
   }
 }

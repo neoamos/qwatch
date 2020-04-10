@@ -3,6 +3,7 @@ import React from "react";
 import Video from "./video.js"
 import Chat from "./chat.js"
 import UserList from "./user_list.js"
+import {Presence} from "phoenix"
 
 export default class RoomReact extends React.Component{
   constructor(props){
@@ -19,43 +20,17 @@ export default class RoomReact extends React.Component{
     this.video_channel = this.props.socket.channel("room:" + props.name, {})
     this.user_status_channel = this.props.socket.channel("status:" + props.name, {})
 
-    //On getting user list
-    this.chat_channel.on("presence_state", function(payload) {
-      console.log("Presence")
-      console.log(payload)
-      let connections = {}
-      for(const id in payload){
-        connections[id] = payload[id].metas[0]
+    let presence = new Presence(this.chat_channel)
+
+    presence.onSync(() => this.updateOnlineUsers(presence))
+
+    this.chat_channel.on("user:kick", function(payload) {
+      if(payload.user_id == this.props.userID){
+        window.location.href = "/?message=You have been kicked from the room";
       }
-      this.setState({
-          connections: connections
-      })
     }.bind(this))
 
 
-    // On user list update
-    this.chat_channel.on("presence_diff", function(payload) {
-      console.log("Presence diff")
-      console.log(payload)
-      let joins = payload.joins
-      let leaves = payload.leaves
-      this.setState(state => {
-        let connections = {}
-        for(const id in state.connections){
-          if(!leaves[id]){
-            connections[id] = state.connections[id]
-          }
-        }
-
-        for(const id in joins){
-          connections[id] = joins[id].metas[0]
-        }
-        
-        return { 
-          connections: connections
-        }
-      })
-    }.bind(this))
 
     this.updateRoomMetadata = this.updateRoomMetadata.bind(this)
   }
@@ -76,6 +51,18 @@ export default class RoomReact extends React.Component{
     })
   }
 
+  updateOnlineUsers(presence){
+    console.log(presence)
+    let connections = {}
+    presence.list((id, {metas: [ ...rest]}) => {
+      connections[id] = rest[0]
+    })
+
+    this.setState({
+      connections: connections
+    })
+  }
+
   render(){
     return (
       <div className="room">
@@ -83,6 +70,7 @@ export default class RoomReact extends React.Component{
           channel={this.video_channel} 
           name={this.props.name} 
           userID={this.props.userID}
+          ownsRoom={this.state.ownsRoom}
           updateRoomMetadata={this.updateRoomMetadata} />
         <Chat 
           channel={this.chat_channel} 
@@ -91,10 +79,12 @@ export default class RoomReact extends React.Component{
           ownsRoom={this.state.ownsRoom}
           signedIn={!!this.props.userID} />
         <UserList 
+          channel={this.chat_channel}
           connections={this.state.connections}
           name={this.props.name}
           userID={this.props.userID}
-          ownsRoom={this.state.ownsRoom} />
+          ownsRoom={this.state.ownsRoom}
+          kickUser={this.kickUser} />
       </div>
     );
   }
