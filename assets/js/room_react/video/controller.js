@@ -59,13 +59,13 @@ export default class Controller extends React.Component{
       </div>
       <div className="controller__buttons">
         <button className="controller__previous btn" onClick={this.props.previousLink}>
-          <span className="oi" data-glyph="media-skip-backward" title="previous" aria-hidden="true"></span>
+          <span className="oi" data-glyph="media-step-backward" title="previous" aria-hidden="true"></span>
         </button>
         <button className="controller__play btn" disabled={!this.props.playerReady} onClick={this.props.togglePlay}>
           <span className="oi" data-glyph={this.props.clientPosition.playing ? "media-pause" : "media-play"} title="play/pause" aria-hidden="true"></span>
         </button>
         <button className="controller__next btn" onClick={this.props.nextLink}>
-          <span className="oi" data-glyph="media-skip-forward" title="next" aria-hidden="true"></span>
+          <span className="oi" data-glyph="media-step-forward" title="next" aria-hidden="true"></span>
         </button>
 
         <button className={remoteBtnClassName} disabled={!this.props.remoteAvailable} onClick={this.props.toggleRemote}>

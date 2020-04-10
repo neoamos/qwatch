@@ -3,6 +3,7 @@ defmodule Bread.LinkFetcher do
   @youtube_regex ~r/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
   @youtube_match ~r/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/
   @metatag_regex ~r/<\s*meta\s(?=[^>]*?\bproperty\s*=\s*(?|"\s*([^"]*?)\s*"|'\s*([^']*?)\s*'|([^"'>]*?)(?=\s*\/?\s*>|\s\w+\s*=)))[^>]*?\bcontent\s*=\s*(?|"\s*([^"]*?)\s*"|'\s*([^']*?)\s*'|([^"'>]*?)(?=\s*\/?\s*>|\s\w+\s*=))[^>]*>/
+  @title_regex ~r/<title>(.*)<\/title>/
   alias Bread.OpenGraph
 
   def fetch link do
@@ -29,6 +30,12 @@ defmodule Bread.LinkFetcher do
     case HTTPoison.get(link, [], ssl: [{:versions, [:"tlsv1.2"]}], follow_redirect: true) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         parsed = parse(body)
+        url = URI.parse(link)
+        parsed = if !parsed.site_name && url.host do
+          Map.put(parsed, :site_name, String.replace(url.host, "www.", ""))
+        else
+          parsed
+        end
         {:ok, parsed}
       {:ok, %HTTPoison.Response{status_code: status_code}} ->
         {:error, "Error from HTTPoison, status code: #{status_code}"}
@@ -47,7 +54,19 @@ defmodule Bread.LinkFetcher do
       |> Enum.into(%{}, fn [k, v] -> {k, v} end)
       |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
-      struct(OpenGraph, map)
+    map = struct(OpenGraph, map)
+
+    if !map.title do
+      title = Regex.scan(@title_regex, html, capture: :all_but_first)
+      if Enum.at(title, 0) do
+        Map.put(map, :title, title |> Enum.at(0) |> Enum.at(0))
+      else
+        map
+      end
+    else
+      map
+    end
+
   end
 
   defp filter_og_metatags(["og:" <> _property, _content]), do: true

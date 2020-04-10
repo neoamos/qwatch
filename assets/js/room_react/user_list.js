@@ -26,7 +26,7 @@ export default class UserList extends React.Component{
         if(!userSet.has(this.props.connections[id].user_id)){
           users.push((
             <div className="user_item" key={this.props.connections[id].user_id}>
-              <div className="user_item__avatar"><img src="/images/avatar.png" /></div>
+              <div className="user_item__avatar"><img src="/images/avatar2.jpg" /></div>
               <Tooltip
                 trigger="click"
                 interactive
@@ -58,8 +58,12 @@ export default class UserList extends React.Component{
     return (
       <div className="users">
         <h3>Users</h3>
-        <div className="users__count">{registered_user_count} registered, {anonymous_user_count} anonymous</div>
+        <div className="users__list">
         {users}
+        </div>
+        <div className="users__count"> 
+             {registered_user_count} users, {anonymous_user_count} anonymous
+          </div>
       </div>
     );
   }

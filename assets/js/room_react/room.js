@@ -88,7 +88,8 @@ export default class RoomReact extends React.Component{
           channel={this.chat_channel} 
           name={this.props.name} 
           userID={this.props.userID}
-          ownsRoom={this.state.ownsRoom}/>
+          ownsRoom={this.state.ownsRoom}
+          signedIn={!!this.props.userID} />
         <UserList 
           connections={this.state.connections}
           name={this.props.name}

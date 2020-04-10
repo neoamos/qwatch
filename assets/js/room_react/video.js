@@ -422,6 +422,7 @@ export default class Video extends React.Component{
           serverPlaying={this.state.server_playing}
           selectLink={this.selectLink}
           deleteLink={this.deleteLink}
+          hasRemote={this.state.has_remote}
           />
       </div>  
     </div>

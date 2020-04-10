@@ -3,7 +3,7 @@
   flex-direction: column;
   flex: 0 0 400px;
   height: 100%;
-  background-color: $background-primary;
+  background-color: $dark-3;
 
   &__body{
     display: flex;
@@ -17,13 +17,13 @@
     width: 100%;
 
     &:hover{
-      background-color: $background-secondary-hover;
+      background-color: $dark-4;
     }
   }
 
   &__username{
     color: $user-green;
-    font-weight: bold;
+    font-weight: 500;
   }
 
   &__input{

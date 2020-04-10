@@ -2,9 +2,10 @@
   display: flex;
   align-items: center;
   height: 48px;
-  background-color: $background-nav;
+  background-color: $dark-3;
   border-bottom: 1px solid $border-nav;
   padding: 0 5px;
+  font-weight: 500;
 
   &__left{
   }

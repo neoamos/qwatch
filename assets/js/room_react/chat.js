@@ -54,7 +54,12 @@ export default class Chat extends React.Component{
 
 
   render(){
-
+    let placeholder = ""
+    if(this.props.signedIn){
+      placeholder = "Says something..."
+    }else{
+      placeholder = "Sign in to chat."
+    }
     return (
     <div className="chat">
     <h3 className="chat__header">{this.props.name}</h3>
@@ -62,10 +67,11 @@ export default class Chat extends React.Component{
 
       <div className="chat__input">
         <input type="textarea"
-        placeholder="Say something..."
+        placeholder={placeholder}
         value={this.state.value}
         onChange={this.handleChange}
-        onKeyDown={this.onKeyDown} />
+        onKeyDown={this.onKeyDown}
+        disabled={!this.props.signedIn} />
       </div>
     </div>);
   }
