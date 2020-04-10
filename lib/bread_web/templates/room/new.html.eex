@@ -4,12 +4,6 @@
   <h3>Create a new room</h3>
 
   <div class="form-group">
-  <%= label f, :name, "Custom Address:"%>
-  <%= text_input f, :name, class: "textbox", id: "name" %>
-  <%= error_tag f, :name  %>
-  </div>
-
-  <div class="form-group">
   <%= label f, :title, "Title (optional):"%>
   <%= text_input f, :title, class: "textbox", id: "title" %>
   <%= error_tag f, :title  %>
@@ -19,6 +13,12 @@
   <%= label f, :description, "Description (optional):"%>
   <%= textarea f, :description, class: "textbox", id: "description" %>
   <%= error_tag f, :description  %>
+  </div>
+
+  <div class="form-group">
+  <%= label f, :name, "Custom URL (optional):"%>
+  <%= text_input f, :name, class: "textbox", id: "name" %>
+  <%= error_tag f, :name  %>
   </div>
 
   <div class="form-group">
