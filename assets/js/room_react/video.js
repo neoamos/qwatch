@@ -136,8 +136,6 @@ export default class Video extends React.Component{
     }
 
     if(newState.remote_available != null){
-      console.log(this.state.remote_holder_user_id )
-      console.log(this.props.userID)
       if(this.state.owner_id != this.props.userID){
         this.setState({remote_available: (newState.remote_available || this.state.remote_holder_user_id == this.props.userID)})
       }
@@ -181,12 +179,13 @@ export default class Video extends React.Component{
 
   updateClientPlaying(newLink){
     let oldLink = this.state.client_playing
-    this.setState({client_playing: newLink, initial_sync: true})
-    if(!newLink.id){
-      this.player.disable()
-    }else if(!oldLink || oldLink.link != newLink.link){
-      this.player.updateLink(newLink.link)
-    }
+    this.setState({client_playing: newLink, initial_sync: true}, () => {
+      if(!newLink.id){
+        this.player.disable()
+      }else if(!oldLink || oldLink.link != newLink.link){
+        this.player.updateLink(newLink.link)
+      }
+    })
   }
 
   sendPosition(){
@@ -405,6 +404,7 @@ export default class Video extends React.Component{
     return (
     <div className="video">
       <div className="video__player" id="player_container" />
+      <div className="video__disabled-interfaces" id="player_disabled_interfaces" />
       <div className="video__under">
         <div className="controller__wrapper">
           <Controller 
