@@ -60,8 +60,8 @@ class QueueItem extends React.Component {
     }
     return (
       <div className={className} onClick={this.handleClick} >
-        <div className="tile_image-container">
-          <img className="tile__image" src={this.props.item.image || "/images/no-image.png"} />
+        <div className="tile__image">
+          <img src={this.props.item.image || "/images/no-image.png"} />
         </div>
         <div className="tile__title-wrap">
           <div className="tile__title">{this.props.item.title || "Unknown title"}</div>
