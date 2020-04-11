@@ -1,5 +1,4 @@
 import React from "react";
-import PerfectScrollbar from 'react-perfect-scrollbar'
 
 export default class Queue extends React.Component{
   constructor(props){
@@ -21,14 +20,12 @@ export default class Queue extends React.Component{
          />
     })
     return (
-    // <div className="video__queue">
-      <PerfectScrollbar className="video__queue">
+    <div className="video__queue">
       {queueItems.length>0 ?
       queueItems :
       <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
       }
-      </PerfectScrollbar>
-    // </div>
+    </div>
     );
   }
 
@@ -62,7 +59,7 @@ class QueueItem extends React.Component {
       className += " tile--client_playing"
     }
     return (
-      <div className={className} onClick={this.handleClick} title={this.props.item.title || "Unknown title"} >
+      <div className={className} onClick={this.handleClick} >
         <div className="tile__image">
           <img src={this.props.item.image || "/images/no-image.png"} />
         </div>
