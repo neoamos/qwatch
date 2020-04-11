@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 export default class Chat extends React.Component{
   constructor(props){
@@ -155,9 +156,9 @@ class MessageList extends React.Component{
     })
 
     return (
-      <div className="chat__body">
+      <PerfectScrollbar className="chat__body">
         {messages}
-      </div>
+      </PerfectScrollbar>
     );
   }
 }
