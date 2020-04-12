@@ -2,6 +2,7 @@ import React from "react";
 import {
   Tooltip,
 } from 'react-tippy';
+//import remoteimage from './../../../static/images/remote.png';
 
 export default class Controller extends React.Component{
 
@@ -68,8 +69,8 @@ export default class Controller extends React.Component{
           <span className="oi" data-glyph="media-step-forward" title="next" aria-hidden="true"></span>
         </button>
 
-        <button className={remoteBtnClassName} disabled={!this.props.hasRemote && !this.props.remoteAvailable} onClick={this.props.toggleRemote}>
-          R
+        <button className={remoteBtnClassName} disabled={!this.props.hasRemote && !this.props.remoteAvailable} onClick={this.props.toggleRemote}  data-tippy-content='Take Control' data-tippy-arrow='true' data-tippy-placement="top">
+         <img src="/images/remote.svg"></img>
         </button>
         <button className={liveBtnClassName} onClick={this.props.setLive} data-tippy-content='go live' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-record" title="Set Live" aria-hidden="true"></span>
