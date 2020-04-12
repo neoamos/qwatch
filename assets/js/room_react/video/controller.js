@@ -87,20 +87,18 @@ export default class Controller extends React.Component{
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
         </Tooltip>
-        {this.props.ownsServer &&
-          <Tooltip
-            trigger="click"
-            interactive
-            position="bottom" 
-            html={(
-              <SettingsMenu closeRoom={this.props.closeRoom} />
-            )}
-          >
-            <button className="controller__settings btn">
-              <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
-            </button>
-          </Tooltip>
-        }
+        <Tooltip
+          trigger="click"
+          interactive
+          position="bottom" 
+          html={(
+            <SettingsMenu closeRoom={this.props.closeRoom} setAutoplay={this.props.setAutoplay} ownsRoom={this.props.ownsRoom} />
+          )}
+        >
+          <button className="controller__settings btn">
+            <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
+          </button>
+        </Tooltip>
       </div>
     </div>
     );
@@ -147,14 +145,36 @@ class SettingsMenu extends React.Component{
   constructor(props){
     super(props)
 
-    this.state = {}
+    this.state = {
+      autoplay: true
+    }
+    this.handleAutoplay = this.handleAutoplay.bind(this)
+  }
+
+  handleAutoplay(e){
+    this.setState({
+      autoplay: e.target.checked
+    })
+    this.props.setAutoplay(e.target.checked)
   }
 
   render(){
+
     return (
       <div>
+        {this.props.ownsRoom &&
         <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
           Close Room
+        </div>
+        }
+        <div className="dropdown__item btn-flat">
+          <label htmlFor="autoplay" className="dropdown__label">Autoplay</label>
+          <input 
+            id="autoplay" 
+            className="dropdown__input switch" 
+            type="checkbox" 
+            checked={this.state.autoplay}
+            onChange={this.handleAutoplay} />
         </div>
       </div>
     )

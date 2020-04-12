@@ -85,6 +85,8 @@
   &__item{
     padding: 5px 10px;
     height: 2em;
+    display: flex;
+    justify-content: space-inbetween;
   
     &:hover{
       background-color: $btn-default-hover;
@@ -95,6 +97,10 @@
       text-decoration: none;
       color: #fff;
     }
+  }
+
+  &__label{
+    margin-right: 10px;
   }
 }
 

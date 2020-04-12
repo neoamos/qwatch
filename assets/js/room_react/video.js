@@ -23,7 +23,8 @@ export default class Video extends React.Component{
       owner_id: null,
       live: true,
       player_ready: false,
-      initial_sync: true
+      initial_sync: true,
+      autoplay: true
     }
 
     this.selectLink = this.selectLink.bind(this)
@@ -39,6 +40,10 @@ export default class Video extends React.Component{
     this.updatePosition = this.updatePosition.bind(this)
     this.enqueueLink = this.enqueueLink.bind(this)
     this.closeRoom = this.closeRoom.bind(this)
+    this.scheduleAutoplay = this.scheduleAutoplay.bind(this)
+    this.cancelAutoplay = this.cancelAutoplay.bind(this)
+    this.setAutoplay = this.setAutoplay.bind(this)
+    this.videoEnded = this.videoEnded.bind(this)
 
     this.syncIntervalFunc = function(){
       if(this.state.live && !this.state.has_remote && !this.checkSynced()){
@@ -51,7 +56,8 @@ export default class Video extends React.Component{
   componentDidMount(){
     this.player = new Player({
       updatePosition: this.updatePosition,
-      updatePlayerState: this.updatePlayerState
+      updatePlayerState: this.updatePlayerState,
+      onEnded: this.videoEnded
     });
     this.channel = this.props.channel
 
@@ -191,8 +197,8 @@ export default class Video extends React.Component{
   sendPosition(){
     this.channel.push("position:update", {
       position: {
-        seconds: this.calculateCurrentTime(this.state.client_position),
-        duration: this.state.client_position.duration,
+        seconds: Math.trunc(this.calculateCurrentTime(this.state.client_position)*100)/100,
+        duration: Math.trunc(this.state.client_position.duration*100)/100,
         playing: this.state.client_position.playing
       }
     })
@@ -212,6 +218,7 @@ export default class Video extends React.Component{
 
   selectLink(link){
     console.log("select " + link.id)
+    this.cancelAutoplay()
     
     if(this.state.has_remote){
       this.channel.push('link:select', {link_id: link.id})
@@ -359,6 +366,7 @@ export default class Video extends React.Component{
 
   updatePosition(position){
     console.log("Player update: " + position.seconds + "s of " + position.duration + "s. Playing: " + position.playing)
+    this.cancelAutoplay()
 
     this.setState({
       client_position:{
@@ -389,6 +397,12 @@ export default class Video extends React.Component{
     }
   }
 
+  videoEnded(){
+    if(this.state.autoplay && (!this.state.live || this.state.has_remote)){
+      this.scheduleAutoplay()
+    }
+  }
+
   enqueueLink(link){
     console.log(link)
     if(this.state.has_remote){
@@ -398,6 +412,26 @@ export default class Video extends React.Component{
 
   closeRoom(){
     this.channel.push("room:close", {})
+  }
+
+  setAutoplay(value){
+    if(value==false){
+      this.cancelAutoplay()
+    }
+    this.setState({
+      autoplay: value
+    })
+  }
+
+  scheduleAutoplay(){
+    this.autoplayTimeout = setTimeout(this.nextLink, 5000)
+  }
+
+  cancelAutoplay(){
+    if(this.autoplayTimeout){
+      clearTimeout(this.autoplayTimeout)
+      this.autoplayTimeout = null;
+    }
   }
 
   render(){
@@ -421,8 +455,9 @@ export default class Video extends React.Component{
             enqueueLink={this.enqueueLink}
             nextLink={this.nextLink}
             previousLink={this.previousLink}
-            ownsServer={this.state.owner_id==this.props.userID}
+            ownsRoom={this.state.owner_id==this.props.userID}
             closeRoom={this.closeRoom}
+            setAutoplay={this.setAutoplay}
           />
         </div>
         <Queue 
