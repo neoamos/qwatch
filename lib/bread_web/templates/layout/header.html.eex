@@ -8,8 +8,16 @@
   <div class="nav__right">
     <ul>
       <%= if !assigns[:current_user] do %>
-      <li class="nav__item"><a href="/sessions/new">Sign In</a></li>
-      <li class="nav__item nav__item-green"><a href="/registrations/new">Sign Up</a></li>
+      <li class="nav__item nav--desktop"><a href="/sessions/new">Sign In</a></li>
+      <li class="nav__item nav__item-green nav--desktop"><a href="/registrations/new">Sign Up</a></li>
+
+      <button class="btn nav--mobile" data-tippy-menu="sing-in-menu">
+        <span class="oi" data-glyph="person" title="previous" aria-hidden="true"></span>
+      </button>
+      <div id="sing-in-menu" style="display: none;">
+        <div class="nav__dropdown"><a href="/sessions/new">Sign In</a></div>
+        <div class="nav__dropdown"><a href="/registrations/new">Sign Up</a></div>
+      </div>
       <% else %>
         <!--
         <li class="menu__btn"><a href="/registrations/edit">Settings</a></li>
