@@ -1,4 +1,40 @@
-<%= render "form.html", changeset: @changeset,
-                        label: dgettext("coherence", "Update"), required: [],
-                        action: Routes.registration_path(@conn, :update),
-                        title: "Edit Account" %>
+
+
+<%= form_for @changeset, Routes.registration_path(@conn, :update), [as: :registration, class: "full_form", multipart: true], fn f  -> %>
+
+  <h3>Edit Account</h3>
+
+  <div class="user_settings__avatar">
+    <img class="avatar-lg" src="/avatar/<%= if @current_user.profile_image, do: @current_user.profile_image, else: "avatar.jpg"  %>">
+
+  </div>
+
+  <div class="form-group">
+    <%= label f, :avatar, class: "control-label" %>
+    <%= file_input f, :avatar, class: "form-control" %>
+    <%= error_tag f, :avatar %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :current_password, class: "control-label" %>
+    <%= password_input f, :current_password, [class: "form-control"] %>
+    <%= error_tag f, :current_password %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, dgettext("coherence", "password"), class: "control-label" %>
+    <%= password_input f, :password, [class: "form-control"] %>
+    <%= error_tag f, :password %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, dgettext("coherence", "password confirmation"), class: "control-label" %>
+    <%= password_input f, :password_confirmation, [class: "form-control"] %>
+    <%= error_tag f, :password_confirmation %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+    <%= link dgettext("coherence", "Cancel"), to: Coherence.Config.logged_out_url("/"), class: "btn" %>
+  </div>
+<% end %>

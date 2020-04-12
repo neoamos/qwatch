@@ -19,14 +19,24 @@
   &__name{
     flex-grow: 1;
     color: $user-green;
-    font-weight: bold;
+    font-weight: 400;
     cursor: pointer;
   }
 }
 
 .users{
+  display: flex;
+  flex-direction: column;
 
   &__count{
     padding: 5px;
+    color: $text-muted;
+    text-align: center;
+  }
+
+  &__list{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
   }
 }

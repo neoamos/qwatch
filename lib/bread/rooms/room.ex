@@ -9,6 +9,7 @@ defmodule Bread.Rooms.Room do
   schema "room" do
     field :name, :string
     field :name_normalized, :string
+    field :description, :string
     field :title, :string
     field :queue, :string
     field :server_playing, :integer
@@ -16,6 +17,7 @@ defmodule Bread.Rooms.Room do
     field :privacy, :integer
     field :invite_code, :string
     field :unregistered_users_allowed, :boolean
+    field :custom_url, :boolean
 
 
     field :open, :boolean
@@ -32,7 +34,7 @@ defmodule Bread.Rooms.Room do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :title, :queue, :server_playing, :user_id, :privacy, :unregistered_users_allowed, :current_link_id])
+    |> cast(params, [:name, :title, :description, :queue, :server_playing, :user_id, :privacy, :unregistered_users_allowed, :current_link_id, :custom_url])
     |> validate_format(:name, ~r/^[a-zA-Z0-9_]+$/, message: "Room name should only contain numbers, letters and underscores")
     |> validate_required([:name, :user_id])
     |> unique_constraint(:name)

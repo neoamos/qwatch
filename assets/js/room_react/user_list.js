@@ -12,6 +12,12 @@ export default class UserList extends React.Component{
   }
 
   componentDidMount(){
+
+    this.kickUser = this.kickUser.bind(this)
+  }
+
+  kickUser(userID){
+    this.props.channel.push("user:kick", {user_id: userID})
   }
 
   render(){
@@ -26,7 +32,7 @@ export default class UserList extends React.Component{
         if(!userSet.has(this.props.connections[id].user_id)){
           users.push((
             <div className="user_item" key={this.props.connections[id].user_id}>
-              <div className="user_item__avatar"><img src="/images/avatar.png" /></div>
+              <div className="user_item__avatar"><img src={"/avatar/" + this.props.connections[id].avatar} /></div>
               <Tooltip
                 trigger="click"
                 interactive
@@ -37,8 +43,8 @@ export default class UserList extends React.Component{
                       <a href={"/user/" + this.props.connections[id].name}>Profile</a>
                     </div>
                     { this.props.ownsRoom &&
-                      <div className="dropdown__item">
-                        <a href="javascript:void(0)">Kick User</a>
+                      <div className="dropdown__item btn-flat" onClick={() => {this.kickUser(this.props.connections[id].user_id)}}>
+                        Kick User
                       </div>
                     }
                   </div>
@@ -58,8 +64,12 @@ export default class UserList extends React.Component{
     return (
       <div className="users">
         <h3>Users</h3>
-        <div className="users__count">{registered_user_count} registered, {anonymous_user_count} anonymous</div>
+        <div className="users__list">
         {users}
+        </div>
+        <div className="users__count"> 
+             {registered_user_count} users, {anonymous_user_count} anonymous
+          </div>
       </div>
     );
   }

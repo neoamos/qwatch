@@ -13,7 +13,7 @@ export default class BaseInterface {
   // Interface API
   disable(){
     var self = this;
-    $('#player_container').empty();
+    $('#base-player').remove();
   }
 
   play(){}
@@ -28,6 +28,7 @@ export default class BaseInterface {
 
     var iframe = $(document.createElement('iframe'));
     iframe.attr("src", url.href)
+    iframe.attr("id", "base-player")
     iframe.attr("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture")
     iframe.attr("allowfullscreen", "")
     iframe.attr("frameborder", "0")
