@@ -16,8 +16,8 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 import tippy from 'tippy.js';
+import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import 'react-tippy/dist/tippy.css'
 
 let userID = window.userID || null;
 let socket = new Socket("/socket", {params:  { token: window.userToken } })

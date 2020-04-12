@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Tooltip,
-} from 'react-tippy';
+import Tippy from '@tippyjs/react';
 
 export default class Controller extends React.Component{
 
@@ -74,31 +72,31 @@ export default class Controller extends React.Component{
         <button className={liveBtnClassName} onClick={this.props.setLive}>
           <span className="oi" data-glyph="media-record" title="Set Live" aria-hidden="true"></span>
         </button>
-        <Tooltip
+        <Tippy
           trigger="click"
           interactive
-          position="bottom"
+          placement="bottom"
           disabled={!this.props.hasRemote}
-          html={(
+          content={(
             <NewLinkForm onEnter={this.props.enqueueLink} />
           )}
         >
           <button className="controller__add btn" disabled={!this.props.hasRemote}>
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
-        </Tooltip>
-        <Tooltip
+        </Tippy>
+        <Tippy
           trigger="click"
           interactive
-          position="bottom" 
-          html={(
+          placement="bottom" 
+          content={(
             <SettingsMenu closeRoom={this.props.closeRoom} setAutoplay={this.props.setAutoplay} ownsRoom={this.props.ownsRoom} />
           )}
         >
           <button className="controller__settings btn">
             <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
           </button>
-        </Tooltip>
+        </Tippy>
       </div>
     </div>
     );

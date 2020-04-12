@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Tooltip,
-} from 'react-tippy';
+import Tippy from '@tippyjs/react';
 
 export default class UserList extends React.Component{
   constructor(props){
@@ -33,11 +31,12 @@ export default class UserList extends React.Component{
           users.push((
             <div className="user_item" key={this.props.connections[id].user_id}>
               <div className="user_item__avatar"><img src={"/avatar/" + this.props.connections[id].avatar} /></div>
-              <Tooltip
+              <div className="user_item__name">
+              <Tippy
                 trigger="click"
                 interactive
-                position="bottom"
-                html={(
+                placement="bottom"
+                content={(
                   <div class="dropdown">
                     <div className="dropdown__item">
                       <a href={"/user/" + this.props.connections[id].name}>Profile</a>
@@ -50,8 +49,9 @@ export default class UserList extends React.Component{
                   </div>
                 )}
               >
-                <div className="user_item__name">{this.props.connections[id].name}</div>
-              </Tooltip>
+                <span>{this.props.connections[id].name}</span>
+              </Tippy>
+           </div>
            </div>
           ))
           registered_user_count++;
