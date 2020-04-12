@@ -12,6 +12,9 @@
     </div>
     <div class="room_item__info">
       <div class="room_item__info-item"><%= room.name %></div>
+    <div class="room_item_info-desc" data-tippy-content='<%= room.name%>' data-tippy-arrow='true' data-tippy-placement="auto" data-tippy-maxwidth=350>
+    <span class="oi" data-glyph="info" aria-hidden="true"></span>
+    </div>
       <div  class="room_item__info-item">
       <span class="oi" data-glyph="people" title="people" aria-hidden="true"></span>
        1

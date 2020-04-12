@@ -58,20 +58,20 @@ export default class Controller extends React.Component{
         <div className="controller__progress-bar" style={{width: this.calculatePercent(this.props.clientPosition) + "%"}}></div>
       </div>
       <div className="controller__buttons">
-        <button className="controller__previous btn" onClick={this.props.previousLink}>
+        <button className="controller__previous btn" onClick={this.props.previousLink} data-tippy-content='previous' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-skip-backward" title="previous" aria-hidden="true"></span>
         </button>
-        <button className="controller__play btn" disabled={!this.props.playerReady} onClick={this.props.togglePlay}>
+        <button className="controller__play btn" disabled={!this.props.playerReady} onClick={this.props.togglePlay} data-tippy-content='pause' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph={this.props.clientPosition.playing ? "media-pause" : "media-play"} title="play/pause" aria-hidden="true"></span>
         </button>
-        <button className="controller__next btn" onClick={this.props.nextLink}>
+        <button className="controller__next btn" onClick={this.props.nextLink} data-tippy-content='next' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-skip-forward" title="next" aria-hidden="true"></span>
         </button>
 
-        <button className={remoteBtnClassName} disabled={!this.props.remoteAvailable} onClick={this.props.toggleRemote}>
-          R
+        <button className={remoteBtnClassName} disabled={!this.props.remoteAvailable} onClick={this.props.toggleRemote} data-tippy-content='remote' data-tippy-arrow='true' data-tippy-placement="top">
+          <img className ="remote_image" src='images/remote2.png'></img>
         </button>
-        <button className={liveBtnClassName} onClick={this.props.setLive}>
+        <button className={liveBtnClassName} onClick={this.props.setLive} data-tippy-content='go live' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-record" title="Set Live" aria-hidden="true"></span>
         </button>
         <Tooltip
@@ -83,11 +83,11 @@ export default class Controller extends React.Component{
             <NewLinkForm onEnter={this.props.enqueueLink} />
           )}
         >
-          <button className="controller__add btn" disabled={!this.props.hasRemote}>
+          <button className="controller__add btn" disabled={!this.props.hasRemote} data-tippy-content='add link' data-tippy-arrow='true' data-tippy-placement="top">
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
         </Tooltip>
-        <button className="controller__settings btn">
+        <button className="controller__settings btn" data-tippy-content='room settings' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="cog" title="Room Settings" aria-hidden="true"></span>
         </button>
       </div>
