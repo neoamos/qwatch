@@ -8,20 +8,29 @@ defmodule BreadWeb.Room do
     case RoomSupervisor.start_room(room) do
       {:error, reason} -> 
         IO.inspect(reason)
-        {:error, %{reason: "Error starting room server"}}
+        {:error, %{reason: "There was an error connecting to the server"}}
       {:ok, _} ->
         state = RoomServer.get_state(room)
-        state = %{
-          links: state[:links],
-          link_queue: state[:link_queue],
-          server_playing: state[:server_playing],
-          server_position: calculate_position(state[:position]),
-          remote_available: state[:remote_available],
-          remote_holder_user_id: state[:remote_holder_user_id],
-          remote_holder_connection_id: state[:remote_holder_connection_id],
-          owner_id: state[:owner_id]
-        }
-        {:ok, %{state: state, connection_id: socket.assigns[:connection_id]}, socket}
+          state_resp = %{
+            links: state[:links],
+            link_queue: state[:link_queue],
+            server_playing: state[:server_playing],
+            server_position: calculate_position(state[:position]),
+            remote_available: state[:remote_available],
+            remote_holder_user_id: state[:remote_holder_user_id],
+            remote_holder_connection_id: state[:remote_holder_connection_id],
+            owner_id: state[:owner_id]
+          }
+        if state.open do
+          {:ok, %{state: state_resp, connection_id: socket.assigns[:connection_id]}, socket}
+        else
+          if socket.assigns[:current_user] && socket.assigns[:current_user].id == state.owner_id do
+            RoomServer.set_open(room, socket.assigns[:current_user].id, true)
+            {:ok, %{state: state_resp, connection_id: socket.assigns[:connection_id]}, socket}
+          else
+            {:error, %{reason: "The room is closed"}}
+          end
+        end
     end
 
   end
@@ -158,6 +167,21 @@ defmodule BreadWeb.Room do
             remote_holder_connection_id: state[:remote_holder_connection_id] || "empty"
           }
           broadcast(socket, "state:update", %{state: state})
+          {:noreply, socket}
+        {:rejected, state} ->
+          {:noreply, socket}
+      end
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_in("room:close", _, socket) do
+    "room:" <> room = socket.topic
+    if socket.assigns[:current_user] do
+      case  RoomServer.set_open(room, socket.assigns[:current_user].id, false) do
+        {:accepted, state} ->
+          broadcast(socket, "room:close", %{})
           {:noreply, socket}
         {:rejected, state} ->
           {:noreply, socket}

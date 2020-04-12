@@ -40,6 +40,8 @@ defmodule BreadWeb.Router do
 
     get "/room/new", RoomController, :new
     post "/room/create", RoomController, :create
+
+    get "/user_rooms", UserController, :user_rooms
   end
 
   # Add this block

@@ -29,7 +29,9 @@ export default class YoutubeInterface {
   // Interface API
   disable(){
     var self = this;
-    $('#player_container').empty();
+    // $('#player_container').empty();
+    $('#yt-player').hide()
+    self.player.stopVideo()
     self.enabled = false;
     self.ready = false;
     self.listeners.updatePlayerState({ready: false})
@@ -42,20 +44,27 @@ export default class YoutubeInterface {
     self.videoId = this.extractVideoID(url.href)
     self.enabled = true;
 
-    var targetDiv = $(document.createElement('div'));
-    targetDiv.attr("id", "player")
-    $('#player_container').append(targetDiv)
-
-    self.player = new window['YT'].Player('player', {
-      videoId: self.videoId,
-      playerVars: { 'autoplay': 1, 'mute': start_mute},
-      events: {
-        'onReady': self.onPlayerReady.bind(self),
-        'onStateChange': self.onPlayerStateChange.bind(self),
-        'onApiChange': self.onApiChange.bind(self),
-        'onError': self.onError.bind(self)
-      } 
-    });
+    if(self.player){
+      self.player.loadVideoById(self.videoId)
+      $('#yt-player').show()
+      self.ready = true;
+      self.listeners.updatePlayerState({ready: true})
+    }else{
+      var targetDiv = $(document.createElement('div'));
+      targetDiv.attr("id", "yt-player")
+      $('#player_container').append(targetDiv)
+  
+      self.player = new window['YT'].Player('yt-player', {
+        videoId: self.videoId,
+        playerVars: { 'autoplay': 1, 'mute': start_mute},
+        events: {
+          'onReady': self.onPlayerReady.bind(self),
+          'onStateChange': self.onPlayerStateChange.bind(self),
+          'onApiChange': self.onApiChange.bind(self),
+          'onError': self.onError.bind(self)
+        } 
+      });
+    }
   }
 
   ready(){
@@ -94,7 +103,9 @@ export default class YoutubeInterface {
     self.ready = true;
     event.target.playVideo();
     // event.target.unMute();
-    self.listeners.updatePlayerState({ready: true})
+    if(self.enabled){
+      self.listeners.updatePlayerState({ready: true})
+    }
   }
 
   onPlayerStateChange(event) {
@@ -103,11 +114,15 @@ export default class YoutubeInterface {
     if(event.data == 1){
       let position = self.getPosition();
       position.playing = true;
-      self.listeners.updatePosition(position)
+      if(self.enabled){
+        self.listeners.updatePosition(position)
+      }
     }else if(event.data == 2){
       let position = self.getPosition();
       position.playing = false;
-      self.listeners.updatePosition(position)
+      if(self.enabled){
+        self.listeners.updatePosition(position)
+      }
     }
   }
   onApiChange(event){

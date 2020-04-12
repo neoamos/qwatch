@@ -34,6 +34,11 @@
       width:100%;
       height:100%;
     }
+
+  }
+
+  &__disabled-interfaces{
+    display: none;
   }
 
   &__under{
@@ -51,6 +56,7 @@
     width: 100%;
     overflow-x: scroll;
     padding: 5px;
+    height: 210px;
   }
 
   &__controls{
@@ -162,8 +168,8 @@
 }
 
 .tile{
-  width: 250px;
-  height: 200px;
+  width: 200px;
+  height: 170px;
   border-radius: 4px;
   margin: 7px;
   background-color: $background-tile;
@@ -183,8 +189,8 @@
 
   &__image{
     width: 100%;
-    height: 140px;
-    overflow: hide;
+    height: 112px;
+    overflow: hidden;
   }
 
   &__image img{

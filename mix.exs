@@ -50,7 +50,8 @@ defmodule Bread.MixProject do
       {:bcrypt_elixir, "~> 1.1"},
       {:floki, "~> 0.19", only: :test},
       {:timex, "~> 3.3"},
-      {:earmark, "~> 1.2", only: :dev, override: true}
+      {:earmark, "~> 1.2", only: :dev, override: true},
+      {:mogrify, "~> 0.7.3"}
     ]
   end
 

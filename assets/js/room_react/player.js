@@ -18,6 +18,7 @@ export default class Player {
     console.log("Updating link: " + link)
     var self = this;
     self.url = new URL(link);
+
     if(self.interface){
       self.interface.disable()
     }

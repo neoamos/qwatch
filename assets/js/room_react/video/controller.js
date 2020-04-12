@@ -59,17 +59,17 @@ export default class Controller extends React.Component{
       </div>
       <div className="controller__buttons">
         <button className="controller__previous btn" onClick={this.props.previousLink} data-tippy-content='previous' data-tippy-arrow='true' data-tippy-placement="top">
-          <span className="oi" data-glyph="media-skip-backward" title="previous" aria-hidden="true"></span>
+          <span className="oi" data-glyph="media-step-backward" title="previous" aria-hidden="true"></span>
         </button>
         <button className="controller__play btn" disabled={!this.props.playerReady} onClick={this.props.togglePlay} data-tippy-content='pause' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph={this.props.clientPosition.playing ? "media-pause" : "media-play"} title="play/pause" aria-hidden="true"></span>
         </button>
         <button className="controller__next btn" onClick={this.props.nextLink} data-tippy-content='next' data-tippy-arrow='true' data-tippy-placement="top">
-          <span className="oi" data-glyph="media-skip-forward" title="next" aria-hidden="true"></span>
+          <span className="oi" data-glyph="media-step-forward" title="next" aria-hidden="true"></span>
         </button>
 
-        <button className={remoteBtnClassName} disabled={!this.props.remoteAvailable} onClick={this.props.toggleRemote} data-tippy-content='remote' data-tippy-arrow='true' data-tippy-placement="top">
-          <img className ="remote_image" src='images/remote2.png'></img>
+        <button className={remoteBtnClassName} disabled={!this.props.hasRemote && !this.props.remoteAvailable} onClick={this.props.toggleRemote}>
+          R
         </button>
         <button className={liveBtnClassName} onClick={this.props.setLive} data-tippy-content='go live' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-record" title="Set Live" aria-hidden="true"></span>
@@ -87,9 +87,20 @@ export default class Controller extends React.Component{
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
         </Tooltip>
-        <button className="controller__settings btn" data-tippy-content='room settings' data-tippy-arrow='true' data-tippy-placement="top">
-          <span className="oi" data-glyph="cog" title="Room Settings" aria-hidden="true"></span>
-        </button>
+        {this.props.ownsServer &&
+          <Tooltip
+            trigger="click"
+            interactive
+            position="bottom" 
+            html={(
+              <SettingsMenu closeRoom={this.props.closeRoom} />
+            )}
+          >
+            <button className="controller__settings btn">
+              <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
+            </button>
+          </Tooltip>
+        }
       </div>
     </div>
     );
@@ -128,6 +139,24 @@ class NewLinkForm extends React.Component{
         onChange={this.handleChange}
         onKeyDown={this.onKeyDown}
       />
+    )
+  }
+}
+
+class SettingsMenu extends React.Component{
+  constructor(props){
+    super(props)
+
+    this.state = {}
+  }
+
+  render(){
+    return (
+      <div>
+        <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
+          Close Room
+        </div>
+      </div>
     )
   }
 }

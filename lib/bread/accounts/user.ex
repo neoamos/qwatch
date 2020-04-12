@@ -118,7 +118,7 @@ defmodule Bread.Accounts.User do
             img_id = :crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5)
             Mogrify.open(file.path)
             |> Mogrify.format("jpg")
-            |> Mogrify.resize_to_limit("100x150")
+            |> Mogrify.resize_to_fill("200x200")
             |> Mogrify.save(path: "../images/avatar/#{img_id}.jpg")
 
             put_change(changeset, :profile_image, "#{img_id}.jpg")

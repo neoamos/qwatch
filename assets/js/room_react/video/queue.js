@@ -16,11 +16,15 @@ export default class Queue extends React.Component{
         handleDelete={this.props.deleteLink}
         serverPlaying={serverPlaying}
         clientPlaying={clientPlaying}
+        hasRemote={this.props.hasRemote}
          />
     })
     return (
     <div className="video__queue">
-      {queueItems}
+      {queueItems.length>0 ?
+      queueItems :
+      <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
+      }
     </div>
     );
   }
@@ -56,14 +60,18 @@ class QueueItem extends React.Component {
     }
     return (
       <div className={className} onClick={this.handleClick} >
-        <div className="tile_image-container">
-          <img className="tile__image" src={this.props.item.image || "/images/no-image.png"} />
+        <div className="tile__image">
+          <img src={this.props.item.image || "/images/no-image.png"} />
         </div>
         <div className="tile__title-wrap">
-          <div className="tile__title">{this.props.item.title || "Some title"}</div>
+          <div className="tile__title">{this.props.item.title || "Unknown title"}</div>
           <div className="tile__info">
-            <div>{this.props.item.site_name || "Some Site"}</div>
-            <div><a href="#" onClick={this.handleDelete}>X</a></div>
+            <div>{this.props.item.site_name}</div>
+            { this.props.hasRemote && 
+              <div class="btn-flat" onClick={this.handleDelete}>
+                <span className="oi" data-glyph="x" title="Delete" aria-hidden="true"></span>
+              </div>
+            }
           </div>
         </div>
       </div>

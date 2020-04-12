@@ -23,4 +23,18 @@ defmodule Bread.Chat do
     Repo.all(query)
   end
 
+  def get_message {:id, id}, preloads \\ [] do
+    query = from m in ChatMessage, 
+      where: m.id==^id,
+      preload: ^preloads
+
+    Repo.one(query)
+
+  end
+
+  def delete_message {:id, id} do
+    from(m in ChatMessage, where: m.id==^id, update: [set: [deleted: true]])
+    |> Repo.update_all([])
+  end 
+
 end

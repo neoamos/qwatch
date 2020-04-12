@@ -38,6 +38,7 @@ export default class Video extends React.Component{
     this.updatePlayerState = this.updatePlayerState.bind(this)
     this.updatePosition = this.updatePosition.bind(this)
     this.enqueueLink = this.enqueueLink.bind(this)
+    this.closeRoom = this.closeRoom.bind(this)
 
     this.syncIntervalFunc = function(){
       if(this.state.live && !this.state.has_remote && !this.checkSynced()){
@@ -77,6 +78,10 @@ export default class Video extends React.Component{
       })
     }.bind(this))
 
+    this.channel.on("room:close", function(){
+      window.location.href = "/?message=The room has been closed";
+    }.bind(this))
+
     this.channel.join()
       .receive("ok", resp => {
         console.log(resp)
@@ -84,13 +89,16 @@ export default class Video extends React.Component{
         this.setState({
           connection_id: resp.connection_id,
           owner_id: newState.owner_id,
-          remote_available: newState.owner_id == this.props.userID
+          remote_holder_user_id: newState.remote_holder_user_id,
+          remote_available: (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID)
         })
         this.props.updateRoomMetadata({
           ownerID: newState.owner_id
         })
         this.updateState(newState)
 
+      }).receive("error", resp => {
+        window.location.href = "/?message=" + resp.reason;
       })
   }
 
@@ -129,7 +137,7 @@ export default class Video extends React.Component{
 
     if(newState.remote_available != null){
       if(this.state.owner_id != this.props.userID){
-        this.setState({remote_available: newState.remote_available})
+        this.setState({remote_available: (newState.remote_available || this.state.remote_holder_user_id == this.props.userID)})
       }
     }
 
@@ -171,12 +179,13 @@ export default class Video extends React.Component{
 
   updateClientPlaying(newLink){
     let oldLink = this.state.client_playing
-    this.setState({client_playing: newLink, initial_sync: true})
-    if(!newLink.id){
-      this.player.disable()
-    }else if(!oldLink || oldLink.link != newLink.link){
-      this.player.updateLink(newLink.link)
-    }
+    this.setState({client_playing: newLink, initial_sync: true}, () => {
+      if(!newLink.id){
+        this.player.disable()
+      }else if(!oldLink || oldLink.link != newLink.link){
+        this.player.updateLink(newLink.link)
+      }
+    })
   }
 
   sendPosition(){
@@ -387,19 +396,17 @@ export default class Video extends React.Component{
     }
   }
 
+  closeRoom(){
+    this.channel.push("room:close", {})
+  }
+
   render(){
     return (
     <div className="video">
       <div className="video__player" id="player_container" />
+      <div className="video__disabled-interfaces" id="player_disabled_interfaces" />
       <div className="video__under">
         <div className="controller__wrapper">
-          {/* <div>
-            <a href="#" className="btn" onClick={this.toggleRemote}>Request remote (Has: {String(this.state.has_remote)}, Available: {String(this.state.remote_available)}) </a>
-            <a href="#" className="btn" onClick={this.setLive}>Toggle Live ({String(this.state.live)})</a>
-          </div>
-          <div>
-            <NewLinkForm onEnter={this.enqueueLink} />
-          </div> */}
           <Controller 
             hasRemote={this.state.has_remote}
             remoteAvailable={this.state.remote_available}
@@ -414,6 +421,8 @@ export default class Video extends React.Component{
             enqueueLink={this.enqueueLink}
             nextLink={this.nextLink}
             previousLink={this.previousLink}
+            ownsServer={this.state.owner_id==this.props.userID}
+            closeRoom={this.closeRoom}
           />
         </div>
         <Queue 
@@ -422,6 +431,7 @@ export default class Video extends React.Component{
           serverPlaying={this.state.server_playing}
           selectLink={this.selectLink}
           deleteLink={this.deleteLink}
+          hasRemote={this.state.has_remote}
           />
       </div>  
     </div>

@@ -8,11 +8,12 @@ defmodule Bread.Rooms do
   alias Bread.Rooms.RoomServer
 
   def create_room attrs do
-    # attrs = if attrs["name"] == "" do
-    #   Map.put(attrs, "name", :crypto.strong_rand_bytes(10) |> Base.url_encode64 |> binary_part(0, 10))
-    # else
-    #   attrs
-    # end
+    attrs = if attrs["name"] == "" do
+      attrs = Map.put(attrs, "name", :crypto.strong_rand_bytes(12) |> Base.url_encode64 |> binary_part(0, 12))
+      Map.put(attrs, "custom_url", false)
+    else
+      Map.put(attrs, "custom_url", true)
+    end
 
     attrs = Map.put(attrs, "privacy", (if attrs["privacy"] == true, do: 0, else: 1))
     %Room{}
@@ -48,8 +49,22 @@ defmodule Bread.Rooms do
     end
   end
 
-  def get_room {:name, name}, params \\ %{} do
+  def get_room identifier, params \\ %{}
+
+  def get_room {:name, name}, params do
     query = from r in Room, where: r.name==^name
+
+    query = if params[:preload] do
+      from r in query, preload: ^params[:preload]
+    else
+      query
+    end
+
+    Repo.one(query)
+  end
+
+  def get_room {:id, id}, params do
+    query = from r in Room, where: r.id==^id
 
     query = if params[:preload] do
       from r in query, preload: ^params[:preload]
@@ -75,7 +90,24 @@ defmodule Bread.Rooms do
       query
     end
 
+    query = if params[:open] do
+      from r in query, where: r.open == true
+    else
+      query
+    end 
+
+    query = if params[:user_id] do
+      from r in query, where: r.user_id == ^params[:user_id]
+    else
+      query
+    end 
+
     Repo.all(query)
+  end
+
+  def set_open {:name, name}, value do
+    from(r in Room, where: r.name==^name, update: [set: [open: ^value]])
+    |> Repo.update_all([])
   end
 
   def get_link {:id, id}, params \\ %{} do
