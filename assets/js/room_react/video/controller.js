@@ -156,7 +156,7 @@ class NewLinkForm extends React.Component{
           onChange={this.handleChange}
           onKeyDown={this.onKeyDown}
         />
-        <div style={{"margin-top": "5px"}}>
+        <div style={{"marginTop": "5px"}}>
           {this.state.message}
         </div>
       </div>

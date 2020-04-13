@@ -1,8 +1,22 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 export default class Queue extends React.Component{
   constructor(props){
     super(props)
+
+    this.scrollToPlaying = true
+  }
+
+  componentDidUpdate(){
+    if (this.scrollToPlaying && this.props.clientPlaying.id) {
+      let playingIndex = this.props.items.findIndex(e => {
+        return this.props.clientPlaying.id == e.id
+      })
+      const node = ReactDOM.findDOMNode(this)
+      node.scrollLeft = 214*playingIndex;
+      this.scrollToPlaying = false
+    }
   }
 
   render(){
@@ -21,12 +35,15 @@ export default class Queue extends React.Component{
     })
     return (
     <div className="video__queue">
-      <div className="queue-spacer" />
-      {queueItems.length>0 ?
-      queueItems :
+      {queueItems.length>0 ?   
+        [
+          <div className="queue-spacer" />,
+          queueItems,
+          <div className="queue-spacer" />
+        ]
+         :
       <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
       }
-      <div className="queue-spacer" />
     </div>
     );
   }
