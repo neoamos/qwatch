@@ -1,4 +1,6 @@
-<%= form_for @conn, Routes.session_path(@conn, :create), [as: :session, class: "full_form"], fn f  -> %>
+
+<div class="full_form">
+<%= form_for @conn, Routes.session_path(@conn, :create), [as: :session], fn f  -> %>
 
   <% login_field = Coherence.Config.login_field %>
   <div class="form-group">
@@ -15,8 +17,8 @@
 
   <%= if @remember do %>
     <div class="form-group">
-      <div>
-      <input type="checkbox"  name="remember" id="remember">
+      <div style="text-align: right;">
+      <input type="checkbox"  name="remember" id="remember" checked>
       <label for="remember"><%= dgettext "coherence", "Remember Me?" %></label>
       </div>
     </div>
@@ -29,8 +31,11 @@
 
   <div class="form-group">
     <div style="text-align: center">
-    <%= coherence_links(@conn, :new_session) %>
+      <div class="btn"><a href="/passwords/new">Forgot Password</a></div>
+      <div class="btn"><a href="/registrations/new">Sign Up</a></div>
     </div>
   </div>
 
 <% end %>
+
+</div>

@@ -123,6 +123,8 @@ export default class YoutubeInterface {
       if(self.enabled){
         self.listeners.updatePosition(position)
       }
+    }else if(event.data == 0){
+      self.listeners.onEnded()
     }
   }
   onApiChange(event){
@@ -150,6 +152,7 @@ export default class YoutubeInterface {
 
   getPosition(){
     var self = this;
+
     return {
       seconds: self.player.getCurrentTime(),
       duration: self.player.getDuration(),

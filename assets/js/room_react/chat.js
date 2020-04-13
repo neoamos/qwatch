@@ -86,7 +86,7 @@ export default class Chat extends React.Component{
   render(){
     let placeholder = ""
     if(this.props.signedIn){
-      placeholder = "Says something..."
+      placeholder = "Say something..."
     }else{
       placeholder = "Sign in to chat."
     }
@@ -106,7 +106,8 @@ export default class Chat extends React.Component{
         value={this.state.value}
         onChange={this.handleChange}
         onKeyDown={this.onKeyDown}
-        disabled={!this.props.signedIn} />
+        disabled={!this.props.signedIn}
+        maxLength="255" />
       </div>
       <div className="chat__buttons">
         <span className="oi btn-flat" data-glyph={soundIcon} title="Toggle Sound" aria-hidden="true" onClick={this.toggleSound}></span>

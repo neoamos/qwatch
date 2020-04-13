@@ -4,7 +4,13 @@ defmodule BreadWeb.IndexController do
 
   alias Bread.Rooms
   def index(conn, params) do
-    rooms = Rooms.get_rooms(%{limit: 100, preload: [:current_link, :user], open: true})
+    unregistered_users_allowed = !conn.assigns[:current_users]
+    filters = %{
+      open: true,
+      public: true,
+      unregistered_users_allowed: !conn.assigns[:current_user]
+    }
+    rooms = Rooms.get_rooms(filters, %{limit: 100, preload: [:current_link, :user]})
       |> Enum.map(fn r ->
         count = Bread.Presence.get_user_count(r.name)
         {r, count}

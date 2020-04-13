@@ -13,6 +13,10 @@ defmodule Bread.Rooms.RoomServer do
     GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
+  def update_room(room_name) do
+    GenServer.cast(via_tuple(room_name), {:update_room})
+  end
+
   def update_link(room_name, link_id) do
     GenServer.cast(via_tuple(room_name), {:update_link, link_id})
   end
@@ -80,6 +84,8 @@ defmodule Bread.Rooms.RoomServer do
       # end
       state = %{
         room_name: room.name,
+        title: room.title,
+        description: room.description,
         room_id: room.id,
         links: links,
         link_queue: queue,
@@ -90,11 +96,26 @@ defmodule Bread.Rooms.RoomServer do
         remote_holder_user_id: room.remote_holder_id || room.user_id,
         remote_holder_connection_id: nil,
         owner_id: room.user_id,
-        open: room.open
+        open: room.open,
+        unregistered_users_allowed: room.unregistered_users_allowed
       }
       {:ok, state}
     else
       {:stop, "Room does not exist"}
+    end
+  end
+
+  def handle_cast({:update_room}, state) do
+    room = Rooms.get_room({:name, state.room_name})
+    if room do
+      state = state
+        |> Map.put(:title, room.title)
+        |> Map.put(:description, room.description)
+        |> Map.put(:unregistered_users_allowed, room.unregistered_users_allowed)
+        |> Map.put(:open, room.open)
+      {:noreply, state}
+    else
+      {:noreply, state}
     end
   end
 

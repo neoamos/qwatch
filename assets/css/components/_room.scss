@@ -57,6 +57,7 @@
     overflow-x: scroll;
     padding: 5px;
     height: 210px;
+    // scroll-behavior: smooth;
   }
 
   &__controls{
@@ -223,6 +224,12 @@
     border-bottom: 3px solid $hightlight-color;
   }
 
+}
+
+.queue-spacer{
+  display: block;
+  width: calc(50% - 107px);
+  flex: 0 0 auto;
 }
 
 .users{

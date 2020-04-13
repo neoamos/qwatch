@@ -137,21 +137,38 @@
 input[type='text'], 
 input[type='password'], 
 input[type='textarea']{
-  border: none;
   background-color: $background-form;
   color: $text-normal;
   height: 3em;
   padding: 0 1em;
   border-radius: 0.2em;
+  border: 1px solid transparent;
+  transition: border 0.3s;
+  box-shadow: none;
+
+  &:focus{
+    outline: none !important;
+    border: 1px solid;
+    border-color: $hightlight-color !important;
+
+  }
 }
 
 textarea {
-  border: none;
   background-color: $background-form;
   color: $text-normal;
   height: 5em;
   padding: 1em;
   border-radius: 0.2em;
+  border: 1px solid transparent;
+  transition: border 0.3s;
+  box-shadow: none;
+
+  &:focus{
+    outline: none !important;
+    border: 1px solid;
+    border-color: $hightlight-color !important;
+  }
 }
 
 button {
@@ -163,17 +180,23 @@ button {
 
 .full_form{
   max-width: 500px;
-  margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-  background-color: $background-secondary;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid black;
+  padding: 0 15px;
 
   & h1,  & h3{
     padding-left: 0px;
     margin-left: 0px;
+    margin-top: 0px;
+    text-align: center;
+  }
+
+  & form{
+    margin-top: 20px;
+    padding: 15px;
+    box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.4);
+    background-color: #34373d;
+    border-radius: 10px;
   }
 
 

@@ -1,7 +1,9 @@
 
 <div class="full_form">
-<%= form_for @changeset, "/room/create", [as: :room, method: :post], fn f  -> %>
-  <h3>Create a new room</h3>
+<%= form_for @changeset, "/room/edit", [as: :room, method: :post], fn f  -> %>
+  <h3>Edit your room</h3>
+
+  <%= hidden_input f, :id %>
 
   <div class="form-group">
   <%= label f, :title, "Title (optional):"%>
@@ -16,15 +18,9 @@
   </div>
 
   <div class="form-group">
-  <%= label f, :name, "Custom URL (optional):"%>
-  <%= text_input f, :name, class: "textbox", id: "name" %>
-  <%= error_tag f, :name  %>
-  </div>
-
-  <div class="form-group">
     <div class="form-group__split">
       <%= label f, :public, "Index the room publicly: "%>
-      <%= checkbox(f, :public, id: "open", class: "switch",  value: (@changeset.data.privacy == 0)) %>
+      <%= checkbox(f, :public, id: "open", class: "switch", value: (@changeset.data.privacy == 0)) %>
     </div>
   </div>
 

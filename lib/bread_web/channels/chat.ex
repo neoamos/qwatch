@@ -8,7 +8,7 @@ defmodule BreadWeb.Chat do
 
   def join("chat:" <> room, _message, socket ) do
     room = Rooms.get_room({:name, room})
-    if !!room and room.open do
+    if !!room and room.open and (room.unregistered_users_allowed || socket.assigns[:current_user]) do
       messages = Chat.get_messages({:room_id, room.id})
       |> Enum.map(fn m ->
         %{

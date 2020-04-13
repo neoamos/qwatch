@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  Tooltip,
-} from 'react-tippy';
-//import remoteimage from './../../../static/images/remote.png';
+import Tippy from '@tippyjs/react';
 
 export default class Controller extends React.Component{
 
@@ -75,33 +72,35 @@ export default class Controller extends React.Component{
         <button className={liveBtnClassName} onClick={this.props.setLive} data-tippy-content='go live' data-tippy-arrow='true' data-tippy-placement="top">
           <span className="oi" data-glyph="media-record" title="Set Live" aria-hidden="true"></span>
         </button>
-        <Tooltip
+        <Tippy
           trigger="click"
           interactive
-          position="bottom"
+          placement="bottom"
           disabled={!this.props.hasRemote}
-          html={(
+          content={(
             <NewLinkForm onEnter={this.props.enqueueLink} />
           )}
         >
           <button className="controller__add btn" disabled={!this.props.hasRemote} data-tippy-content='add link' data-tippy-arrow='true' data-tippy-placement="top">
             <span className="oi" data-glyph="plus" title="Add Link" aria-hidden="true"></span>
           </button>
-        </Tooltip>
-        {this.props.ownsServer &&
-          <Tooltip
-            trigger="click"
-            interactive
-            position="bottom" 
-            html={(
-              <SettingsMenu closeRoom={this.props.closeRoom} />
-            )}
-          >
-            <button className="controller__settings btn">
-              <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
-            </button>
-          </Tooltip>
-        }
+        </Tippy>
+        <Tippy
+          trigger="click"
+          interactive
+          placement="bottom" 
+          content={(
+            <SettingsMenu 
+            closeRoom={this.props.closeRoom} 
+            setAutoplay={this.props.setAutoplay} 
+            ownsRoom={this.props.ownsRoom} 
+            roomName={this.props.roomName} />
+          )}
+        >
+          <button className="controller__settings btn">
+            <span className="oi" data-glyph="ellipses" title="Room Settings" aria-hidden="true"></span>
+          </button>
+        </Tippy>
       </div>
     </div>
     );
@@ -114,7 +113,8 @@ class NewLinkForm extends React.Component{
     super(props)
 
     this.state = {
-      value: ""
+      value: "",
+      message: null
     }
     this.handleChange = this.handleChange.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -127,19 +127,43 @@ class NewLinkForm extends React.Component{
   onKeyDown(e){
     console.log(e)
     if (e.key === 'Enter') {
-      this.props.onEnter(this.state.value)
-      this.setState({value: ''})
+      if(this.isValidUrl(this.state.value)){
+        this.props.onEnter(this.state.value)
+        this.setState({
+          value: "",
+          message: ""
+        })
+      }else{
+        this.setState({
+          message: "Not a valid URL"
+        })
+      }
     }
+  }
+
+  isValidUrl(string) {
+    try {
+      new URL(string);
+    } catch (_) {
+      return false;  
+    }
+  
+    return true;
   }
 
   render(){
     return (
-      <input type="text" 
-        placeholder="Enter a link"
-        value={this.state.value}
-        onChange={this.handleChange}
-        onKeyDown={this.onKeyDown}
-      />
+      <div>
+        <input type="text" 
+          placeholder="Enter a link"
+          value={this.state.value}
+          onChange={this.handleChange}
+          onKeyDown={this.onKeyDown}
+        />
+        <div style={{"marginTop": "5px"}}>
+          {this.state.message}
+        </div>
+      </div>
     )
   }
 }
@@ -148,15 +172,42 @@ class SettingsMenu extends React.Component{
   constructor(props){
     super(props)
 
-    this.state = {}
+    this.state = {
+      autoplay: true
+    }
+    this.handleAutoplay = this.handleAutoplay.bind(this)
+  }
+
+  handleAutoplay(e){
+    this.setState({
+      autoplay: e.target.checked
+    })
+    this.props.setAutoplay(e.target.checked)
   }
 
   render(){
+
     return (
       <div>
-        <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
-          Close Room
+        <div className="dropdown__item btn-flat">
+          <label htmlFor="autoplay" className="dropdown__label">Autoplay</label>
+          <input 
+            id="autoplay" 
+            className="dropdown__input switch" 
+            type="checkbox" 
+            checked={this.state.autoplay}
+            onChange={this.handleAutoplay} />
         </div>
+        {this.props.ownsRoom &&
+          [
+          <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
+            Close Room
+          </div>,
+          <a className="dropdown__item btn-flat" href={"/room/edit/" + this.props.roomName}>
+            Edit Room
+          </a>
+          ]
+        }
       </div>
     )
   }
