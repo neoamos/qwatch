@@ -35,7 +35,7 @@ defmodule Bread.Rooms.Room do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, [:name, :title, :description, :queue, :server_playing, :user_id, :privacy, :unregistered_users_allowed, :current_link_id, :custom_url])
-    |> validate_format(:name, ~r/^[a-zA-Z0-9_]+$/, message: "Room name should only contain numbers, letters and underscores")
+    |> validate_format(:name, ~r/^[a-zA-Z0-9_]+$/, message: "Room address should only contain numbers, letters and underscores")
     |> validate_required([:name, :user_id])
     |> unique_constraint(:name)
     |> validate_length(:name, max: 64)

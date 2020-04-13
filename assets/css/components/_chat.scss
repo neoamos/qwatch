@@ -40,6 +40,10 @@
     input[type='textarea'] {
       width: 100%;
     }
+
+    input[type='textarea']::placeholder{
+      color: $text-muted;
+    }
   }
 
   &__message{

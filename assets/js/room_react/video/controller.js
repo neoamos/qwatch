@@ -109,7 +109,8 @@ class NewLinkForm extends React.Component{
     super(props)
 
     this.state = {
-      value: ""
+      value: "",
+      message: null
     }
     this.handleChange = this.handleChange.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -122,19 +123,43 @@ class NewLinkForm extends React.Component{
   onKeyDown(e){
     console.log(e)
     if (e.key === 'Enter') {
-      this.props.onEnter(this.state.value)
-      this.setState({value: ''})
+      if(this.isValidUrl(this.state.value)){
+        this.props.onEnter(this.state.value)
+        this.setState({
+          value: "",
+          message: ""
+        })
+      }else{
+        this.setState({
+          message: "Not a valid URL"
+        })
+      }
     }
+  }
+
+  isValidUrl(string) {
+    try {
+      new URL(string);
+    } catch (_) {
+      return false;  
+    }
+  
+    return true;
   }
 
   render(){
     return (
-      <input type="text" 
-        placeholder="Enter a link"
-        value={this.state.value}
-        onChange={this.handleChange}
-        onKeyDown={this.onKeyDown}
-      />
+      <div>
+        <input type="text" 
+          placeholder="Enter a link"
+          value={this.state.value}
+          onChange={this.handleChange}
+          onKeyDown={this.onKeyDown}
+        />
+        <div style={{"margin-top": "5px"}}>
+          {this.state.message}
+        </div>
+      </div>
     )
   }
 }
