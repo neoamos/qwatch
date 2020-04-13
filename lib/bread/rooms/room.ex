@@ -46,7 +46,7 @@ defmodule Bread.Rooms.Room do
 
   def edit_changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:title, :queue, :server_playing, :privacy, :unregistered_users_allowed, :current_link_id])
+    |> cast(params, [:title, :description, :queue, :server_playing, :privacy, :unregistered_users_allowed, :current_link_id])
     |> validate_length(:title, max: 100)
   end
 

@@ -27,7 +27,7 @@ defmodule BreadWeb.RoomController do
   end
 
   def new conn, _params do
-    changeset = Room.changeset(%Room{})
+    changeset = Room.changeset(%Room{unregistered_users_allowed: true, privacy: 0}, %{})
     render conn, "new.html", changeset: changeset
   end
 
@@ -38,6 +38,36 @@ defmodule BreadWeb.RoomController do
       {:error, changeset} ->
         conn
         |> render "new.html", changeset: changeset
+    end
+  end
+
+  def edit_form conn, %{"name" => room_name} do
+    room = Rooms.get_room({:name, room_name})
+    if room do
+      if room.user_id == conn.assigns[:current_user].id do
+        render conn, "edit.html", changeset: Room.edit_changeset(room, %{})
+      else
+        conn
+        |> put_flash(:error, "You cant edit someone elses room")
+        |> redirect(to: "/")
+      end
+    else
+      conn
+      |> put_flash(:error, "Room does not exist")
+      |> redirect(to: "/")
+    end
+  end
+
+  def edit conn, %{"room" => room_attrs} do
+    case Rooms.edit(room_attrs) do
+      {:ok, room} -> 
+        conn
+        |> put_flash(:ok, "Room changed succesfully")
+        |> render "edit.html", changeset: Room.edit_changeset(room, %{})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
+        render(conn, "edit.html", changeset: changeset)
     end
   end
 end

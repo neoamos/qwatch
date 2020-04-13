@@ -28,7 +28,7 @@
           <div class="nav__dropdown"><a href="/user/<%= @current_user.name %>">Profile</a></div>
           <div class="nav__dropdown"><a href="/user_rooms">My Rooms</a></div>
           <div class="nav__dropdown"><a href="/registrations/edit">Settings</a></div>
-          <div class="nav__dropdown"><%= link "Log out", to: "/sessions", method: :delete, class: "nav-link" %></div>
+          <div class="nav__dropdown"><%= link "Sign out", to: "/sessions", method: :delete, class: "nav-link" %></div>
         </div>
       <% end%>
     </ul>

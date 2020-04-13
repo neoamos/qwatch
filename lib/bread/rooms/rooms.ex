@@ -15,10 +15,26 @@ defmodule Bread.Rooms do
       Map.put(attrs, "custom_url", true)
     end
 
-    attrs = Map.put(attrs, "privacy", (if attrs["privacy"] == true, do: 0, else: 1))
+    attrs = Map.put(attrs, "privacy", (if attrs["public"] == "true", do: 0, else: 1))
     %Room{}
     |> Room.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def edit attrs do
+    attrs = Map.put(attrs, "privacy", (if attrs["public"] == "true", do: 0, else: 1))
+
+    room = get_room({:id, attrs["id"]})
+    res = room
+    |> Room.edit_changeset(attrs)
+    |> Repo.update
+
+    case res do
+      {:ok, room} ->
+        RoomServer.update_room(room.name)
+        {:ok, room}
+      other -> other
+    end
   end
 
   def create_link attrs do
@@ -75,7 +91,7 @@ defmodule Bread.Rooms do
     Repo.one(query)
   end
 
-  def get_rooms params \\ %{} do
+  def get_rooms filters, params \\ %{} do
     query =  from r in Room
 
     query = if params[:limit] do
@@ -90,14 +106,26 @@ defmodule Bread.Rooms do
       query
     end
 
-    query = if params[:open] do
+    query = if filters[:open] do
       from r in query, where: r.open == true
     else
       query
     end 
 
-    query = if params[:user_id] do
-      from r in query, where: r.user_id == ^params[:user_id]
+    query = if filters[:public] do
+      from r in query, where: r.privacy == 0
+    else
+      query
+    end 
+
+    query = if filters[:unregistered_users_allowed] do
+      from r in query, where: r.unregistered_users_allowed == true
+    else
+      query
+    end 
+
+    query = if filters[:user_id] do
+      from r in query, where: r.user_id == ^filters[:user_id]
     else
       query
     end 

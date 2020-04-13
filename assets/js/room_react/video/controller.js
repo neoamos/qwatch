@@ -90,7 +90,11 @@ export default class Controller extends React.Component{
           interactive
           placement="bottom" 
           content={(
-            <SettingsMenu closeRoom={this.props.closeRoom} setAutoplay={this.props.setAutoplay} ownsRoom={this.props.ownsRoom} />
+            <SettingsMenu 
+            closeRoom={this.props.closeRoom} 
+            setAutoplay={this.props.setAutoplay} 
+            ownsRoom={this.props.ownsRoom} 
+            roomName={this.props.roomName} />
           )}
         >
           <button className="controller__settings btn">
@@ -185,11 +189,6 @@ class SettingsMenu extends React.Component{
 
     return (
       <div>
-        {this.props.ownsRoom &&
-        <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
-          Close Room
-        </div>
-        }
         <div className="dropdown__item btn-flat">
           <label htmlFor="autoplay" className="dropdown__label">Autoplay</label>
           <input 
@@ -199,6 +198,16 @@ class SettingsMenu extends React.Component{
             checked={this.state.autoplay}
             onChange={this.handleAutoplay} />
         </div>
+        {this.props.ownsRoom &&
+          [
+          <div className="dropdown__item btn-flat" onClick={this.props.closeRoom}>
+            Close Room
+          </div>,
+          <a className="dropdown__item btn-flat" href={"/room/edit/" + this.props.roomName}>
+            Edit Room
+          </a>
+          ]
+        }
       </div>
     )
   }

@@ -16,7 +16,10 @@ defmodule BreadWeb.UserController do
   end
 
   def user_rooms(conn, _) do
-    rooms = Rooms.get_rooms(%{preload: [:current_link, :user], user_id: conn.assigns[:current_user].id})
+    filters = %{
+      user_id: conn.assigns[:current_user].id
+    }
+    rooms = Rooms.get_rooms(filters, %{preload: [:current_link, :user]})
 
     render conn, "user_rooms.html", rooms: rooms
   end

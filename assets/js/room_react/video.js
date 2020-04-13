@@ -458,6 +458,7 @@ export default class Video extends React.Component{
             ownsRoom={this.state.owner_id==this.props.userID}
             closeRoom={this.closeRoom}
             setAutoplay={this.setAutoplay}
+            roomName={this.props.name}
           />
         </div>
         <Queue 

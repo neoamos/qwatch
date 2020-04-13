@@ -19,17 +19,19 @@ defmodule BreadWeb.Room do
             remote_available: state[:remote_available],
             remote_holder_user_id: state[:remote_holder_user_id],
             remote_holder_connection_id: state[:remote_holder_connection_id],
-            owner_id: state[:owner_id]
+            owner_id: state[:owner_id],
+            unregistered_users_allowed: state[:unregistered_users_allowed]
           }
-        if state.open do
-          {:ok, %{state: state_resp, connection_id: socket.assigns[:connection_id]}, socket}
-        else
-          if socket.assigns[:current_user] && socket.assigns[:current_user].id == state.owner_id do
+        cond do
+          (!state.unregistered_users_allowed and !socket.assigns[:current_user]) ->
+            {:error, %{reason: "The room does not allow unregistered users"}}
+          state.open -> 
+            {:ok, %{state: state_resp, connection_id: socket.assigns[:connection_id]}, socket}
+          (socket.assigns[:current_user] && socket.assigns[:current_user].id == state.owner_id) -> 
             RoomServer.set_open(room, socket.assigns[:current_user].id, true)
             {:ok, %{state: state_resp, connection_id: socket.assigns[:connection_id]}, socket}
-          else
+          true -> 
             {:error, %{reason: "The room is closed"}}
-          end
         end
     end
 
