@@ -180,20 +180,23 @@ button {
 
 .full_form{
   max-width: 500px;
-  margin-top: 20px;
-  padding: 15px;
   margin-left: auto;
   margin-right: auto;
-  // border-radius: 4px;
-  box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.4);
-  background-color: #34373d;
-  border-radius: 10px;
+  padding: 0 15px;
 
   & h1,  & h3{
     padding-left: 0px;
     margin-left: 0px;
     margin-top: 0px;
     text-align: center;
+  }
+
+  & form{
+    margin-top: 20px;
+    padding: 15px;
+    box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.4);
+    background-color: #34373d;
+    border-radius: 10px;
   }
 
 

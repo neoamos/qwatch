@@ -1,4 +1,5 @@
-<%= form_for @changeset, @action, [as: :registration, class: "full_form"], fn f  -> %>
+<div class="full_form">
+<%= form_for @changeset, @action, [as: :registration], fn f  -> %>
 
   <h3><%= @title %></h3>
   <%= if @changeset.action do %>
@@ -52,3 +53,5 @@
     <%= link dgettext("coherence", "Cancel"), to: Coherence.Config.logged_out_url("/"), class: "btn" %>
   </div>
 <% end %>
+
+</div>

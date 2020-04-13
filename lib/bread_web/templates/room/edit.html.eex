@@ -1,7 +1,7 @@
 
-<div>
-<%= form_for @changeset, "/room/edit", [as: :room, method: :post, class: "full_form"], fn f  -> %>
-  <h3>Edit Your Room</h3>
+<div class="full_form">
+<%= form_for @changeset, "/room/edit", [as: :room, method: :post], fn f  -> %>
+  <h3>Edit your room</h3>
 
   <%= hidden_input f, :id %>
 

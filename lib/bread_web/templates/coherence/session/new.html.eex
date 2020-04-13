@@ -1,4 +1,6 @@
-<%= form_for @conn, Routes.session_path(@conn, :create), [as: :session, class: "full_form"], fn f  -> %>
+
+<div class="full_form">
+<%= form_for @conn, Routes.session_path(@conn, :create), [as: :session], fn f  -> %>
 
   <% login_field = Coherence.Config.login_field %>
   <div class="form-group">
@@ -35,3 +37,5 @@
   </div>
 
 <% end %>
+
+</div>

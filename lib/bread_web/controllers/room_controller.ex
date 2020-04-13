@@ -63,7 +63,7 @@ defmodule BreadWeb.RoomController do
       {:ok, room} -> 
         conn
         |> put_flash(:ok, "Room changed succesfully")
-        |> render "edit.html", changeset: Room.edit_changeset(room, %{})
+        |> redirect(to: "/r/" <> room.name)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         IO.inspect(changeset)

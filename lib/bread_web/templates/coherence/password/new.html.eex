@@ -1,5 +1,6 @@
 
-<%= form_for @changeset, Routes.password_path(@conn, :create), [as: :password, class: "full_form"], fn f  -> %>
+<div class="full_form">
+<%= form_for @changeset, Routes.password_path(@conn, :create), [as: :password], fn f  -> %>
   <h3><%= dgettext "coherence", "Send Reset Password Instructions" %></h3>
 
   <div class="form-group">
@@ -13,3 +14,4 @@
     <%= link dgettext("coherence", "Cancel"), to: Coherence.Config.logged_out_url("/"), class: "btn" %>
   </div>
 <% end %>
+</div>

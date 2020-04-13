@@ -1,6 +1,6 @@
 
-<div>
-<%= form_for @changeset, "/room/create", [as: :room, method: :post, class: "full_form"], fn f  -> %>
+<div class="full_form">
+<%= form_for @changeset, "/room/create", [as: :room, method: :post], fn f  -> %>
   <h3>Create a new room</h3>
 
   <div class="form-group">

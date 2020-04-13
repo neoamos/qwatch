@@ -1,6 +1,6 @@
 
-
-<%= form_for @changeset, Routes.registration_path(@conn, :update), [as: :registration, class: "full_form", multipart: true], fn f  -> %>
+<div class="full_form">
+<%= form_for @changeset, Routes.registration_path(@conn, :update), [as: :registration, multipart: true], fn f  -> %>
 
   <h3>Edit Account</h3>
 
@@ -38,3 +38,4 @@
     <%= link dgettext("coherence", "Cancel"), to: Coherence.Config.logged_out_url("/"), class: "btn" %>
   </div>
 <% end %>
+</div>
