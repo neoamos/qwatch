@@ -105,63 +105,42 @@
     background-color: $hightlight-color;
   }
 
+  &__buttons{
+    display: flex;
+    align-items: center;
+  }
+
   &__remote{
     font-weight: 400;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    fill: #fff;
+    padding: 5px;
+    background-color: $btn-default;
+    border: none;
+    outline: none!important;
+    margin: 0px 3px;
    }
-}
 
-.asfdtile{
-  width: 175px;
-  height: 150px;
-  overflow: hidden;
-  border-radius: 3px;
-  margin: 5px;
-  background-color: $background-secondary-hover;
-  word-wrap: break-word;
-  flex: 0 0 auto;
-  padding: 5px;
 
-  &:hover{
-    background-color: $background-form;
-  }
-
-  &__image-container{
-    width: 100%;
-    padding-top: 56.25%;
-    position: relative;
-    overflow: hide;
-  }
-
-  &__image{
-    width: 100%;
-    margin-bottom: 3px;
-  }
-
-  &__title{
-    padding: 5px;
-    font-size: 12px;
-  }
-  &__subtitle{
-    height: 10px;
-    font-size: 11px;
-    padding: 5px;
-  }
-
-  &--client_playing{
-    background-color: $hightlight-color-green;
-  }
-  
-  &--server_playing{
+   &__remote--has{
     background-color: $hightlight-color;
+   }
+
+   &__remote:hover{
+    background-color: $btn-default-hover;
+   }
+
+   &__remote--has:hover{
+    background-color: $hightlight-color;
+   }
+
+   &__remote[disabled]{
+    fill: #999999;
+    background-color: $btn-default;
   }
 
-  &--client_playing:hover{
-    background-color: $hightlight-color-green-secondary;
-  }
-  
-  &--server_playing:hover{
-    background-color: $hightlight-color-secondary;
-  }
 }
 
 .tile{
