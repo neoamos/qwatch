@@ -80,10 +80,12 @@
     justify-content: space-between;
   }
 
-  .room_item_desc{
-    padding-bottom:20px; 
-    position: static;
-    right: 0px;
+}
+
+.room_item_desc{
+  padding-bottom:20px; 
+  position: static;
+  right: 0px;
 }
 
 @supports (display: grid) {
