@@ -70,7 +70,6 @@ export default class Player {
     var self = this
     console.log("Player updating position")
     console.log(position)
-    console.log(self.interface)
     if(self.interface){
       self.interface.updatePosition(position)
     }

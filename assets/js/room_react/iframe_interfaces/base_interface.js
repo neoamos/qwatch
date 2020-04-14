@@ -24,7 +24,7 @@ export default class BaseInterface {
     var self = this;
     console.log("Enable video with url " + url.href)
     self.url = url;
-    self.listeners.updatePlayerState({ready: false})
+    self.listeners.onPlayerStateUpdate({ready: false})
 
     var iframe = $(document.createElement('iframe'));
     iframe.attr("src", url.href)

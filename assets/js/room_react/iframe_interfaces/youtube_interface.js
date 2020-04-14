@@ -34,7 +34,7 @@ export default class YoutubeInterface {
     self.player.stopVideo()
     self.enabled = false;
     self.ready = false;
-    self.listeners.updatePlayerState({ready: false})
+    self.listeners.onPlayerStateUpdate({ready: false})
   }
 
   enable(url, initial_position, start_mute){
@@ -48,7 +48,7 @@ export default class YoutubeInterface {
       self.player.loadVideoById(self.videoId)
       $('#yt-player').show()
       self.ready = true;
-      self.listeners.updatePlayerState({ready: true})
+      self.listeners.onPlayerStateUpdate({ready: true})
     }else{
       var targetDiv = $(document.createElement('div'));
       targetDiv.attr("id", "yt-player")
@@ -104,24 +104,23 @@ export default class YoutubeInterface {
     event.target.playVideo();
     // event.target.unMute();
     if(self.enabled){
-      self.listeners.updatePlayerState({ready: true})
+      self.listeners.onPlayerStateUpdate({ready: true})
     }
   }
 
   onPlayerStateChange(event) {
     var self = this;
-    console.log("State change: " + event.data)
     if(event.data == 1){
       let position = self.getPosition();
       position.playing = true;
       if(self.enabled){
-        self.listeners.updatePosition(position)
+        self.listeners.onPlayerPositionUpdate(position)
       }
     }else if(event.data == 2){
       let position = self.getPosition();
       position.playing = false;
       if(self.enabled){
-        self.listeners.updatePosition(position)
+        self.listeners.onPlayerPositionUpdate(position)
       }
     }else if(event.data == 0){
       self.listeners.onEnded()

@@ -19,8 +19,6 @@ export default class UserList extends React.Component{
   }
 
   render(){
-    console.log("Updating user list")
-    console.log(this.props)
     let users = []
     let anonymous_user_count = 0;
     let registered_user_count = 0;
@@ -28,32 +26,36 @@ export default class UserList extends React.Component{
     for(const id in this.props.connections){
       if(this.props.connections[id].user_id){
         if(!userSet.has(this.props.connections[id].user_id)){
-          users.push((
-            <div className="user_item" key={this.props.connections[id].user_id}>
-              <div className="user_item__avatar"><img src={"/avatar/" + this.props.connections[id].avatar} /></div>
-              <div className="user_item__name">
-              <Tippy
-                trigger="click"
-                interactive
-                placement="bottom"
-                content={(
-                  <div class="dropdown">
-                    <div className="dropdown__item">
-                      <a href={"/user/" + this.props.connections[id].name}>Profile</a>
+          let classes = "user_item"
+          if(this.props.connections[id].user_id == this.props.remoteHolderUserID){
+            classes = classes + " user_item--has_remote"
+          }
+          users.push(
+            <Tippy
+              trigger="click"
+              interactive
+              placement="bottom"
+              content={(
+                <div className="dropdown">
+                  <img className="avatar-lg" src={"/avatar/" + this.props.connections[id].avatar} />
+                  { this.props.ownsRoom &&
+                    <div className="dropdown__item btn-flat" onClick={() => {this.kickUser(this.props.connections[id].user_id)}}>
+                      Kick User
                     </div>
-                    { this.props.ownsRoom &&
-                      <div className="dropdown__item btn-flat" onClick={() => {this.kickUser(this.props.connections[id].user_id)}}>
-                        Kick User
-                      </div>
-                    }
-                  </div>
-                )}
-              >
+                  }
+                </div>
+              )}
+            >
+              <div className={classes} key={this.props.connections[id].user_id}>
+                <div className="user_item__avatar">
+                  <img src={"/avatar/" + this.props.connections[id].avatar} />
+                </div>
+                <div className="user_item__name">
                 <span>{this.props.connections[id].name}</span>
-              </Tippy>
-           </div>
-           </div>
-          ))
+                </div>
+              </div>
+            </Tippy>
+          )
           registered_user_count++;
         }
         userSet.add(this.props.connections[id].user_id)

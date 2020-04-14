@@ -147,7 +147,7 @@ class MessageList extends React.Component{
             </div>
           </div>
           { (this.props.ownsRoom || this.props.userID == m.user_id) &&
-          <div class="chat__options btn-flat" onClick={() => {this.props.deleteMessage(m.id)}}>
+          <div className="chat__options btn-flat" onClick={() => {this.props.deleteMessage(m.id)}}>
             <span className="oi" data-glyph="x" title="Delete" aria-hidden="true"></span>
           </div>
           }
