@@ -8,7 +8,6 @@ defmodule Bread.Rooms.Room do
 
   schema "room" do
     field :name, :string
-    field :name_normalized, :string
     field :description, :string
     field :title, :string
     field :queue, :string
@@ -38,6 +37,7 @@ defmodule Bread.Rooms.Room do
     |> validate_format(:name, ~r/^[a-zA-Z0-9_]+$/, message: "Room address should only contain numbers, letters and underscores")
     |> validate_required([:name, :user_id])
     |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :lower_case_roomname)
     |> validate_length(:name, max: 64)
     |> validate_length(:title, max: 100)
     |> foreign_key_constraint(:user_id)
