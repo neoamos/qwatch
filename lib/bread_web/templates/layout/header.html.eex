@@ -36,7 +36,10 @@
 </nav>
 <div id="messages">
   <%= if assigns[:message] do %>
-  <div class="info_message flash_message"><%= @message %></div>
+  <div class="info_message flash_message">
+  <div><%= @message %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
   <% end %>
   <% 
     error = get_flash(@conn, :error)
@@ -45,15 +48,27 @@
     ok = get_flash(@conn, :ok)
   %>
   <%= if error do %>
-  <div class="error_message flash_message"><%= error %></div>
+  <div class="error_message flash_message">
+    <div><%= error %></div>
+    <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
   <% end %>
   <%= if warning do %>
-  <div class="warning_message flash_message"><%= warning %></div>
+  <div class="warning_message flash_message">
+  </div><%= warning %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
   <%= end %>
   <%= if info do %>
-  <div class="info_message flash_message"><%= info %></div>
+  <div class="info_message flash_message">
+  <div><%= info %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
   <%= end %>
   <%= if ok do %>
-  <div class="ok_message flash_message"><%= ok %></div>
+  <div class="ok_message flash_message">
+  <div><%= ok %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
   <%= end %>
 </div>
