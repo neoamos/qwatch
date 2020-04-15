@@ -37,9 +37,9 @@ export default class Queue extends React.Component{
     <div className="video__queue">
       {queueItems.length>0 ?   
         [
-          <div className="queue-spacer" />,
+          <div className="queue-spacer" key="spacer1" />,
           queueItems,
-          <div className="queue-spacer" />
+          <div className="queue-spacer" key="spacer2" />
         ]
          :
       <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
@@ -87,7 +87,7 @@ class QueueItem extends React.Component {
           <div className="tile__info">
             <div>{this.props.item.site_name}</div>
             { this.props.hasRemote && 
-              <div class="btn-flat" onClick={this.handleDelete}>
+              <div className="btn-flat" onClick={this.handleDelete}>
                 <span className="oi" data-glyph="x" title="Delete" aria-hidden="true"></span>
               </div>
             }

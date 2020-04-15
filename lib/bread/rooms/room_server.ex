@@ -290,9 +290,6 @@ defmodule Bread.Rooms.RoomServer do
   end
 
   def handle_call({:drop_remote, user_id, connection_id}, _from, state) do
-    IO.inspect(user_id)
-    IO.inspect(connection_id)
-    IO.inspect(state)
     if user_id == state[:remote_holder_user_id] and connection_id == state[:remote_holder_connection_id] do
       state = state
       |> Map.update!(:remote_available, fn _ -> true end)

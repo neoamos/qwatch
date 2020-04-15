@@ -6,9 +6,8 @@ defmodule Bread.Accounts.User do
 
   schema "user" do
     field :name,     :string
-    field :name_normalized, :string
     field :email,        :string
-    field :email_normalized, :string
+    field :email_normalized,  :string
     field :tos,          :boolean, virtual: true
     field :gender,       :integer
     field :city,         :string
@@ -104,10 +103,21 @@ defmodule Bread.Accounts.User do
     |> validate_format(:name, ~r/^[a-zA-Z0-9_]+$/)
     |> unique_constraint(:email)
     |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :lower_case_username)
     |> validate_length(:city, max: 64)
     |> validate_length(:name, min: 1, max: 24)
     |> validate_length(:email, min: 3, max: 64)
     |> validate_inclusion(:gender, [1, 2])
+    |> normalize_email()
+    |> unique_constraint(:email_normalized)
+  end
+
+  def normalize_email(changeset) do
+    if changeset.valid? and !!changeset.changes[:email] do
+      put_change(changeset, :email_normalized, Bread.NormalizeEmail.normalize_email(changeset.changes.email))
+    else
+      changeset
+    end
   end
 
   def process_avatar(changeset, attrs) do

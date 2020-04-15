@@ -2,11 +2,9 @@
 import $ from 'jquery'
 
 export default class BaseInterface {
-  constructor(url, listeners){
+  constructor(listeners){
     var self = this;
     self.listeners = listeners
-    
-    self.enable(url, listeners)
   
 }
 
@@ -24,7 +22,7 @@ export default class BaseInterface {
     var self = this;
     console.log("Enable video with url " + url.href)
     self.url = url;
-    self.listeners.updatePlayerState({ready: false})
+    self.listeners.onPlayerStateUpdate({ready: false})
 
     var iframe = $(document.createElement('iframe'));
     iframe.attr("src", url.href)
@@ -35,7 +33,10 @@ export default class BaseInterface {
     $('#player_container').append(iframe)
   }
 
-  updatePosition(position){}
+  matches(url){
+    return true;
+  }
+
 
   ready(){
     return false;

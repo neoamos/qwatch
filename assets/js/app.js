@@ -18,6 +18,7 @@ import React from "react";
 import tippy from 'tippy.js';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import $ from 'jquery'
 
 let userID = window.userID || null;
 let socket = new Socket("/socket", {params:  { token: window.userToken } })
@@ -47,3 +48,9 @@ tippy('[data-tippy-menu]', {
 });
 
 tippy('[data-tippy-content]');
+
+$(function() {
+  $(".close-flash").click(function(e){
+    $(this).parent().remove()
+  })
+});
