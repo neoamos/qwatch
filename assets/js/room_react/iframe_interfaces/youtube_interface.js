@@ -2,23 +2,13 @@
 import $ from 'jquery'
 
 export default class YoutubeInterface {
-  constructor(url, listeners){
+  constructor(listeners){
     var self = this;
     self.listeners = listeners;
-    self.enabled = true;
+    self.enabled = false;
+    self.loaded = false;
     self.ready = false;
 
-    // Load youtube iframe api
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-
-    window['onYouTubeIframeAPIReady'] = function() {
-      console.log("Youtube iframe api ready")
-      self.enable(url, listeners, 1)
-    }
 
     this.play = this.play.bind(this)
     this.pause = this.pause.bind(this)
@@ -37,13 +27,30 @@ export default class YoutubeInterface {
     self.listeners.onPlayerStateUpdate({ready: false})
   }
 
-  enable(url, initial_position, start_mute){
+  enable(url){
     var self = this;
+
+    // Load youtube iframe api if its not loaded already
+    if(!self.loaded){
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+
+      window['onYouTubeIframeAPIReady'] = function() {
+        console.log("Youtube iframe api ready")
+        self.loaded=true;
+        self.enable(url)
+      }
+      return
+    }
+
     console.log("Enable video with url " + url.href)
     self.url = url;
     self.videoId = this.extractVideoID(url.href)
     self.enabled = true;
-
+    
     if(self.player){
       self.player.loadVideoById(self.videoId)
       $('#yt-player').show()
@@ -56,7 +63,7 @@ export default class YoutubeInterface {
   
       self.player = new window['YT'].Player('yt-player', {
         videoId: self.videoId,
-        playerVars: { 'autoplay': 1, 'mute': start_mute},
+        playerVars: { 'autoplay': 1, 'mute': true},
         events: {
           'onReady': self.onPlayerReady.bind(self),
           'onStateChange': self.onPlayerStateChange.bind(self),
@@ -67,18 +74,12 @@ export default class YoutubeInterface {
     }
   }
 
-  ready(){
-    return self.ready;
+  matches(url){
+    return url.host.includes("youtube.com")
   }
 
-  updatePosition(position){
-    var self = this;
-    self.player.seekTo(self.calculateCurrentTime(position), true)
-    if(position.playing){
-      self.player.playVideo()
-    }else{
-      self.player.pauseVideo()
-    }
+  ready(){
+    return self.ready;
   }
 
   play(){
@@ -157,14 +158,6 @@ export default class YoutubeInterface {
       duration: self.player.getDuration(),
       playing: self.player.getPlayerState()==1,
       at: Date.now()
-    }
-  }
-
-  calculateCurrentTime(position){
-    if(position.playing){
-      return position.seconds + (Date.now() - position.at)/1000;
-    }else{
-      return position.seconds
     }
   }
 }

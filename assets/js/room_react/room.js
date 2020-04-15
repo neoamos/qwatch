@@ -114,9 +114,11 @@ export default class RoomReact extends React.Component{
         this.setState({
           connection_id: resp.connection_id,
           remoteHolderUserID: newState.remote_holder_user_id,
+          remoteHolderConnectionID: newState.remote_holder_connection_id,
+          hasRemote: (resp.connection_id == newState.remote_holder_connection_id),
           remoteAvailable: (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID),
           ownerID: newState.owner_id,
-          ownsRoom: (this.props.userID == newState.owner_id)
+          ownsRoom: (this.props.userID == newState.owner_id),
         })
         this.updateState(newState)
 

@@ -27,12 +27,13 @@
     background-color: $background-player;
     flex: 1 1 auto;
 
-    iframe{
+    iframe, video{
       // position:absolute;
       // top:0;
       // left:0;
       width:100%;
       height:100%;
+      object-fit: initial;
     }
 
   }
@@ -242,7 +243,7 @@
     padding-top: 56.25%;
     position: relative;
 
-    iframe{
+    iframe, video{
       position:absolute;
       top:0;
       left:0;

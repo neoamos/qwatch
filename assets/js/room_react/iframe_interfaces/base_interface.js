@@ -2,11 +2,9 @@
 import $ from 'jquery'
 
 export default class BaseInterface {
-  constructor(url, listeners){
+  constructor(listeners){
     var self = this;
     self.listeners = listeners
-    
-    self.enable(url, listeners)
   
 }
 
@@ -35,7 +33,10 @@ export default class BaseInterface {
     $('#player_container').append(iframe)
   }
 
-  updatePosition(position){}
+  matches(url){
+    return true;
+  }
+
 
   ready(){
     return false;

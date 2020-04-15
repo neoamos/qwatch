@@ -36,6 +36,11 @@ defmodule Bread.LinkFetcher do
         else
           parsed
         end
+        parsed = if !parsed.title && url.path do
+          Map.put(parsed, :title, url.path)
+        else
+          parsed
+        end
         {:ok, parsed}
       {:ok, %HTTPoison.Response{status_code: status_code}} ->
         {:error, "Error from HTTPoison, status code: #{status_code}"}
