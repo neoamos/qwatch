@@ -13,6 +13,7 @@ defmodule BreadWeb.Chat do
       |> Enum.map(fn m ->
         %{
           name: m.user.name,
+          user_id: m.user_id,
           message: m.message,
           id: m.id
         }

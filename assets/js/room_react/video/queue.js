@@ -98,7 +98,7 @@ class QueueItem extends React.Component {
                 placement="top"
                 content={this.props.item.link}
               >
-                <a className="btn-flat" target="_blank" href={this.props.item.link}>
+                <a className="btn-flat" target="_blank" href={this.props.item.link} onClick={(e) => {e.stopPropagation()}}>
                   <span className="oi" data-glyph="external-link"  aria-hidden="true"></span>
                 </a>
               </Tippy>

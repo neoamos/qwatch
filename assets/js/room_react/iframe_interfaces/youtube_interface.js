@@ -21,7 +21,9 @@ export default class YoutubeInterface {
     var self = this;
     // $('#player_container').empty();
     $('#yt-player').hide()
-    self.player.stopVideo()
+    if(self.player){
+      self.player.stopVideo()
+    }
     self.enabled = false;
     self.ready = false;
     self.listeners.onPlayerStateUpdate({ready: false})
