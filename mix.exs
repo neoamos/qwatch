@@ -51,7 +51,8 @@ defmodule Bread.MixProject do
       {:floki, "~> 0.19", only: :test},
       {:timex, "~> 3.3"},
       {:earmark, "~> 1.2", only: :dev, override: true},
-      {:mogrify, "~> 0.7.3"}
+      {:mogrify, "~> 0.7.3"},
+      {:floki, "~> 0.26.0"}
     ]
   end
 

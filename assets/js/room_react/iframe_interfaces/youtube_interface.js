@@ -75,7 +75,10 @@ export default class YoutubeInterface {
   }
 
   matches(url){
-    return url.host.includes("youtube.com")
+    return (
+      url.host.includes("youtube.com") ||
+      url.host.includes("youtu.be")
+    )
   }
 
   ready(){

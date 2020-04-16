@@ -7,9 +7,10 @@ defmodule Bread.LinkFetcher do
   alias Bread.OpenGraph
 
   def fetch link do
+    uri = URI.parse(link)
+    domain = if uri.host, do: String.replace(uri.host, "www.", ""), else: ""
     cond do
-      Regex.match?(@youtube_regex, link) -> 
-        # fetch_youtube(link)
+      (domain == "youtube.com" or domain == "youtu.be" or domain == "m.youtube.com") -> 
         id = Enum.at(Regex.run(@youtube_regex, link), 7)
         fetch_generic("https://www.youtube.com/watch?v=" <> id)
       true ->
@@ -27,9 +28,9 @@ defmodule Bread.LinkFetcher do
   end
 
   def fetch_generic link do
-    case HTTPoison.get(link, [], ssl: [{:versions, [:"tlsv1.2"]}], follow_redirect: true) do
+    case HTTPoison.get(link, [], ssl: [{:versions, [:"tlsv1.2"]}], follow_redirect: true, max_body_length: 1_000_000) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        parsed = parse(body)
+        parsed = if String.valid?(body), do: parse(body), else: struct(OpenGraph, %{})
         url = URI.parse(link)
         parsed = if !parsed.site_name && url.host do
           Map.put(parsed, :site_name, String.replace(url.host, "www.", ""))
@@ -42,34 +43,40 @@ defmodule Bread.LinkFetcher do
           parsed
         end
         {:ok, parsed}
-      {:ok, %HTTPoison.Response{status_code: status_code}} ->
+      {:ok, %HTTPoison.Response{status_code: status_code} = resp} ->
+        IO.inspect(resp)
         {:error, "Error from HTTPoison, status code: #{status_code}"}
       {:error, %HTTPoison.Error{reason: reason}} ->
+        IO.inspect(reason)
         {:error, reason}
     end
   end
 
   defstruct [:title, :type, :image, :url, :description, :site_name]
   def parse(html) do
-    map =
-      @metatag_regex
-      |> Regex.scan(html, capture: :all_but_first)
-      |> Enum.filter(&filter_og_metatags(&1))
-      |> Enum.map(&drop_og_prefix(&1))
-      |> Enum.into(%{}, fn [k, v] -> {k, v} end)
-      |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
+    case Floki.parse_document(html) do
+      {:ok, document} ->
+        meta_info = document
+          |> Floki.find("meta[property^='og:']")
+          |> Enum.map(fn elem ->
+            ["og:" <> property] = Floki.attribute(elem, "property")
+            [content] = Floki.attribute(elem, "content")
+            {String.to_atom(property), content}
+          end)
 
-    map = struct(OpenGraph, map)
+        meta_info = struct(OpenGraph, meta_info)
+        if !meta_info.title do
+          title = document
+            |> Floki.find("title")
+            |> Floki.text()
+            |> String.replace(~r/\r|\n/, "")
 
-    if !map.title do
-      title = Regex.scan(@title_regex, html, capture: :all_but_first)
-      if Enum.at(title, 0) do
-        Map.put(map, :title, title |> Enum.at(0) |> Enum.at(0))
-      else
-        map
-      end
-    else
-      map
+            Map.put(meta_info, :title, title)
+        else
+          meta_info
+        end
+
+      _ -> struct(OpenGraph, %{})
     end
 
   end

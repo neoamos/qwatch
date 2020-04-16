@@ -1,5 +1,5 @@
 <nav class="nav">
-  <a href="/"><h1 class="nav__logo">Bread</h1></a>
+  <a href="/"><h1 class="nav__logo">qWatch</h1></a>
   <div class="nav__left">
     <ul>
       <li class="nav__item"><a href="/room/new">Create Room</a></li>
@@ -25,7 +25,6 @@
         -->
         <img data-tippy-menu="user-menu" src="/avatar/<%= @current_user.profile_image %>" class="avatar-sm nav__item">
         <div id="user-menu" style="display: none;">
-          <div class="nav__dropdown"><a href="/user/<%= @current_user.name %>">Profile</a></div>
           <div class="nav__dropdown"><a href="/user_rooms">My Rooms</a></div>
           <div class="nav__dropdown"><a href="/registrations/edit">Settings</a></div>
           <div class="nav__dropdown"><%= link "Sign out", to: "/sessions", method: :delete, class: "nav-link" %></div>

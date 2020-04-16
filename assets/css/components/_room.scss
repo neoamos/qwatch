@@ -22,18 +22,19 @@
   overflow: auto;
 
   &__player{
-    // padding-top: 56.25%;
-    // position: relative;
     background-color: $background-player;
     flex: 1 1 auto;
+    display: flex;
 
-    iframe, video{
-      // position:absolute;
-      // top:0;
-      // left:0;
+    iframe{
       width:100%;
       height:100%;
-      object-fit: initial;
+    }
+
+    video{
+      height: 100%;
+      max-width: 100%;
+      margin: 0 auto;
     }
 
   }
@@ -191,9 +192,28 @@
   &__info{
     font-size: 14px;
     padding: 7px 10px 0px 10px;
-    color: hsla(0,0%,100%,.6);
+    color: hsla(0,0%,100%,.6) !important;
     display: flex;
-    justify-content: space-between;
+  }
+
+  &__site-name{
+    flex: 1 1 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0px;
+  }
+
+  &__options{
+    display: none;
+    flex: 0 1 auto;
+
+    a{
+      color: hsla(0,0%,100%,.6) !important;
+    }
+  }
+
+  &:hover &__options{
+    display: flex;
   }
 
   &--client_playing{

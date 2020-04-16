@@ -184,7 +184,7 @@ export default class RoomReact extends React.Component{
       }
     }
 
-    if(newState.server_playing != undefined){
+    if(newState.server_playing !== undefined){
       console.log("Updating currently playing " + newState.server_playing)
       let update = this.state.queue[newState.server_playing] || {}
       this.setState(state => {

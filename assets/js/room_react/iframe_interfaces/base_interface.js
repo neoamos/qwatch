@@ -25,7 +25,7 @@ export default class BaseInterface {
     self.listeners.onPlayerStateUpdate({ready: false})
 
     var iframe = $(document.createElement('iframe'));
-    iframe.attr("src", url.href)
+    iframe.attr("src", this.rewriteToEmbedURL(url))
     iframe.attr("id", "base-player")
     iframe.attr("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture")
     iframe.attr("allowfullscreen", "")
@@ -37,8 +37,19 @@ export default class BaseInterface {
     return true;
   }
 
-
   ready(){
     return false;
+  }
+
+  rewriteToEmbedURL(url){
+    if(url.host == "www.twitch.tv"){
+      let channel = url.pathname.substring(1)
+      return "https://player.twitch.tv/?channel=" + channel
+    }if(url.host == "mixer.com"){
+      let channel = url.pathname.substring(1)
+      return "https://mixer.com/embed/player/" + channel + "?disableLowLatency=1"
+    }else{
+      return url.href
+    }
   }
 }

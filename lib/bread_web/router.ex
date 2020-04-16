@@ -29,10 +29,10 @@ defmodule BreadWeb.Router do
 
     get "/", IndexController, :index
 
-    get "/rr/:name", RoomController, :room
+    # get "/rr/:name", RoomController, :room
     get "/r/:name", RoomController, :room_react
 
-    get "/user/:name", UserController, :profile
+    # get "/user/:name", UserController, :profile
   end
 
   scope "/", BreadWeb do

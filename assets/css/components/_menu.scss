@@ -7,6 +7,7 @@
   padding: 0 5px;
   font-weight: 500;
 
+
   &--mobile{
     display: none;
   }
@@ -17,14 +18,6 @@
   &__right{
     flex-grow: 1;
     padding-right: 10px;
-  }
-
-  h1{
-    color: $hightlight-color;
-  }
-
-  h1:hover{
-    color: $hightlight-color-secondary;
   }
 
 
@@ -78,6 +71,16 @@
       color: #fff;
     }
   }
+
+  &__logo{
+    color: white;
+    // background-color: rgb(218, 178, 3);
+    border-radius: 5px;
+    padding: 5px;
+    background-image: -webkit-gradient(linear,right bottom,left top,from(#ff8a00),to(#e52e71))!important;
+    background-image: linear-gradient(to top left,#ff8a00,#e52e71)!important;
+    font-weight: bold;
+  }
 }
 
 .dropdown{
@@ -102,6 +105,7 @@
   &__label{
     margin-right: 10px;
   }
+
 }
 
 
