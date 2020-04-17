@@ -27,6 +27,7 @@
     color: $user-green;
     font-weight: 400;
     cursor: pointer;
+    text-overflow: ellipsis;
   }
 
   &--has_remote{
@@ -39,6 +40,7 @@
 .users{
   display: flex;
   flex-direction: column;
+  overflow: hidden; 
 
   &__count{
     padding: 5px;

@@ -16,7 +16,7 @@ export default class RoomReact extends React.Component{
       description: null,
       ownerID: null,
       ownsRoom: false,
-      connection_id: null,
+      connectionID: null,
       links: {},
       queue: [],
       suggestions: [],
@@ -112,11 +112,11 @@ export default class RoomReact extends React.Component{
       .receive("ok", resp => {
         let newState = resp.state
         this.setState({
-          connection_id: resp.connection_id,
+          connectionID: resp.connection_id,
           remoteHolderUserID: newState.remote_holder_user_id,
           remoteHolderConnectionID: newState.remote_holder_connection_id,
-          hasRemote: (resp.connection_id == newState.remote_holder_connection_id),
-          remoteAvailable: (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID),
+          hasRemote: this.props.userID && (resp.connection_id == newState.remote_holder_connection_id),
+          remoteAvailable: this.props.userID && (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID),
           ownerID: newState.owner_id,
           ownsRoom: (this.props.userID == newState.owner_id),
         })
@@ -163,7 +163,7 @@ export default class RoomReact extends React.Component{
 
     if(newState.remote_available != null){
       if(this.state.ownerID != this.props.userID){
-        this.setState({remoteAvailable: (newState.remote_available || this.state.remoteHolderUserID == this.props.userID)})
+        this.setState({remoteAvailable: this.props.userID && (newState.remote_available || this.state.remoteHolderUserID == this.props.userID)})
       }
     }
 
@@ -171,9 +171,11 @@ export default class RoomReact extends React.Component{
       this.setState({remoteHolderUserID: newState.remote_holder_user_id})
     }
 
+    console.log(newState.remote_holder_connection_id != null)
     if(newState.remote_holder_connection_id != null){
+      console.log("updating remote holder connection id")
       this.setState({remoteHolderConnectionID: newState.remote_holder_connection_id})
-      if(this.state.remoteHolderConnectionID == this.state.connection_id){
+      if(this.state.remoteHolderConnectionID == this.state.connectionID){
         this.setState({hasRemote: true});
         if(this.state.clientPlaying.id){
           this.videoChannel.push('link:select', {link_id: this.state.clientPlaying.id})
@@ -184,7 +186,7 @@ export default class RoomReact extends React.Component{
       }
     }
 
-    if(newState.server_playing != undefined){
+    if(newState.server_playing !== undefined){
       console.log("Updating currently playing " + newState.server_playing)
       let update = this.state.queue[newState.server_playing] || {}
       this.setState(state => {

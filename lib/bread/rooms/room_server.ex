@@ -164,16 +164,26 @@ defmodule Bread.Rooms.RoomServer do
 
   def handle_call({:update_queue, queue, user_id, connection_id}, _from, state) do
     if connection_id == state[:remote_holder_connection_id] do
-      playing_id = Enum.at(state[:link_queue], state[:server_playing])
+      prev_queue = state[:link_queue]
 
       queue = Enum.filter(queue, fn l -> !!state[:links][l] end)
       state = Map.update!(state, :link_queue, fn _ -> queue end)
 
-      new_playing_index = Enum.find_index(state[:link_queue], fn l -> l == playing_id end)
-
-      state = state
-        |> Map.update!(:server_playing, fn _ -> new_playing_index end)
-        |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: playing_id} end)
+      state = if state[:server_playing] do
+          playing_id = Enum.at(prev_queue, state[:server_playing])
+          new_playing_index = Enum.find_index(state[:link_queue], fn l -> l == playing_id end)
+          if new_playing_index do
+            state
+              |> Map.update!(:server_playing, fn _ -> new_playing_index end)
+              |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: playing_id} end)
+          else
+            state
+              |> Map.update!(:server_playing, fn _ -> nil end)
+              |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: nil} end)
+          end
+        else
+          state
+      end
 
       persist_state(state, %{queue: true})
 
@@ -184,7 +194,7 @@ defmodule Bread.Rooms.RoomServer do
   end
 
   def handle_call({:next, user_id, connection_id}, _from, state) do
-    if connection_id == state[:remote_holder_connection_id] do
+    if connection_id == state[:remote_holder_connection_id] && !!state[:server_playing] do
       if state[:server_playing] < length(state.link_queue)-1 do
         playing_id = Enum.at(state[:link_queue], state[:server_playing])
         state = state

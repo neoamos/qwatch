@@ -21,7 +21,9 @@ export default class YoutubeInterface {
     var self = this;
     // $('#player_container').empty();
     $('#yt-player').hide()
-    self.player.stopVideo()
+    if(self.player){
+      self.player.stopVideo()
+    }
     self.enabled = false;
     self.ready = false;
     self.listeners.onPlayerStateUpdate({ready: false})
@@ -75,7 +77,10 @@ export default class YoutubeInterface {
   }
 
   matches(url){
-    return url.host.includes("youtube.com")
+    return (
+      url.host.includes("youtube.com") ||
+      url.host.includes("youtu.be")
+    )
   }
 
   ready(){

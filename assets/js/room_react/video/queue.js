@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Tippy from '@tippyjs/react';
 
 export default class Queue extends React.Component{
   constructor(props){
@@ -78,19 +79,30 @@ class QueueItem extends React.Component {
       className += " tile--client_playing"
     }
     return (
-      <div className={className} onClick={this.handleClick} >
+      <div className={className} onClick={this.handleClick} title={this.props.item.title || "Unknown title"} >
         <div className="tile__image">
           <img src={this.props.item.image || "/images/no-image.png"} />
         </div>
         <div className="tile__title-wrap">
           <div className="tile__title">{this.props.item.title || "Unknown title"}</div>
           <div className="tile__info">
-            <div>{this.props.item.site_name}</div>
-            { this.props.hasRemote && 
-              <div className="btn-flat" onClick={this.handleDelete}>
-                <span className="oi" data-glyph="x" title="Delete" aria-hidden="true"></span>
-              </div>
-            }
+            <div class="tile__site-name">
+              {this.props.item.site_name}</div>
+            <div class="tile__options">
+              { this.props.hasRemote && 
+                <div className="btn-flat" onClick={this.handleDelete}>
+                  <span className="oi" data-glyph="circle-x" title="Delete" aria-hidden="true"></span>
+                </div>
+              }
+              <Tippy
+                placement="top"
+                content={this.props.item.link}
+              >
+                <a className="btn-flat" target="_blank" href={this.props.item.link} onClick={(e) => {e.stopPropagation()}}>
+                  <span className="oi" data-glyph="external-link"  aria-hidden="true"></span>
+                </a>
+              </Tippy>
+            </div>
           </div>
         </div>
       </div>
