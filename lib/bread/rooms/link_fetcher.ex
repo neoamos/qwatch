@@ -11,26 +11,64 @@ defmodule Bread.LinkFetcher do
     domain = if uri.host, do: String.replace(uri.host, "www.", ""), else: ""
     cond do
       (domain == "youtube.com" or domain == "youtu.be" or domain == "m.youtube.com") -> 
-        id = Enum.at(Regex.run(@youtube_regex, link), 7)
-        fetch_generic("https://www.youtube.com/watch?v=" <> id)
+        # id = Enum.at(Regex.run(@youtube_regex, link), 7)
+        # fetch_generic("https://www.youtube.com/watch?v=" <> id)
+        fetch_youtube(link)
+      (domain == "mixer.com") -> 
+        fetch_mixer link, uri
       true ->
         fetch_generic(link)
     end 
   end
 
-  def fetch_youtube link do
-    id = Enum.at(Regex.run(@youtube_regex, link), 7)
-    case HTTPoison.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" <> id) do
+  def fetch_mixer link, url do
+    channel_name = String.slice(url.path, 1..-1)
+    case HTTPoison.get("https://mixer.com/api/v1/channels/#{channel_name}/details") do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.inspect(body)
-      other -> IO.inspect(other)
+        case Jason.decode(body) do
+          {:ok, json} ->
+            map = %{
+              image: (if json["thumbnail"], do: json["thumbnail"]["url"], else: json["bannerURL"]),
+              title: json["token"] <> " - Mixer",
+              type: "video",
+              url: link,
+              site_name: "Mixer"
+            }
+            {:ok, struct(OpenGraph, map)}
+          {:error, reason} -> 
+            {:error, reason}
+        end
+      {:error, reason} -> 
+        {:error, reason}
+    end
+  end
+
+  def fetch_youtube link do
+    case HTTPoison.get("http://www.youtube.com/oembed?format=json&url=" <> link) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        id = Enum.at(Regex.run(@youtube_regex, link), 7)
+        case Jason.decode(body) do
+          {:ok, json} ->
+            map = %{
+              image: "https://img.youtube.com/vi/#{id}/mqdefault.jpg",
+              title: json["title"],
+              type: json["type"],
+              url: link,
+              site_name: "YouTube"
+            }
+            {:ok, struct(OpenGraph, map)}
+          {:error, reason} -> 
+            {:error, reason}
+        end
+      {:error, reason} -> 
+        {:error, reason}
     end
   end
 
   def fetch_generic link do
     case HTTPoison.get(link, [], ssl: [{:versions, [:"tlsv1.2"]}], follow_redirect: true, max_body_length: 1_000_000) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        parsed = if String.valid?(body), do: parse(body), else: struct(OpenGraph, %{})
+        parsed = if String.valid?(body), do: parse_metatags(body), else: struct(OpenGraph, %{})
         url = URI.parse(link)
         parsed = if !parsed.site_name && url.host do
           Map.put(parsed, :site_name, String.replace(url.host, "www.", ""))
@@ -53,15 +91,17 @@ defmodule Bread.LinkFetcher do
   end
 
   defstruct [:title, :type, :image, :url, :description, :site_name]
-  def parse(html) do
+  def parse_metatags(html) do
     case Floki.parse_document(html) do
       {:ok, document} ->
         meta_info = document
           |> Floki.find("meta[property^='og:']")
-          |> Enum.map(fn elem ->
+          |> Enum.flat_map(fn elem ->
             ["og:" <> property] = Floki.attribute(elem, "property")
-            [content] = Floki.attribute(elem, "content")
-            {String.to_atom(property), content}
+            case Floki.attribute(elem, "content") do
+              [content] -> [{String.to_atom(property), content}]
+              _ -> []
+            end
           end)
 
         meta_info = struct(OpenGraph, meta_info)
