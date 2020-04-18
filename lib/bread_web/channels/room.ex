@@ -202,6 +202,12 @@ defmodule BreadWeb.Room do
     }
   end
 
+  def leave(socket, topic) do
+    IO.inspect "SOMEBODY LEAVING"
+    broadcast socket, "user:left", %{ "content" => "somebody is leaving" }
+    {:ok, socket}
+  end
+
   # def handle_in("message:new", %{"message" => message}, socket) do
   #   "room:" <> room = socket.topic
   #   {:noreply, socket}

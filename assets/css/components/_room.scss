@@ -18,7 +18,6 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  scrollbar-width: 10px;
   overflow: auto;
 
   &__player{
@@ -254,15 +253,16 @@
   .video{
     position: sticky;
   }
-
-  .chat{
-    width: 100%;
-  }
   .users{
     width: 100%;
   }
 
-  .application-wrap, body, html{
+  #root{
+    height: auto;
+    overflow: visible;
+  }
+  
+  .room{
     height: auto;
   }
 

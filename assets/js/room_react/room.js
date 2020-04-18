@@ -111,6 +111,7 @@ export default class RoomReact extends React.Component{
     this.videoChannel.join()
       .receive("ok", resp => {
         let newState = resp.state
+        let hadRemote = this.state.hasRemote
         this.setState({
           connectionID: resp.connection_id,
           remoteHolderUserID: newState.remote_holder_user_id,
@@ -119,6 +120,10 @@ export default class RoomReact extends React.Component{
           remoteAvailable: this.props.userID && (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID),
           ownerID: newState.owner_id,
           ownsRoom: (this.props.userID == newState.owner_id),
+        }, () => {
+          if(hadRemote){
+            this.videoChannel.push('remote:request', {})
+          }
         })
         this.updateState(newState)
 

@@ -6,6 +6,7 @@
   <% end) %>
 </div>
 <% else %>
+
 <div class="placeholder_message">
 No active rooms currently.
 </div>
