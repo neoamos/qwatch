@@ -220,13 +220,13 @@ export default class RoomReact extends React.Component{
     })
   }
 
-  updateClientPlaying(newLink){
+  updateClientPlaying(newLink, initialPosition){
     let oldLink = this.state.clientPlaying
     this.setState({clientPlaying: newLink, initialSync: true}, () => {
       if(!newLink.id){
         this.player.disable()
       }else if(!oldLink || oldLink.id != newLink.id){
-        this.player.updateLink(newLink.link)
+        this.player.updateLink(newLink.link, initialPosition)
       }
     })
   }
@@ -316,7 +316,7 @@ export default class RoomReact extends React.Component{
   synchronize(){
     if(this.state.clientPlaying.id != this.state.serverPlaying.id){
       console.log("changing link")
-      this.updateClientPlaying(this.state.serverPlaying)
+      this.updateClientPlaying(this.state.serverPlaying, this.state.serverPosition)
     }else{
       console.log("updating position")
       if(this.state.serverPosition.link_id && this.state.serverPosition.link_id == this.state.clientPlaying.id){

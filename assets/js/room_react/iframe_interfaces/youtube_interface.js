@@ -30,8 +30,9 @@ export default class YoutubeInterface {
     self.listeners.onPlayerStateUpdate({ready: false})
   }
 
-  enable(url){
+  enable(url, initialPosition){
     var self = this;
+    initialPosition = initialPosition || {};
 
     // Load youtube iframe api if its not loaded already
     if(!self.loaded){
@@ -44,7 +45,7 @@ export default class YoutubeInterface {
       window['onYouTubeIframeAPIReady'] = function() {
         console.log("Youtube iframe api ready")
         self.loaded=true;
-        self.enable(url)
+        self.enable(url, initialPosition)
       }
       return
     }
@@ -53,7 +54,7 @@ export default class YoutubeInterface {
     self.url = url;
     self.videoId = self.url.searchParams.get("v")
     self.listId = self.url.searchParams.get("list")
-    self.index = self.url.searchParams.get("index") || 1
+    self.index = initialPosition.index+1 || self.url.searchParams.get("index") || 1
     self.enabled = true;
     
     if(self.player){
@@ -130,6 +131,12 @@ export default class YoutubeInterface {
     }
   }
 
+  stop(){
+    if(this.player){
+      this.player.stopVideo()
+    }
+  }
+
   selectIndex(index){
     if(this.player && this.playing && index != this.player.getPlaylistIndex()){
       this.index = index
@@ -152,8 +159,8 @@ export default class YoutubeInterface {
 
   onPlayerStateChange(event) {
     var self = this;
+    console.log(event.data)
     if(event.data == 1){
-      self.playing = true
       let position = self.getPosition();
       position.playing = true;
       if(self.enabled){
@@ -167,6 +174,8 @@ export default class YoutubeInterface {
       }
     }else if(event.data == 0){
       self.listeners.onEnded()
+    }else if(event.data == -1){
+      self.playing = true
     }
   }
   onApiChange(event){
