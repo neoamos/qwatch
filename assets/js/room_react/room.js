@@ -176,7 +176,6 @@ export default class RoomReact extends React.Component{
       this.setState({remoteHolderUserID: newState.remote_holder_user_id})
     }
 
-    console.log(newState.remote_holder_connection_id != null)
     if(newState.remote_holder_connection_id != null){
       console.log("updating remote holder connection id")
       this.setState({remoteHolderConnectionID: newState.remote_holder_connection_id})
@@ -226,7 +225,7 @@ export default class RoomReact extends React.Component{
     this.setState({clientPlaying: newLink, initialSync: true}, () => {
       if(!newLink.id){
         this.player.disable()
-      }else if(!oldLink || oldLink.link != newLink.link){
+      }else if(!oldLink || oldLink.id != newLink.id){
         this.player.updateLink(newLink.link)
       }
     })
@@ -237,6 +236,7 @@ export default class RoomReact extends React.Component{
       position: {
         seconds: Math.trunc(this.calculateCurrentTime(this.state.clientPosition)*100)/100,
         duration: Math.trunc(this.state.clientPosition.duration*100)/100,
+        index: this.state.clientPosition.index,
         playing: this.state.clientPosition.playing
       }
     })
@@ -327,7 +327,7 @@ export default class RoomReact extends React.Component{
   }
 
   checkSynced(){
-    if(this.state.clientPlaying.id == this.state.serverPlaying.id){
+    if(this.state.clientPlaying.id == this.state.serverPlaying.id && this.state.clientPosition.index == this.state.serverPosition.index){
       if(Math.abs(this.calculateCurrentTime(this.state.clientPosition) - this.calculateCurrentTime(this.state.serverPosition)) > 1
          || this.state.serverPosition.playing != this.state.clientPosition.playing){
         return false;
@@ -383,6 +383,7 @@ export default class RoomReact extends React.Component{
       seconds: position.seconds,
       duration: position.duration,
       playing: position.playing,
+      index: position.index,
       at: Date.now(),
       link_id: position.link_id
     }
@@ -397,6 +398,7 @@ export default class RoomReact extends React.Component{
         seconds: position.seconds,
         duration: position.duration,
         playing: position.playing,
+        index: position.index,
         at: position.at,
         stale: false
       }

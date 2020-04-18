@@ -9,7 +9,7 @@
     </div>
     <div class="room_item__info">
       <div class="room_item__info-item"><%= @room.title || (@room.user.name <> "'s Room") %></div>
-      <div  class="room_item__info-item"  data-tippy-content='<%= if @room.description, do: @room.description, else: "No Description Available"  %>' data-tippy-arrow='false' data-tippy-placement="bottom" data-tippy-maxwidth=350>
+      <div  class="room_item__info-item"  data-tippy-content="<%= @room.user.name %>'s room<%= if @room.description, do: ": " <> @room.description  %>" data-tippy-arrow='false' data-tippy-placement="bottom" data-tippy-maxwidth=350>
         <span class="oi" data-glyph="info" aria-hidden="true"></span>
       <%= if assigns[:count] do %>
       <span class="oi" data-glyph="people" title="people" aria-hidden="true"></span>

@@ -17,6 +17,7 @@ defmodule Bread.Rooms.Room do
     field :invite_code, :string
     field :unregistered_users_allowed, :boolean
     field :custom_url, :boolean
+    field :remote_holder_connection_id, :string
 
 
     field :open, :boolean
@@ -46,7 +47,7 @@ defmodule Bread.Rooms.Room do
 
   def edit_changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:title, :description, :queue, :server_playing, :privacy, :unregistered_users_allowed, :current_link_id])
+    |> cast(params, [:title, :description, :queue, :server_playing, :privacy, :unregistered_users_allowed, :current_link_id, :remote_holder_connection_id, :remote_holder_id])
     |> validate_length(:title, max: 100)
   end
 

@@ -72,6 +72,9 @@ export default class Player {
     console.log("Player updating position")
     console.log(position)
     if(self.interface){
+      if(position.index){
+        self.interface.selectIndex(position.index)
+      }
       if(position.seconds < position.duration){
         self.interface.seek(self.calculateCurrentTime(position))
       }

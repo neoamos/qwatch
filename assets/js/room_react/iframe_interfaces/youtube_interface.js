@@ -8,6 +8,7 @@ export default class YoutubeInterface {
     self.enabled = false;
     self.loaded = false;
     self.ready = false;
+    this.playing = false;
 
 
     this.play = this.play.bind(this)
@@ -50,11 +51,17 @@ export default class YoutubeInterface {
 
     console.log("Enable video with url " + url.href)
     self.url = url;
-    self.videoId = this.extractVideoID(url.href)
+    self.videoId = self.url.searchParams.get("v")
+    self.listId = self.url.searchParams.get("list")
+    self.index = self.url.searchParams.get("index") || 1
     self.enabled = true;
     
     if(self.player){
-      self.player.loadVideoById(self.videoId)
+      if(self.listId){
+        self.player.loadPlaylist({list: self.listId, index: self.index-1})
+      }else{
+        self.player.loadVideoById(self.videoId)
+      }
       $('#yt-player').show()
       self.ready = true;
       self.listeners.onPlayerStateUpdate({ready: true})
@@ -63,16 +70,34 @@ export default class YoutubeInterface {
       targetDiv.attr("id", "yt-player")
       $('#player_container').append(targetDiv)
   
-      self.player = new window['YT'].Player('yt-player', {
-        videoId: self.videoId,
-        playerVars: { 'autoplay': 1, 'mute': true},
-        events: {
-          'onReady': self.onPlayerReady.bind(self),
-          'onStateChange': self.onPlayerStateChange.bind(self),
-          'onApiChange': self.onApiChange.bind(self),
-          'onError': self.onError.bind(self)
-        } 
-      });
+      let events = {
+        'onReady': self.onPlayerReady.bind(self),
+        'onStateChange': self.onPlayerStateChange.bind(self),
+        'onApiChange': self.onApiChange.bind(self),
+        'onError': self.onError.bind(self)
+      } 
+      if(self.listId){
+        self.player = new window['YT'].Player('yt-player', {
+          playerVars: { 
+            'autoplay': 1, 
+            'mute': true, 
+            'listType': 'playlist',
+            'list': self.listId,
+            'index': self.index-1
+          },
+          events: events
+        });
+      }else{
+        self.player = new window['YT'].Player('yt-player', {
+          videoId: self.videoId,
+          playerVars: { 
+            'autoplay': 1, 
+            'mute': true, 
+            'listType': 'playlist'
+          },
+          events: events
+        });
+      }
     }
   }
 
@@ -84,21 +109,32 @@ export default class YoutubeInterface {
   }
 
   ready(){
-    return self.ready;
+    return this.ready;
   }
 
   play(){
-    console.log("Iframe received play")
-    this.player.playVideo()
+    if(this.player){
+      this.player.playVideo()
+    }
   }
 
   pause(){
-    console.log("Iframe received pause")
-    this.player.pauseVideo()
+    if(this.player){
+      this.player.pauseVideo()
+    }
   }
 
   seek(seconds){
-    this.player.seekTo(seconds, true)
+    if(this.player){
+      this.player.seekTo(seconds, true)
+    }
+  }
+
+  selectIndex(index){
+    if(this.player && this.playing && index != this.player.getPlaylistIndex()){
+      this.index = index
+      this.player.playVideoAt(index)
+    }
   }
 
 
@@ -117,6 +153,7 @@ export default class YoutubeInterface {
   onPlayerStateChange(event) {
     var self = this;
     if(event.data == 1){
+      self.playing = true
       let position = self.getPosition();
       position.playing = true;
       if(self.enabled){
@@ -162,6 +199,7 @@ export default class YoutubeInterface {
       seconds: self.player.getCurrentTime(),
       duration: self.player.getDuration(),
       playing: self.player.getPlayerState()==1,
+      index: self.player.getPlaylistIndex(),
       at: Date.now()
     }
   }

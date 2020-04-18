@@ -13,7 +13,7 @@ defmodule Bread.LinkFetcher do
       (domain == "youtube.com" or domain == "youtu.be" or domain == "m.youtube.com") -> 
         # id = Enum.at(Regex.run(@youtube_regex, link), 7)
         # fetch_generic("https://www.youtube.com/watch?v=" <> id)
-        fetch_youtube(link)
+        fetch_youtube link, uri
       (domain == "mixer.com") -> 
         fetch_mixer link, uri
       true ->
@@ -43,14 +43,19 @@ defmodule Bread.LinkFetcher do
     end
   end
 
-  def fetch_youtube link do
-    case HTTPoison.get("http://www.youtube.com/oembed?format=json&url=" <> link) do
+  def fetch_youtube link, url do
+    query = URI.decode_query(url.query)
+    oembed_target = if query["list"] do
+      "https://www.youtube.com/playlist?list=" <> query["list"]
+    else
+      link
+    end
+    case HTTPoison.get("http://www.youtube.com/oembed?format=json&url=" <> oembed_target) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        id = Enum.at(Regex.run(@youtube_regex, link), 7)
         case Jason.decode(body) do
           {:ok, json} ->
             map = %{
-              image: "https://img.youtube.com/vi/#{id}/mqdefault.jpg",
+              image: (json["thumbnail_url"] |> String.replace("hqdefault", "mqdefault")),
               title: json["title"],
               type: json["type"],
               url: link,
