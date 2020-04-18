@@ -54,7 +54,11 @@ export default class YoutubeInterface {
     self.url = url;
     self.videoId = self.url.searchParams.get("v")
     self.listId = self.url.searchParams.get("list")
-    self.index = initialPosition.index+1 || self.url.searchParams.get("index") || 1
+    if(initialPosition.index){
+      self.index = initialPosition.index+1
+    }else{
+      self.index = self.url.searchParams.get("index") || 1
+    }
     self.enabled = true;
     
     if(self.player){

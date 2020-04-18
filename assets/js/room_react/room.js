@@ -186,13 +186,12 @@ export default class RoomReact extends React.Component{
         }
         this.sendPosition()
       }else{
-        this.setState({hasRemote: false});
+        this.setState({hasRemote: false, live: true});
       }
     }
 
     if(newState.server_playing !== undefined){
       console.log("Updating currently playing " + newState.server_playing)
-      let update = this.state.queue[newState.server_playing] || {}
       this.setState(state => {
         return {
           serverPlaying: state.queue[newState.server_playing] || {}
@@ -298,7 +297,6 @@ export default class RoomReact extends React.Component{
   toggleRemote(){
     if(this.state.hasRemote){
       this.videoChannel.push('remote:drop', {})
-      this.setState({live: true})
     }else{
       this.videoChannel.push('remote:request', {})
     }
