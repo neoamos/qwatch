@@ -36,6 +36,12 @@ export default class DirectVideoInterface {
     }
   }
 
+  stop(){
+    if(this.tag){
+      this.tag.pause()
+    }
+  }
+
   enable(url){
     console.log("Enable video with url " + url.href)
     this.url = url;

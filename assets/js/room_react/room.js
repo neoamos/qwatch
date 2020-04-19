@@ -111,6 +111,7 @@ export default class RoomReact extends React.Component{
     this.videoChannel.join()
       .receive("ok", resp => {
         let newState = resp.state
+        let hadRemote = this.state.hasRemote
         this.setState({
           connectionID: resp.connection_id,
           remoteHolderUserID: newState.remote_holder_user_id,
@@ -119,6 +120,10 @@ export default class RoomReact extends React.Component{
           remoteAvailable: this.props.userID && (newState.owner_id == this.props.userID || newState.remote_holder_user_id == this.props.userID),
           ownerID: newState.owner_id,
           ownsRoom: (this.props.userID == newState.owner_id),
+        }, () => {
+          if(hadRemote){
+            this.videoChannel.push('remote:request', {})
+          }
         })
         this.updateState(newState)
 
@@ -171,7 +176,6 @@ export default class RoomReact extends React.Component{
       this.setState({remoteHolderUserID: newState.remote_holder_user_id})
     }
 
-    console.log(newState.remote_holder_connection_id != null)
     if(newState.remote_holder_connection_id != null){
       console.log("updating remote holder connection id")
       this.setState({remoteHolderConnectionID: newState.remote_holder_connection_id})
@@ -182,13 +186,12 @@ export default class RoomReact extends React.Component{
         }
         this.sendPosition()
       }else{
-        this.setState({hasRemote: false});
+        this.setState({hasRemote: false, live: true});
       }
     }
 
     if(newState.server_playing !== undefined){
       console.log("Updating currently playing " + newState.server_playing)
-      let update = this.state.queue[newState.server_playing] || {}
       this.setState(state => {
         return {
           serverPlaying: state.queue[newState.server_playing] || {}
@@ -216,13 +219,13 @@ export default class RoomReact extends React.Component{
     })
   }
 
-  updateClientPlaying(newLink){
+  updateClientPlaying(newLink, initialPosition){
     let oldLink = this.state.clientPlaying
     this.setState({clientPlaying: newLink, initialSync: true}, () => {
       if(!newLink.id){
         this.player.disable()
-      }else if(!oldLink || oldLink.link != newLink.link){
-        this.player.updateLink(newLink.link)
+      }else if(!oldLink || oldLink.id != newLink.id){
+        this.player.updateLink(newLink.link, initialPosition)
       }
     })
   }
@@ -232,6 +235,7 @@ export default class RoomReact extends React.Component{
       position: {
         seconds: Math.trunc(this.calculateCurrentTime(this.state.clientPosition)*100)/100,
         duration: Math.trunc(this.state.clientPosition.duration*100)/100,
+        index: this.state.clientPosition.index,
         playing: this.state.clientPosition.playing
       }
     })
@@ -293,7 +297,6 @@ export default class RoomReact extends React.Component{
   toggleRemote(){
     if(this.state.hasRemote){
       this.videoChannel.push('remote:drop', {})
-      this.setState({live: true})
     }else{
       this.videoChannel.push('remote:request', {})
     }
@@ -311,7 +314,7 @@ export default class RoomReact extends React.Component{
   synchronize(){
     if(this.state.clientPlaying.id != this.state.serverPlaying.id){
       console.log("changing link")
-      this.updateClientPlaying(this.state.serverPlaying)
+      this.updateClientPlaying(this.state.serverPlaying, this.state.serverPosition)
     }else{
       console.log("updating position")
       if(this.state.serverPosition.link_id && this.state.serverPosition.link_id == this.state.clientPlaying.id){
@@ -322,7 +325,7 @@ export default class RoomReact extends React.Component{
   }
 
   checkSynced(){
-    if(this.state.clientPlaying.id == this.state.serverPlaying.id){
+    if(this.state.clientPlaying.id == this.state.serverPlaying.id && this.state.clientPosition.index == this.state.serverPosition.index){
       if(Math.abs(this.calculateCurrentTime(this.state.clientPosition) - this.calculateCurrentTime(this.state.serverPosition)) > 1
          || this.state.serverPosition.playing != this.state.clientPosition.playing){
         return false;
@@ -378,6 +381,7 @@ export default class RoomReact extends React.Component{
       seconds: position.seconds,
       duration: position.duration,
       playing: position.playing,
+      index: position.index,
       at: Date.now(),
       link_id: position.link_id
     }
@@ -392,6 +396,7 @@ export default class RoomReact extends React.Component{
         seconds: position.seconds,
         duration: position.duration,
         playing: position.playing,
+        index: position.index,
         at: position.at,
         stale: false
       }

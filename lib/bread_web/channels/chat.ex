@@ -82,6 +82,7 @@ defmodule BreadWeb.Chat do
     else
       {:ok, _} = Presence.track(socket, socket.assigns[:connection_id], %{
         online_at: inspect(System.system_time(:second)),
+        connection_id: socket.assigns[:connection_id],
       })
     end
     {:noreply, socket}

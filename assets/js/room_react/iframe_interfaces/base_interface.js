@@ -17,6 +17,7 @@ export default class BaseInterface {
   play(){}
   pause(){}
   seek(){}
+  stop(){}
 
   enable(url){
     var self = this;

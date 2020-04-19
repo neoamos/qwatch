@@ -164,27 +164,28 @@ defmodule Bread.Rooms do
 
   def get_link_info link_id do
     link = get_link({:id, link_id}, preload: [:room])
-    IO.inspect(link)
     if link do
-      case LinkFetcher.fetch(link.link) do
+      update = case LinkFetcher.fetch(link.link) do
         {:ok, info} -> 
-          update = %{
+          %{
             title: info.title,
             description: info.description,
             site_name: info.site_name,
             external_image: info.image
           }
-          case update_link link_id, update do
-            {:ok, new_link} ->
-              RoomServer.update_link(link.room.name, link.id)
-              {:ok, new_link}
-            other -> other
-          end
         {:error, message} -> 
-          IO.puts("Failed to fetch link information")
+          uri = URI.parse(link.link)
           IO.inspect(message)
-          {:error, message}
-        other -> {:error, ""}
+          %{
+            title: uri.path,
+            site_name: String.replace(uri.host, "www.", "")
+          }
+      end
+      case update_link link_id, update do
+        {:ok, new_link} ->
+          RoomServer.update_link(link.room.name, link.id)
+          {:ok, new_link}
+        other -> other
       end
     else
       {:error, "Link does not exist"}

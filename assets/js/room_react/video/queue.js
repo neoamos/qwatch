@@ -86,9 +86,9 @@ class QueueItem extends React.Component {
         <div className="tile__title-wrap">
           <div className="tile__title">{this.props.item.title || "Unknown title"}</div>
           <div className="tile__info">
-            <div class="tile__site-name">
+            <div className="tile__site-name">
               {this.props.item.site_name}</div>
-            <div class="tile__options">
+            <div className="tile__options">
               { this.props.hasRemote && 
                 <div className="btn-flat" onClick={this.handleDelete}>
                   <span className="oi" data-glyph="circle-x" title="Delete" aria-hidden="true"></span>

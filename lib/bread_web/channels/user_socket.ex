@@ -20,7 +20,11 @@ defmodule BreadWeb.UserSocket do
 
   def connect(%{"token" => token}, socket, _connect_info) do
     case Coherence.verify_user_token(socket, token, &assign/3) do
-      {:error, _} -> {:ok, socket}
+      {:error, _} -> 
+        connection_id = :crypto.strong_rand_bytes(10) |> Base.url_encode64 |> binary_part(0, 10)
+        socket = socket
+          |> assign(:connection_id, connection_id)
+        {:ok, socket}
       {:ok, socket} -> 
         {:ok, user} = Bread.Accounts.get_user({:id, socket.assigns[:user_id]})
         userVisible = %{

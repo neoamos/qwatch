@@ -33,6 +33,11 @@ defmodule BreadWeb.Router do
     get "/r/:name", RoomController, :room_react
 
     # get "/user/:name", UserController, :profile
+
+    get "/about", InfoController, :about
+    get "/terms", InfoController, :terms
+    get "/privacy", InfoController, :privacy
+
   end
 
   scope "/", BreadWeb do

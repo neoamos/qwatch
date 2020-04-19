@@ -19,9 +19,10 @@ export default class Player {
 
   }
 
-  updateLink(link){
+  updateLink(link, initialPosition){
     console.log("Updating link: " + link)
     var self = this;
+    initialPosition = initialPosition || {}
     try{
       self.url = new URL(link);
     }catch(e){
@@ -36,7 +37,7 @@ export default class Player {
     for(let i = 0; i < self.interfaces.length; i++){
       if(self.interfaces[i].matches(self.url)){
         self.interface = self.interfaces[i]
-        self.interfaces[i].enable(self.url)
+        self.interfaces[i].enable(self.url, initialPosition)
         break
       }
     }
@@ -72,13 +73,18 @@ export default class Player {
     console.log("Player updating position")
     console.log(position)
     if(self.interface){
-      if(position.seconds < position.duration){
+      if(self.calculateCurrentTime(position) < position.duration){
+        if(position.index){
+          self.interface.selectIndex(position.index)
+        }
+        if(position.playing){
+          self.interface.play()
+        }else{
+          self.interface.pause()
+        }
         self.interface.seek(self.calculateCurrentTime(position))
-      }
-      if(position.playing){
-        self.interface.play()
       }else{
-        self.interface.pause()
+        self.interface.stop()
       }
     }
   }

@@ -77,11 +77,7 @@ defmodule Bread.Rooms.RoomServer do
         link_to_map(link)
         } 
       end)
-      # link_playing_id = if room.server_playing do
-      #   Enum.at(queue, room.server_playing)
-      # else
-      #   nil
-      # end
+      
       state = %{
         room_name: room.name,
         title: room.title,
@@ -91,10 +87,17 @@ defmodule Bread.Rooms.RoomServer do
         link_queue: queue,
         link_suggestions: [],
         server_playing: room.server_playing,
-        position: %{seconds: 0, duration: 0, playing: false, at: DateTime.utc_now(), link_id: nil},
+        position: %{
+          seconds: room.position_seconds || 0, 
+          duration: room.position_duration || 0, 
+          playing: !!room.position_playing, 
+          at: room.position_at || DateTime.utc_now(),
+          link_id: (if room.position_duration, do: room.current_link_id, else: nil),
+          index: room.position_index
+          },
         remote_available: false,
         remote_holder_user_id: room.remote_holder_id || room.user_id,
-        remote_holder_connection_id: nil,
+        remote_holder_connection_id: room.remote_holder_connection_id,
         owner_id: room.user_id,
         open: room.open,
         unregistered_users_allowed: room.unregistered_users_allowed
@@ -240,6 +243,13 @@ defmodule Bread.Rooms.RoomServer do
 
   defp persist_state(state, params \\ %{}) do
     update = %{
+      position_seconds: state[:position][:seconds],
+      position_duration: state[:position][:duration],
+      position_playing: state[:position][:playing],
+      position_at: state[:position][:at],
+      position_index: state[:position][:index],
+      remote_holder_id: state[:remote_holder_user_id],
+      remote_holder_connection_id: state[:remote_holder_connection_id],
       server_playing: state[:server_playing], 
       current_link_id: (if state[:server_playing], do: Enum.at(state[:link_queue], state[:server_playing]), else: nil)
     }
@@ -276,10 +286,13 @@ defmodule Bread.Rooms.RoomServer do
         seconds: position[:seconds],
         duration: position[:duration],
         playing: position[:playing],
+        index: position[:index],
         at: DateTime.utc_now(),
         link_id: Enum.at(state[:link_queue], state[:server_playing])
       }
       state = Map.update!(state, :position, fn _ -> new_position end)
+
+      persist_state(state)
       {:reply, {:accepted, state}, state}
     else
       {:reply, {:rejected, state}, state}
@@ -293,6 +306,7 @@ defmodule Bread.Rooms.RoomServer do
       |> Map.update!(:remote_holder_connection_id, fn _ -> connection_id end)
       |> Map.update!(:remote_available, fn _ -> false end)
 
+      persist_state(state)
       {:reply, {:accepted, state}, state}
     else
       {:reply, {:rejected, state}, state}
@@ -304,6 +318,8 @@ defmodule Bread.Rooms.RoomServer do
       state = state
       |> Map.update!(:remote_available, fn _ -> true end)
       |> Map.update!(:remote_holder_connection_id, fn _ -> nil end)
+
+      persist_state(state)
 
       {:reply, {:accepted, state}, state}
     else

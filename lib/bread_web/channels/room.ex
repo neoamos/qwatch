@@ -50,7 +50,8 @@ defmodule BreadWeb.Room do
     
           broadcast(socket, "state:update", %{state: state})
           {:noreply, socket}
-        {:rejected, _} -> 
+        {:rejected, reason} -> 
+          IO.inspect(reason)
           {:noreply, socket}
       end
     else
@@ -140,7 +141,8 @@ defmodule BreadWeb.Room do
     position = %{
       seconds: position["seconds"],
       duration: position["duration"],
-      playing: position["playing"]
+      playing: position["playing"],
+      index: position["index"]
     }
     if socket.assigns[:current_user] do
       case RoomServer.update_position(room, position, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
@@ -198,8 +200,15 @@ defmodule BreadWeb.Room do
       seconds: (if position[:playing], do: position[:seconds] + abs(DateTime.diff(position[:at], DateTime.utc_now())), else: position[:seconds]),
       duration: position[:duration],
       playing: position[:playing],
+      index: position[:index],
       link_id: position[:link_id]
     }
+  end
+
+  def leave(socket, topic) do
+    IO.inspect "SOMEBODY LEAVING"
+    broadcast socket, "user:left", %{ "content" => "somebody is leaving" }
+    {:ok, socket}
   end
 
   # def handle_in("message:new", %{"message" => message}, socket) do

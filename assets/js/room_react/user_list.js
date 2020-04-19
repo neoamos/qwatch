@@ -5,7 +5,7 @@ export default class UserList extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      
+      minimized: false
     }
   }
 
@@ -63,8 +63,12 @@ export default class UserList extends React.Component{
         anonymous_user_count++;
       }
     }
+    let wrapperClass= "users"
+    if(this.state.minimized){
+      wrapperClass += " users--minimized"
+    }
     return (
-      <div className="users">
+      <div className={wrapperClass}>
         <h3>Users</h3>
         <div className="users__list">
         {users}

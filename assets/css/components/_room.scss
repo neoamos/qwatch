@@ -18,7 +18,6 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  scrollbar-width: 10px;
   overflow: auto;
 
   &__player{
@@ -32,6 +31,7 @@
       width:100%;
       // height:100%;
       flex: 1 1 auto;
+      min-height: 0px;
     }
 
 
@@ -39,6 +39,7 @@
       // height: 100%;
       // max-width: 100%;
       // margin: 0 auto;
+      min-height: 0px;
       flex: 1 1 auto;
     }
 
@@ -252,15 +253,16 @@
   .video{
     position: sticky;
   }
-
-  .chat{
-    width: 100%;
-  }
   .users{
     width: 100%;
   }
 
-  .application-wrap, body, html{
+  #root{
+    height: auto;
+    overflow: visible;
+  }
+  
+  .room{
     height: auto;
   }
 
