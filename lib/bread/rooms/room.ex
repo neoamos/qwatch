@@ -19,6 +19,11 @@ defmodule Bread.Rooms.Room do
     field :custom_url, :boolean
     field :remote_holder_connection_id, :string
 
+    field :position_seconds, :float
+    field :position_duration, :float
+    field :position_playing, :boolean
+    field :position_at, :utc_datetime #time positio was received
+    field :position_index, :integer #position in playlist
 
     field :open, :boolean
     field :remote_available, :boolean
@@ -47,7 +52,11 @@ defmodule Bread.Rooms.Room do
 
   def edit_changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:title, :description, :queue, :server_playing, :privacy, :unregistered_users_allowed, :current_link_id, :remote_holder_connection_id, :remote_holder_id])
+    |> cast(params, [:title, :description, :queue, :server_playing, 
+                    :privacy, :unregistered_users_allowed, :current_link_id, 
+                    :remote_holder_connection_id, :remote_holder_id,
+                    :position_seconds, :position_duration, :position_playing,
+                    :position_at, :position_index])
     |> validate_length(:title, max: 100)
   end
 

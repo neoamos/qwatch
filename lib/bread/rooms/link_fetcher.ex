@@ -45,11 +45,10 @@ defmodule Bread.LinkFetcher do
 
   def fetch_youtube link, url do
     query = URI.decode_query(url.query)
-    oembed_target = if query["list"] do
-      "https://www.youtube.com/playlist?list=" <> query["list"]
-    else
-      link
-    end
+    oembed_target = case query["list"] do
+      "PL" <> list -> "https://www.youtube.com/playlist?list=" <> query["list"]
+      _ -> link
+    end 
     case HTTPoison.get("http://www.youtube.com/oembed?format=json&url=" <> oembed_target) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         case Jason.decode(body) do

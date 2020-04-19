@@ -55,13 +55,18 @@ export default class YoutubeInterface {
     self.url = url;
     self.videoId = self.url.searchParams.get("v")
     self.listId = self.url.searchParams.get("list")
+
+    // Playlists that start with RD are random mixes and aren't stable
+    if(self.listId && self.listId.startsWith("RD")){
+      self.listId = null 
+    }
+
     if(initialPosition.index){
       self.index = initialPosition.index+1
     }else{
       self.index = self.url.searchParams.get("index") || 1
     }
     self.enabled = true;
-    console.log(self.index)
     
     if(self.player){
       if(self.listId){
@@ -165,7 +170,6 @@ export default class YoutubeInterface {
 
   onPlayerStateChange(event) {
     var self = this;
-    console.log(event.data)
     if(event.data == 1){
       let position = self.getPosition();
       position.playing = true;
