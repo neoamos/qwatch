@@ -51,6 +51,7 @@ export default class YoutubeInterface {
     }
 
     console.log("Enable video with url " + url.href)
+    console.log(initialPosition)
     self.url = url;
     self.videoId = self.url.searchParams.get("v")
     self.listId = self.url.searchParams.get("list")
@@ -60,6 +61,7 @@ export default class YoutubeInterface {
       self.index = self.url.searchParams.get("index") || 1
     }
     self.enabled = true;
+    console.log(self.index)
     
     if(self.player){
       if(self.listId){
@@ -142,7 +144,7 @@ export default class YoutubeInterface {
   }
 
   selectIndex(index){
-    if(this.player && this.playing && index != this.player.getPlaylistIndex()){
+    if(this.player &&  index != this.player.getPlaylistIndex()){
       this.index = index
       this.player.playVideoAt(index)
     }

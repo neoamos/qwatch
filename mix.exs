@@ -43,7 +43,6 @@ defmodule Bread.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:coherence, github: "mbosco/coherence"},
       {:httpoison, "~> 1.6"},
       {:distillery, "~> 2.1"},
       {:comeonin, "~> 4.0"},
@@ -52,7 +51,8 @@ defmodule Bread.MixProject do
       {:earmark, "~> 1.2", only: :dev, override: true},
       {:mogrify, "~> 0.7.3"},
       {:floki, "~> 0.26.0"},
-      {:is_email, "~> 0.0.1"}
+      {:is_email, "~> 0.0.1"},
+      {:coherence, path: "local_deps/coherence"}
     ]
   end
 

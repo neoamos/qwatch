@@ -74,7 +74,6 @@ export default class Player {
     console.log(position)
     if(self.interface){
       if(self.calculateCurrentTime(position) < position.duration){
-        self.interface.seek(self.calculateCurrentTime(position))
         if(position.index){
           self.interface.selectIndex(position.index)
         }
@@ -83,6 +82,7 @@ export default class Player {
         }else{
           self.interface.pause()
         }
+        self.interface.seek(self.calculateCurrentTime(position))
       }else{
         self.interface.stop()
       }
