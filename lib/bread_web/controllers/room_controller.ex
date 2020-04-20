@@ -37,7 +37,7 @@ defmodule BreadWeb.RoomController do
       {:ok, room} -> redirect(conn, to: "/r/" <> room.name)
       {:error, changeset} ->
         conn
-        |> render "new.html", changeset: changeset
+        |> render("new.html", changeset: changeset)
     end
   end
 

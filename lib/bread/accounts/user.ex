@@ -7,7 +7,6 @@ defmodule Bread.Accounts.User do
   schema "user" do
     field :name,     :string
     field :email,        :string
-    field :email_normalized,  :string
     field :tos,          :boolean, virtual: true
     field :gender,       :integer
     field :city,         :string
@@ -109,12 +108,11 @@ defmodule Bread.Accounts.User do
     |> validate_length(:email, min: 3, max: 64)
     |> validate_inclusion(:gender, [1, 2])
     |> normalize_email()
-    |> unique_constraint(:email_normalized)
   end
 
   def normalize_email(changeset) do
     if changeset.valid? and !!changeset.changes[:email] do
-      put_change(changeset, :email_normalized, Bread.NormalizeEmail.normalize_email(changeset.changes.email))
+      put_change(changeset, :email, Bread.NormalizeEmail.normalize_email(changeset.changes.email))
     else
       changeset
     end
