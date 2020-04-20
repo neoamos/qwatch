@@ -3,6 +3,7 @@ import $ from 'jquery'
 import YoutubeInterface from './iframe_interfaces/youtube_interface.js';
 import DirectVideoInterface from './iframe_interfaces/direct_video_interface.js'
 import BaseInterface from './iframe_interfaces/base_interface.js';
+import SoundCloudInterface from './iframe_interfaces/soundcloud_interface.js';
 
 export default class Player {
   constructor(listeners){
@@ -14,6 +15,7 @@ export default class Player {
     self.interfaces = [
       new YoutubeInterface(listeners),
       new DirectVideoInterface(listeners),
+      new SoundCloudInterface(listeners),
       new BaseInterface(listeners)
     ];
 
