@@ -22,8 +22,12 @@ export default class SoundCloudInterface {
         }
         
         $('#soundcloud-widget').remove();
-        this.enabled=false;
+        this.enabled = false;
         this.ready = false;
+        this.widget = null;
+        // if(this.widget){
+        //     this.widget.pause()
+        // }
         this.listeners.onPlayerStateUpdate({ready:false})
     }
 
@@ -135,7 +139,9 @@ export default class SoundCloudInterface {
     }
 
     stop(){
-
+        if(this.widget){
+            // this.widget.pause()
+        }
     }
     ready(){
         return this.ready;
