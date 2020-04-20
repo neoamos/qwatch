@@ -17,48 +17,61 @@ export default class SoundCloudInterface {
     }
       
     disable(){
+        if(self.widget){
+            self.widget = null;
+        }
+        
         $('#soundcloud-widget').remove();
         this.enabled=false;
+        this.ready = false;
+        this.listeners.onPlayerStateUpdate({ready:false})
     }
 
-    enable(url){
+    enable(url, initialPosition){
         var self = this;
+        initialPosition = initialPosition || {};
         if(!self.loaded){
             var tag = document.createElement('script');
+            tag.crossOrigin;
             tag.src = "https://w.soundcloud.com/player/api.js";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag,firstScriptTag);
 
             tag.addEventListener('load', (e) => {
                 self.loaded = true
-                self.enable(url)
+                self.enable(url,initialPosition)
             })
             return
         }
         //console.log("Enable video with url soundCloud"+url.href);
-        let videoUrl = 'https://w.soundcloud.com/player/?url='+url.href+"&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=true&show_teaser=true&visual=true";
-        console.log(videoUrl);
+
+        var regex = /[a-z]+:\/\/[a-z.]+\/[a-z0-9-]+\/[a-z0-9-]+/;
+        if(url.href.match(regex)){
+            var videoUrl = 'https://w.soundcloud.com/player/?url='+url.href+"&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=true&show_teaser=true&visual=true";
+        
+        }
+        else{
+            videoUrl = url.href;
+        }
+        console.log("VIDEO url"+videoUrl);
         
 
         self.enabled = true;
-       
-  
+   
         var targetDiv = $(document.createElement('iframe'));
-        this.targetDiv = targetDiv[0];
         targetDiv.attr("id","soundcloud-widget")
         targetDiv.attr("allowtransparency","true")
         targetDiv.attr("src",videoUrl)
         targetDiv.attr("allow","autoplay")
-        targetDiv.attr("height","166")
-        targetDiv.attr("width","166")
         $('#player_container').append(targetDiv)
         if(self.widget){
+            self.widget.load(url)
             $('#soundcloud-widget').show();
             self.ready = true;
             self.listeners.onPlayerStateUpdate({ready:true})
         }
         else{
-            var widgetIframe = document.getElementById('soundcloud-widget');//$('#soundcloud-widget')[0];
+            var widgetIframe = document.getElementById('soundcloud-widget');
             self.widget = window.SC.Widget(widgetIframe);
             self.widget.bind(SC.Widget.Events.READY,function(){
                 console.log("Loaded data")
@@ -88,7 +101,12 @@ export default class SoundCloudInterface {
         }
         
     }
-
+    selectIndex(index){
+        if(this.widget && index!= this.widget.getCurrentSoundIndex()){
+            this.index = index
+            this.widget.skip(index)
+        }
+    }
 
     onPlayerReady(){
         
@@ -119,19 +137,12 @@ export default class SoundCloudInterface {
     stop(){
 
     }
-    
-    callthisFunction(callback){
-    var tag = document.createElement('script');
-    tag.src="https://w.soundcloud.com/player/api.js";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag,firstScriptTag);
-    tag.addEventListener('load', (e) => {
-      callback(e)
-    })
-    
-    }
     ready(){
-        return self.ready;
+        return this.ready;
+    }
+
+    onError(){
+        console.log("Error:")
     }
     
     getPosition(callback){
@@ -140,14 +151,22 @@ export default class SoundCloudInterface {
         self.widget.getPosition(function(seconds){
             self.widget.getDuration(function(duration){
                 self.widget.isPaused(function(isPaused){
-                    let position = {
-                        seconds: seconds/1000,
-                        duration: duration/1000,
-                        playing: !isPaused,
-                        at: Date.now()
-                    }
-                    console.log(position)
-                    callback(position)
+                    self.widget.getCurrentSoundIndex(function(index){
+                        self.widget.getCurrentSound(function(sound){
+
+                        console.log("Current Sound"+sound)
+                        console.log("Index"+index)
+                        let position = {
+                            seconds: seconds/1000,
+                            duration: duration/1000,
+                            playing: !isPaused,
+                            index: index,
+                            at: Date.now()
+                        }
+                        console.log("Position"+position)
+                        callback(position)
+                    })
+                })
                 })
             })
         })
