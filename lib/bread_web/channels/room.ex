@@ -34,21 +34,15 @@ defmodule BreadWeb.Room do
             {:error, %{reason: "The room is closed"}}
         end
     end
-
+    
   end
 
   def handle_in("link:enqueue", %{"link" => link}, socket) do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.enqueue_link(room, link, :end, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state, link} -> 
-          state = %{
-            links: link,
-            link_queue: state[:link_queue],
-            server_playing: state[:server_playing]
-          }
-    
-          broadcast(socket, "state:update", %{state: state})
+        {:accepted, resp} -> 
+          broadcast(socket, "state:update", %{state: resp})
           {:noreply, socket}
         {:rejected, reason} -> 
           IO.inspect(reason)
@@ -63,13 +57,9 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.next(room, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state} -> 
-          state = %{
-            link_queue: state[:link_queue],
-            server_playing: state[:server_playing]
-          }
+        {:accepted, resp} -> 
     
-          broadcast(socket, "state:update", %{state: state})
+          broadcast(socket, "state:update", %{state: resp})
     
           {:noreply, socket}
         _ -> {:noreply, socket}
@@ -83,12 +73,9 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.select(room, id, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state}->
-          state = %{
-            server_playing: state[:server_playing]
-          }
+        {:accepted, resp}->
 
-          broadcast(socket, "state:update", %{state: state})
+          broadcast(socket, "state:update", %{state: resp})
 
           {:noreply, socket}
         _ -> {:noreply, socket}
@@ -102,12 +89,8 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.update_queue(room, queue, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state} ->
-          state = %{
-            server_playing: state[:server_playing],
-            link_queue: state[:link_queue]
-          }
-          broadcast(socket, "state:update", %{state: state})
+        {:accepted, resp} ->
+          broadcast(socket, "state:update", %{state: resp})
           {:noreply, socket}
         _ -> {:noreply, socket}
       end
@@ -120,15 +103,10 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.request_remote(room, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state} ->
-          state = %{
-            remote_available: state[:remote_available],
-            remote_holder_user_id: state[:remote_holder_user_id],
-            remote_holder_connection_id: state[:remote_holder_connection_id]
-          }
-          broadcast(socket, "state:update", %{state: state})
+        {:accepted, resp} ->
+          broadcast(socket, "state:update", %{state: resp})
           {:noreply, socket}
-        {:rejected, state} ->
+        {:rejected, _} ->
           {:noreply, socket}
       end
     else
@@ -146,13 +124,13 @@ defmodule BreadWeb.Room do
     }
     if socket.assigns[:current_user] do
       case RoomServer.update_position(room, position, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state} ->
-          state = %{
-            server_position: calculate_position(state[:position])
+        {:accepted, resp} ->
+          resp = %{
+            server_position: calculate_position(resp[:server_position])
           }
-          broadcast(socket, "state:update", %{state: state})
+          broadcast(socket, "state:update", %{state: resp})
           {:noreply, socket}
-        {:rejected, state} ->
+        {:rejected, _} ->
           {:noreply, socket}
       end
     else
@@ -164,15 +142,10 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case RoomServer.drop_remote(room, socket.assigns[:current_user].id, socket.assigns[:connection_id]) do
-        {:accepted, state} ->
-          state = %{
-            remote_available: state[:remote_available],
-            remote_holder_user_id: state[:remote_holder_user_id],
-            remote_holder_connection_id: state[:remote_holder_connection_id] || "empty"
-          }
-          broadcast(socket, "state:update", %{state: state})
+        {:accepted, resp} ->
+          broadcast(socket, "state:update", %{state: resp})
           {:noreply, socket}
-        {:rejected, state} ->
+        {:rejected, _} ->
           {:noreply, socket}
       end
     else
@@ -184,10 +157,10 @@ defmodule BreadWeb.Room do
     "room:" <> room = socket.topic
     if socket.assigns[:current_user] do
       case  RoomServer.set_open(room, socket.assigns[:current_user].id, false) do
-        {:accepted, state} ->
+        {:accepted, _} ->
           broadcast(socket, "room:close", %{})
           {:noreply, socket}
-        {:rejected, state} ->
+        {:rejected, _} ->
           {:noreply, socket}
       end
     else
@@ -204,16 +177,5 @@ defmodule BreadWeb.Room do
       link_id: position[:link_id]
     }
   end
-
-  def leave(socket, topic) do
-    IO.inspect "SOMEBODY LEAVING"
-    broadcast socket, "user:left", %{ "content" => "somebody is leaving" }
-    {:ok, socket}
-  end
-
-  # def handle_in("message:new", %{"message" => message}, socket) do
-  #   "room:" <> room = socket.topic
-  #   {:noreply, socket}
-  # end
 
 end
