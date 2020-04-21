@@ -22,8 +22,8 @@ export default class RoomReact extends React.Component{
       suggestions: [],
       clientPlaying: {},
       serverPlaying: {},
-      serverPosition: {seconds: 0, duration: 0, playing: true, at: Date.now(), link_id: null},
-      clientPosition: {seconds: 0, duration: 0, playing: true, at: Date.now(), link_id: null},
+      serverPosition: {seconds: 0, duration: 1, playing: true, at: Date.now(), link_id: null},
+      clientPosition: {seconds: 0, duration: 1, playing: true, at: Date.now(), link_id: null},
       hasRemote: false,
       remoteAvailable: false,
       remoteHolderUserID: null,
@@ -225,6 +225,9 @@ export default class RoomReact extends React.Component{
       if(!newLink.id){
         this.player.disable()
       }else if(!oldLink || oldLink.id != newLink.id){
+        this.setState({
+          clientPosition: {seconds: 0, duration: 1, playing: false, at: Date.now(), link_id: null}
+        })
         this.player.updateLink(newLink.link, initialPosition)
       }
     })
@@ -470,6 +473,7 @@ export default class RoomReact extends React.Component{
                 live={this.state.live}
                 playerReady={this.state.playerReady}
                 clientPosition={this.state.clientPosition}
+                clientPlaying={this.state.clientPlaying}
                 serverPosition={this.state.serverPosition}
                 toggleRemote={this.toggleRemote}
                 setLive={this.setLive}

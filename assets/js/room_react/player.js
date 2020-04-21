@@ -4,6 +4,7 @@ import YoutubeInterface from './iframe_interfaces/youtube_interface.js';
 import DirectVideoInterface from './iframe_interfaces/direct_video_interface.js'
 import BaseInterface from './iframe_interfaces/base_interface.js';
 import SoundCloudInterface from './iframe_interfaces/soundcloud_interface.js';
+import VimeoInterface from './iframe_interfaces/vimeo_interface.js';
 
 export default class Player {
   constructor(listeners){
@@ -16,6 +17,7 @@ export default class Player {
       new YoutubeInterface(listeners),
       new DirectVideoInterface(listeners),
       new SoundCloudInterface(listeners),
+      new VimeoInterface(listeners),
       new BaseInterface(listeners)
     ];
 

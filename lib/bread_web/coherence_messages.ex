@@ -111,7 +111,7 @@ defmodule BreadWeb.Coherence.Messages do
     do:
       dgettext(
         @domain,
-        "You are using an invalid security token for this site! This security\nviolation has been logged.\n"
+        "You were logged out because your security token was invalid\n"
       )
 
   def mailer_required, do: dgettext(@domain, "Mailer configuration required!")
