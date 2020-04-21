@@ -76,9 +76,9 @@ export default class Player {
     console.log(position)
     if(self.interface){
       if(self.calculateCurrentTime(position) < position.duration){
-        if(position.index){
+        if(position.index != null){
           self.interface.selectIndex(position.index)
-        }
+        } 
         if(position.playing){
           self.interface.play()
         }else{

@@ -4,10 +4,10 @@
   flex-direction: row;
   height: 40px;
   align-items: center;
-  width: 100%;
   padding: 5px;
-  margin: 0 10px;
+  margin: 2px 7px;
   border-radius: 10px;
+  flex: 0 0 auto;
 
   &:hover{
     background-color: $dark-2-1;
@@ -39,6 +39,7 @@
 
 .users{
   display: flex;
+  align-items: stretch;
   flex-direction: column;
   overflow: hidden; 
 
@@ -52,5 +53,6 @@
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    overflow: auto;
   }
 }

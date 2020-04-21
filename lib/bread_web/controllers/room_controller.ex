@@ -27,8 +27,13 @@ defmodule BreadWeb.RoomController do
   end
 
   def new conn, _params do
-    changeset = Room.changeset(%Room{unregistered_users_allowed: true, privacy: 0}, %{})
-    render conn, "new.html", changeset: changeset
+    if conn.assigns[:current_user] do
+      changeset = Room.changeset(%Room{unregistered_users_allowed: true, privacy: 0}, %{})
+      render conn, "new.html", changeset: changeset
+    else
+      conn
+      |> redirect(to: "/sessions/new")
+    end
   end
 
   def create conn, %{"room" => room_attrs} do
