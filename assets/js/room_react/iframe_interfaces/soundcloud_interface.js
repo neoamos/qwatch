@@ -48,10 +48,11 @@ export default class SoundCloudInterface {
 
     var regex = /[a-z]+:\/\/[a-z.]+\/[a-z0-9-]+\/[a-z0-9-]+/;
     if (url.href.match(regex)) {
-      var videoUrl = 'https://w.soundcloud.com/player/?url=' + url.href + "&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=true&show_teaser=true&visual=true";
-
-    }
-    else {
+      var videoUrl = 'https://w.soundcloud.com/player/?url=' + url.href + "&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=true&show_teaser=true&visual=true&single_active=false&download=true";
+      if(initialPosition.index != null){
+        videoUrl += "&start_track=" + initialPosition.index;
+      }
+    } else {
       videoUrl = url.href;
     }
 
