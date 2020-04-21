@@ -91,11 +91,15 @@ export default class SoundCloudInterface {
         if (this.enabled) {
           this.getPosition(this.listeners.onPlayerPositionUpdate)
         }
+        //On safari, soundcloud has a delayed play after a seek, so we have to cancel it
+        if(!this.playing && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)){
+          setTimeout(this.pause, 500)
+        }
       }.bind(this));
       self.widget.bind(SC.Widget.Events.FINISH, function () {
         console.log("Soundcloud finished")
         if (this.enabled) {
-          setTimeout(this.listeners.onEnded, 100)
+          setTimeout(this.listeners.onEnded, 400)
         }
       }.bind(this));
     }
@@ -119,12 +123,14 @@ export default class SoundCloudInterface {
     this.listeners.onPlayerStateUpdate({ ready: true })
   }
   play() {
+    this.playing = true
     if (this.widget) {
       this.widget.play();
     }
   }
 
   pause() {
+    this.playing = false
     if (this.widget) {
       this.widget.pause();
     }
@@ -137,6 +143,7 @@ export default class SoundCloudInterface {
   }
 
   stop() {
+    this.playing = false
     if (this.widget) {
       this.widget.pause()
     }
