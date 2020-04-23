@@ -2,7 +2,6 @@ defmodule Bread.Rooms.RoomServer do
   use GenServer
 
   alias Bread.Rooms
-  alias Bread.Rooms.RoomSupervisor
 
   # API
 
@@ -157,15 +156,20 @@ defmodule Bread.Rooms.RoomServer do
           end
           persist_state(state, %{queue: true})
           Task.async(fn -> Rooms.get_link_info(link.id) end)
-          {:reply, {:accepted, state, %{link.id => %{link: link.link, id: link.id}}}, state}
-        {:error, _} -> {:reply, state, state}
+          resp = %{
+            links: %{link.id => %{link: link.link, id: link.id}},
+            link_queue: state[:link_queue],
+            server_playing: state[:server_playing]
+          }
+          {:reply, {:accepted, resp}, state}
+        {:error, reason} -> {:reply, {:error, reason}, state}
       end
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
 
-  def handle_call({:update_queue, queue, user_id, connection_id}, _from, state) do
+  def handle_call({:update_queue, queue, _user_id, connection_id}, _from, state) do
     if connection_id == state[:remote_holder_connection_id] do
       prev_queue = state[:link_queue]
 
@@ -190,13 +194,18 @@ defmodule Bread.Rooms.RoomServer do
 
       persist_state(state, %{queue: true})
 
-      {:reply, {:accepted, state}, state}
+      resp = %{
+        server_playing: state[:server_playing],
+        link_queue: state[:link_queue]
+      }
+
+      {:reply, {:accepted, resp}, state}
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
 
-  def handle_call({:next, user_id, connection_id}, _from, state) do
+  def handle_call({:next, _user_id, connection_id}, _from, state) do
     if connection_id == state[:remote_holder_connection_id] && !!state[:server_playing] do
       if state[:server_playing] < length(state.link_queue)-1 do
         playing_id = Enum.at(state[:link_queue], state[:server_playing])
@@ -204,17 +213,23 @@ defmodule Bread.Rooms.RoomServer do
         |> Map.update!(:server_playing, fn old -> old+1 end)
         |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: playing_id} end)
         persist_state(state, %{queue: false})
-        {:reply, {:accepted, state}, state}
+
+        resp = %{
+          link_queue: state[:link_queue],
+          server_playing: state[:server_playing]
+        }
+
+        {:reply, {:accepted, resp}, state}
       else
-        {:reply, {:rejected, state}, state}
+        {:reply, {:rejected, "There are no more items in the queue"}, state}
       end
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
 
   end
 
-  def handle_call({:select, link_id, user_id, connection_id}, _from, state) do
+  def handle_call({:select, link_id, _user_id, connection_id}, _from, state) do
     if connection_id == state[:remote_holder_connection_id] do
       index = Enum.find_index(state.link_queue, fn id -> id == link_id end)
       if index do
@@ -222,12 +237,17 @@ defmodule Bread.Rooms.RoomServer do
         |> Map.update!(:server_playing, fn _ -> index end)
         |> Map.update!(:position, fn _ -> %{seconds: 0, duration: 0, playing: true, at: DateTime.utc_now(), link_id: link_id} end)
         persist_state(state, %{queue: false})
-        {:reply, {:accepted, state}, state}
+
+        resp = %{
+          server_playing: state[:server_playing]
+        }
+
+        {:reply, {:accepted, resp}, state}
       else
-        {:reply, {:rejected, state}, state}
+        {:reply, {:rejected, "The selected link is not int he queue"}, state}
       end
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
 
@@ -236,7 +256,7 @@ defmodule Bread.Rooms.RoomServer do
       [] -> state
       [head | tail] -> 
         state
-        |> Map.update!(:link_queue, fn queue -> tail end)
+        |> Map.update!(:link_queue, fn _ -> tail end)
         |> Map.update!(:server_playing, fn _ -> head end)
     end
   end
@@ -267,7 +287,7 @@ defmodule Bread.Rooms.RoomServer do
 
   defp deserialize_queue(queue_string) do
     if queue_string do 
-      queue = queue_string
+      queue_string
       |> String.split(",")
       |> Enum.slice(0..-2)
       |> Enum.map(fn s ->
@@ -279,7 +299,7 @@ defmodule Bread.Rooms.RoomServer do
     end
   end
 
-  def handle_call({:update_position, position, user_id, connection_id}, _from, state) do
+  def handle_call({:update_position, position, _user_id, connection_id}, _from, state) do
     IO.inspect(position)
     if !!state[:server_playing] && connection_id == state[:remote_holder_connection_id] do
       new_position = %{
@@ -293,9 +313,13 @@ defmodule Bread.Rooms.RoomServer do
       state = Map.update!(state, :position, fn _ -> new_position end)
 
       persist_state(state)
-      {:reply, {:accepted, state}, state}
+
+      resp = %{
+        server_position: state[:position]
+      }
+      {:reply, {:accepted, resp}, state}
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
     
@@ -307,9 +331,15 @@ defmodule Bread.Rooms.RoomServer do
       |> Map.update!(:remote_available, fn _ -> false end)
 
       persist_state(state)
-      {:reply, {:accepted, state}, state}
+      
+      resp = %{
+        remote_available: state[:remote_available],
+        remote_holder_user_id: state[:remote_holder_user_id],
+        remote_holder_connection_id: state[:remote_holder_connection_id]
+      }
+      {:reply, {:accepted, resp}, state}
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
 
@@ -321,9 +351,15 @@ defmodule Bread.Rooms.RoomServer do
 
       persist_state(state)
 
-      {:reply, {:accepted, state}, state}
+      resp = %{
+        remote_available: state[:remote_available],
+        remote_holder_user_id: state[:remote_holder_user_id],
+        remote_holder_connection_id: state[:remote_holder_connection_id] || "empty"
+      }
+
+      {:reply, {:accepted, resp}, state}
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not have the remote"}, state}
     end
   end
 
@@ -334,9 +370,9 @@ defmodule Bread.Rooms.RoomServer do
       state = state
       |> Map.update!(:open, fn _ -> value end)
 
-      {:reply, {:accepted, state}, state}
+      {:reply, {:accepted, %{}}, state}
     else
-      {:reply, {:rejected, state}, state}
+      {:reply, {:rejected, "User does not own the room"}, state}
     end
   end
 

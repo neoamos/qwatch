@@ -12,10 +12,24 @@ defmodule Coherence.Schemas do
   end
 
   def list_by_user(opts) do
+    opts = if opts[:email] do
+      Keyword.update!(opts, :email, fn email ->
+        Coherence.NormalizeEmail.normalize_email(email)
+      end)
+    else
+      opts
+    end
     Config.repo().all(query_by(Config.user_schema(), opts))
   end
 
   def get_by_user(opts) do
+    opts = if opts[:email] do
+      Keyword.update!(opts, :email, fn email ->
+        Coherence.NormalizeEmail.normalize_email(email)
+      end)
+    else
+      opts
+    end
     Config.repo().get_by(Config.user_schema(), opts)
   end
 
@@ -28,6 +42,7 @@ defmodule Coherence.Schemas do
   end
 
   def get_user_by_email(email) do
+    email = Coherence.NormalizeEmail.normalize_email(email)
     Config.repo().get_by(Config.user_schema(), email: email)
   end
 

@@ -1,8 +1,8 @@
 
 import $ from 'jquery'
-import playerjs from 'player.js'
+import Player from '@vimeo/player'
 
-export default class BaseInterface {
+export default class VimeoInterface {
   constructor(listeners){
     this.enabled = false
     this.listeners = listeners
@@ -22,11 +22,12 @@ export default class BaseInterface {
   enable(url){
     var self = this;
     console.log("Enable video with url " + url.href)
-    self.url = url;
+    let videoId = url.pathname.substring(1)
+    self.url = "https://player.vimeo.com/video/" + videoId + "?autopause=false&autoplay=true";
     self.listeners.onPlayerStateUpdate({ready: false})
 
     var iframe = $(document.createElement('iframe'));
-    iframe.attr("src", this.rewriteToEmbedURL(url))
+    iframe.attr("src", self.url)
     iframe.attr("id", "base-player")
     iframe.attr("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture")
     iframe.attr("allowfullscreen", "")
@@ -35,8 +36,8 @@ export default class BaseInterface {
     this.enabled = true
     $('#player_container').append(iframe)
 
-    this.player = new playerjs.Player(iframe[0])
-    this.player.on('ready', function(){
+    this.player = new Player(iframe[0])
+    this.player.on('loaded', function(){
       console.log("Playerjs player is ready")
       this.listeners.onPlayerStateUpdate({ready: true})
       this.playerReady = true
@@ -58,8 +59,8 @@ export default class BaseInterface {
     }.bind(this))
     this.player.on("ended", function(){
       if (this.enabled) {
-        this.player.
-        this.listeners.onEnded()
+        console.log("ended")
+        setTimeout(this.listeners.onEnded, 400)
       }
     }.bind(this))
 
@@ -68,7 +69,9 @@ export default class BaseInterface {
   }
 
   matches(url){
-    return true;
+    return (
+      url.host.includes("vimeo.com")
+    )
   }
 
   ready(){
@@ -106,9 +109,9 @@ export default class BaseInterface {
 
   getPosition(callback, defaultSeconds){
     var self = this
-    self.player.getDuration(function (duration) {
-      self.player.getCurrentTime(function (seconds) {
-        self.player.getPaused(function (isPaused) {
+    self.player.getDuration().then(function (duration) {
+      self.player.getCurrentTime().then(function (seconds) {
+        self.player.getPaused().then(function (isPaused) {
 
           let position = {
             seconds: defaultSeconds || seconds,
@@ -123,17 +126,4 @@ export default class BaseInterface {
     return
   }
 
-  rewriteToEmbedURL(url){
-    if(url.host == "www.twitch.tv"){
-      let channel = url.pathname.substring(1)
-      return "https://player.twitch.tv/?channel=" + channel
-    }if(url.host == "mixer.com"){
-      let channel = url.pathname.substring(1)
-      return "https://mixer.com/embed/player/" + channel + "?disableLowLatency=1"
-    }else if(url.host == "streamable.com"){
-      return "https://streamable.com/o" + url.pathname
-    }else{
-      return url.href
-    }
-  }
 }

@@ -12,7 +12,7 @@ export default class Controller extends React.Component{
 
     this.updatePercent = this.updatePercent.bind(this)
     this.onClickProgressBar = this.onClickProgressBar.bind(this)
-    this.updatePositionInterval = setInterval(this.updatePercent,1000)
+    this.updatePositionInterval = setInterval(this.updatePercent,20)
   }
 
   updatePercent(){
@@ -24,9 +24,9 @@ export default class Controller extends React.Component{
   calculatePercent(position){
     let time = 0;
     if(position.playing){
-      time = Math.min(position.seconds + (Date.now() - position.at)/1000, position.duration-1);
+      time = Math.min(position.seconds + (Date.now() - position.at)/1000, position.duration);
     }else{
-      time =  Math.min(position.seconds, position.duration-1)
+      time =  Math.min(position.seconds, position.duration)
     }
     return (time/position.duration)*100
   }

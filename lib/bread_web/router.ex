@@ -31,6 +31,7 @@ defmodule BreadWeb.Router do
 
     # get "/rr/:name", RoomController, :room
     get "/r/:name", RoomController, :room_react
+    get "/room/new", RoomController, :new
 
     # get "/user/:name", UserController, :profile
 
@@ -43,7 +44,6 @@ defmodule BreadWeb.Router do
   scope "/", BreadWeb do
     pipe_through :protected
 
-    get "/room/new", RoomController, :new
     post "/room/create", RoomController, :create
     get "/room/edit/:name", RoomController, :edit_form
     post "/room/edit/", RoomController, :edit

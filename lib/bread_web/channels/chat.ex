@@ -42,7 +42,7 @@ defmodule BreadWeb.Chat do
   end
 
   def handle_in("message:delete", %{"message_id" => id}, socket) do
-    "chat:" <> room = socket.topic
+    "chat:" <> _room = socket.topic
     if socket.assigns[:current_user] do
       message = Chat.get_message({:id, id})
       room = Rooms.get_room({:id, message.room_id})
@@ -67,6 +67,10 @@ defmodule BreadWeb.Chat do
     {:noreply, socket}
   end
 
+  def handle_in(_, _, socket) do
+    {:noreply, socket}
+  end
+
   def handle_info(:after_join, socket) do
     push(socket, "presence_state", Presence.list(socket))
     IO.inspect("Tracking user")
@@ -85,10 +89,6 @@ defmodule BreadWeb.Chat do
         connection_id: socket.assigns[:connection_id],
       })
     end
-    {:noreply, socket}
-  end
-
-  def handle_in(_, _, socket) do
     {:noreply, socket}
   end
 
