@@ -88,7 +88,7 @@ defmodule Bread.Rooms.RoomServer do
         server_playing: room.server_playing,
         position: %{
           seconds: room.position_seconds || 0, 
-          duration: room.position_duration || 0, 
+          duration: room.position_duration, 
           playing: !!room.position_playing, 
           at: room.position_at || DateTime.utc_now(),
           link_id: (if room.position_duration, do: room.current_link_id, else: nil),

@@ -167,11 +167,12 @@ defmodule Bread.Rooms do
     if link do
       update = case LinkFetcher.fetch(link.link) do
         {:ok, info} -> 
+          uri = URI.parse(link.link)
           %{
-            title: info.title,
+            title: (info.title |> String.slice(0..255)),
             description: info.description,
             site_name: info.site_name,
-            external_image: info.image
+            external_image: (if !!info.image and String.starts_with?(info.image, "/"), do: "https://#{uri.host}#{info.image}", else: info.image)
           }
         {:error, message} -> 
           uri = URI.parse(link.link)
