@@ -37,8 +37,10 @@ export default class UserList extends React.Component{
               placement="bottom"
               content={(
                 <div className="dropdown">
-                  <img className="avatar-lg" src={"/avatar/" + this.props.connections[id].avatar} />
-                  { this.props.ownsRoom &&
+                  {!this.state.minimized &&
+                 <img className="avatar-lg" src={"/avatar/" + this.props.connections[id].avatar} />
+                  }
+                  { this.props.ownsRoom && !this.state.minimized &&
                     <div className="dropdown__item btn-flat" onClick={() => {this.kickUser(this.props.connections[id].user_id)}}>
                       Kick User
                     </div>
@@ -48,11 +50,21 @@ export default class UserList extends React.Component{
             >
               <div className={classes} key={this.props.connections[id].user_id}>
                 <div className="user_item__avatar">
+                <Tippy 
+                  placement="left"
+                  content={this.props.connections[id].name}
+                  >
+                    {this.props.connections[id].avatar &&
                   <img src={"/avatar/" + this.props.connections[id].avatar} />
+                  }
+                  </Tippy>
                 </div>
+                {!this.state.minimized &&
+                 [
                 <div className="user_item__name">
                 <span>{this.props.connections[id].name}</span>
                 </div>
+                ]}
               </div>
             </Tippy>
           )
@@ -64,20 +76,40 @@ export default class UserList extends React.Component{
       }
     }
     let wrapperClass= "users"
-    if(this.state.minimized){
-      wrapperClass += " users--minimized"
-    }
+    // if(this.state.minimized){
+    //   wrapperClass += " users--minimized"
+    // }
     return (
-      <div className={wrapperClass}>
-        <h3>Users</h3>
+      <div className={wrapperClass} id={wrapperClass}>
+      <div className="user_list_toggle">
+        {[!this.state.minimized &&
+        <h3>User List</h3>
+        ]}
+        <span className="oi" 
+        data-glyph={this.state.minimized ? "people" : "minus"}
+        aria-hidden="true"
+        onClick={()=>{this.minimiseFunction(!this.state.minimized)}}/>
+      </div>
+      
         <div className="users__list">
         {users}
         </div>
+        {[!this.state.minimized &&
         <div className="users__count"> 
              {registered_user_count} users, {anonymous_user_count} anonymous
           </div>
+        ]}
       </div>
     );
   }
-
+  minimiseFunction(minimize){
+  var x =   document.getElementById("users");
+  if(minimize){
+    x.style.flex = "0 0 60px";
+  }
+  else{
+    x.style.flex = "0 0 240px";
+  }
+  this.setState({minimized:!this.state.minimized});
+  }
 }

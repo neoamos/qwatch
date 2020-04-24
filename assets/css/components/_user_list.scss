@@ -37,22 +37,28 @@
   }
 }
 
+
+
 .users{
   display: flex;
   align-items: stretch;
   flex-direction: column;
-  overflow: hidden; 
-
+  overflow: hidden;
   &__count{
     padding: 5px;
     color: $text-muted;
     text-align: center;
   }
-
+  .user_list_toggle{
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-around;
+    padding:10px;
+  }
   &__list{
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     overflow: auto;
   }
-}
+} 
