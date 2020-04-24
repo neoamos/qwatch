@@ -83,10 +83,10 @@ export default class UserList extends React.Component{
       <div className={wrapperClass} id={wrapperClass}>
       <div className="user_list_toggle">
         {[!this.state.minimized &&
-        <h3>User List</h3>
+        <h4>User List</h4>
         ]}
         <span className="oi" 
-        data-glyph={this.state.minimized ? "people" : "minus"}
+        data-glyph={this.state.minimized ? "people" : "collapse-right"}
         aria-hidden="true"
         onClick={()=>{this.minimiseFunction(!this.state.minimized)}}/>
       </div>
