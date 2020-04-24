@@ -14,7 +14,6 @@
   }
 
   &__avatar{
-    margin-right: 10px;
     img{
       width: 35px;
       height: 35px;
@@ -23,6 +22,7 @@
   }
 
   &__name{
+    margin-left: 10px;
     flex-grow: 1;
     color: $user-green;
     font-weight: 400;
@@ -44,21 +44,41 @@
   align-items: stretch;
   flex-direction: column;
   overflow: hidden;
+  flex: 0 0 240px;
+
   &__count{
     padding: 5px;
     color: $text-muted;
     text-align: center;
   }
-  .user_list_toggle{
+
+  &__toggle{
     display: flex;
     flex-direction: row; 
-    justify-content: space-around;
-    padding:10px;
+    justify-content: space-between;
   }
+
   &__list{
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     overflow: auto;
   }
+
+  &__toggle_btn{
+    padding: 10px;
+  }
+
+  &--minimized .user_item__name{
+    display: none;
+  }
+
+  &--minimized .users__toggle{
+    justify-content: space-evenly;
+  }
+
+  &--minimized.users{
+    flex: 0 0 auto;
+  }
 } 
+

@@ -53,7 +53,7 @@ export default class Queue extends React.Component{
       <div className="video__queue-toggle">
         <span className="oi btn-flat" 
           data-glyph={this.state.minimized ? "chevron-top" : "chevron-bottom"} 
-          title={this.state.minimized ? "Maximize Queue" : "Minimize Queue"} 
+          title={this.state.minimized ? "Show Queue" : "Hide Queue"} 
           aria-hidden="true"
           onClick={this.toggleMinimized}></span>
       </div>

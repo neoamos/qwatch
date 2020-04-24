@@ -12,10 +12,19 @@ export default class UserList extends React.Component{
   componentDidMount(){
 
     this.kickUser = this.kickUser.bind(this)
+    this.toggleMinimized = this.toggleMinimized.bind(this)
   }
 
   kickUser(userID){
     this.props.channel.push("user:kick", {user_id: userID})
+  }
+
+  toggleMinimized(){
+    this.setState(state => {
+      return {
+      minimized: !state.minimized
+      }
+    });
   }
 
   render(){
@@ -34,13 +43,11 @@ export default class UserList extends React.Component{
             <Tippy
               trigger="click"
               interactive
-              placement="bottom"
+              placement={this.state.minimized ? "left" : "bottom"}
               content={(
                 <div className="dropdown">
-                  {!this.state.minimized &&
                  <img className="avatar-lg" src={"/avatar/" + this.props.connections[id].avatar} />
-                  }
-                  { this.props.ownsRoom && !this.state.minimized &&
+                  { this.props.ownsRoom  &&
                     <div className="dropdown__item btn-flat" onClick={() => {this.kickUser(this.props.connections[id].user_id)}}>
                       Kick User
                     </div>
@@ -52,19 +59,16 @@ export default class UserList extends React.Component{
                 <div className="user_item__avatar">
                 <Tippy 
                   placement="left"
-                  content={this.props.connections[id].name}
+                  content={this.state.minimized ? this.props.connections[id].name : null}
                   >
                     {this.props.connections[id].avatar &&
                   <img src={"/avatar/" + this.props.connections[id].avatar} />
                   }
                   </Tippy>
                 </div>
-                {!this.state.minimized &&
-                 [
                 <div className="user_item__name">
                 <span>{this.props.connections[id].name}</span>
                 </div>
-                ]}
               </div>
             </Tippy>
           )
@@ -76,19 +80,20 @@ export default class UserList extends React.Component{
       }
     }
     let wrapperClass= "users"
-    // if(this.state.minimized){
-    //   wrapperClass += " users--minimized"
-    // }
+    if(this.state.minimized){
+      wrapperClass += " users--minimized"
+    }
     return (
       <div className={wrapperClass} id={wrapperClass}>
-      <div className="user_list_toggle">
-        {[!this.state.minimized &&
-        <h4>User List</h4>
-        ]}
-        <span className="oi" 
+      <div className="users__toggle">
+        {!this.state.minimized &&
+        <h3>Users</h3>
+        }
+        <span className="oi btn-flat users__toggle_btn" 
         data-glyph={this.state.minimized ? "people" : "collapse-right"}
+        title={this.state.minimized ? "Expand Users" : "Minimize Users"}
         aria-hidden="true"
-        onClick={()=>{this.minimiseFunction(!this.state.minimized)}}/>
+        onClick={this.toggleMinimized}/>
       </div>
       
         <div className="users__list">
@@ -101,15 +106,5 @@ export default class UserList extends React.Component{
         ]}
       </div>
     );
-  }
-  minimiseFunction(minimize){
-  var x =   document.getElementById("users");
-  if(minimize){
-    x.style.flex = "0 0 auto";
-  }
-  else{
-    x.style.flex = "0 0 240px";
-  }
-  this.setState({minimized:!this.state.minimized});
   }
 }
