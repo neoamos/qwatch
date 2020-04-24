@@ -63,8 +63,13 @@
     width: 100%;
     overflow-x: scroll;
     padding: 5px;
-    height: 210px;
+    height: 200px;
     // scroll-behavior: smooth;
+  }
+
+  &__queue-toggle{
+    width: 100%;
+    text-align: center;
   }
 
   &__controls{
@@ -155,7 +160,7 @@
   width: 200px;
   height: 170px;
   border-radius: 4px;
-  margin: 7px;
+  margin: 3px 7px;
   background-color: $background-tile;
   color: #ffffff;
   border-radius: 4px;

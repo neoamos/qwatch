@@ -22,8 +22,8 @@ export default class RoomReact extends React.Component{
       suggestions: [],
       clientPlaying: {},
       serverPlaying: {},
-      serverPosition: {seconds: 0, duration: 1, playing: true, at: Date.now(), link_id: null},
-      clientPosition: {seconds: 0, duration: 1, playing: true, at: Date.now(), link_id: null},
+      serverPosition: {seconds: 0, duration: null, playing: true, at: Date.now(), link_id: null},
+      clientPosition: {seconds: 0, duration: null, playing: true, at: Date.now(), link_id: null},
       hasRemote: false,
       remoteAvailable: false,
       remoteHolderUserID: null,
@@ -226,7 +226,7 @@ export default class RoomReact extends React.Component{
         this.player.disable()
       }else if(!oldLink || oldLink.id != newLink.id){
         this.setState({
-          clientPosition: {seconds: 0, duration: 1, playing: false, at: Date.now(), link_id: null}
+          clientPosition: {seconds: 0, duration: null, playing: false, at: Date.now(), link_id: null}
         })
         this.player.updateLink(newLink.link, initialPosition)
       }
@@ -237,7 +237,7 @@ export default class RoomReact extends React.Component{
     this.videoChannel.push("position:update", {
       position: {
         seconds: Math.trunc(this.calculateCurrentTime(this.state.clientPosition)*100)/100,
-        duration: Math.trunc(this.state.clientPosition.duration*100)/100,
+        duration: this.state.clientPosition.duration && Math.trunc(this.state.clientPosition.duration*100)/100,
         index: this.state.clientPosition.index,
         playing: this.state.clientPosition.playing
       }
@@ -394,16 +394,16 @@ export default class RoomReact extends React.Component{
     console.log("Player update: " + position.seconds + "s of " + position.duration + "s. Playing: " + position.playing)
     this.cancelAutoplay()
 
-    this.setState({
+    this.setState(state => { return {
       clientPosition:{
         seconds: position.seconds,
         duration: position.duration,
         playing: position.playing,
         index: position.index,
         at: position.at,
-        stale: false
+        link_id: state.clientPosition.link_id
       }
-    })
+    }})
     if(this.state.hasRemote){
       this.sendPosition()
     }

@@ -5,8 +5,14 @@ import Tippy from '@tippyjs/react';
 export default class Queue extends React.Component{
   constructor(props){
     super(props)
+    this.state = {
+      minimized: false
+    }
 
+    this.toggleMinimized = this.toggleMinimized.bind(this)
     this.scrollToPlaying = true
+
+    this.queueRef = React.createRef();
   }
 
   componentDidUpdate(){
@@ -14,10 +20,18 @@ export default class Queue extends React.Component{
       let playingIndex = this.props.items.findIndex(e => {
         return this.props.clientPlaying.id == e.id
       })
-      const node = ReactDOM.findDOMNode(this)
+      const node = this.queueRef.current;
       node.scrollLeft = 214*playingIndex;
       this.scrollToPlaying = false
     }
+  }
+
+  toggleMinimized(){
+    this.setState(state => {
+      return {
+        minimized: !state.minimized
+      }
+    })
   }
 
   render(){
@@ -35,17 +49,26 @@ export default class Queue extends React.Component{
          />
     })
     return (
-    <div className="video__queue">
-      {queueItems.length>0 ?   
-        [
-          <div className="queue-spacer" key="spacer1" />,
-          queueItems,
-          <div className="queue-spacer" key="spacer2" />
-        ]
-         :
-      <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
-      }
-    </div>
+    <>
+      <div className="video__queue-toggle">
+        <span className="oi btn-flat" 
+          data-glyph={this.state.minimized ? "chevron-top" : "chevron-bottom"} 
+          title={this.state.minimized ? "Maximize Queue" : "Minimize Queue"} 
+          aria-hidden="true"
+          onClick={this.toggleMinimized}></span>
+      </div>
+      <div className="video__queue" style={this.state.minimized ? {display: 'none'} : {}} ref={this.queueRef}>
+        {queueItems.length>0 ?   
+          [
+            <div className="queue-spacer" key="spacer1" />,
+            queueItems,
+            <div className="queue-spacer" key="spacer2" />
+          ]
+          :
+        <div className="placeholder_message">No items in the queue yet.  Request the remote to add something.</div> 
+        }
+      </div>
+    </>
     );
   }
 

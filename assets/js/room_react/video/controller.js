@@ -23,6 +23,9 @@ export default class Controller extends React.Component{
 
   calculatePercent(position){
     let time = 0;
+    if(position.duration == null){
+      return 0;
+    }
     if(position.playing){
       time = Math.min(position.seconds + (Date.now() - position.at)/1000, position.duration);
     }else{

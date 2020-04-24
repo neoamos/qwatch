@@ -24,7 +24,7 @@ defmodule Bread.Rooms.Link do
     model
     |> cast(params, [:link, :title, :description, :site_name, :image, :external_image, :user_id, :room_id])
     |> validate_required([:link, :user_id, :room_id])
-    |> validate_length(:title, max: 100)
+    |> validate_length(:title, max: 256)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:room_id)
   end
@@ -32,7 +32,7 @@ defmodule Bread.Rooms.Link do
   def edit_changeset(model, params \\ %{}) do
     model
     |> cast(params, [:title, :description, :image, :external_image, :site_name])
-    |> validate_length(:title, max: 100)
+    |> validate_length(:title, max: 256)
   end
 
 
