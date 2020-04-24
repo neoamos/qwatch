@@ -105,7 +105,7 @@ export default class UserList extends React.Component{
   minimiseFunction(minimize){
   var x =   document.getElementById("users");
   if(minimize){
-    x.style.flex = "0 0 60px";
+    x.style.flex = "0 0 auto";
   }
   else{
     x.style.flex = "0 0 240px";
