@@ -4,6 +4,7 @@ defmodule Bread.Rooms do
 
   alias Bread.Rooms.Room
   alias Bread.Rooms.Link
+  alias Bread.Rooms.Links
   alias Bread.LinkFetcher
   alias Bread.Rooms.RoomServer
 
@@ -51,17 +52,6 @@ defmodule Bread.Rooms do
       |> Repo.update()
     else
       {:error, "Room does not exist"}
-    end
-  end
-
-  def update_link link_id, attrs do
-    link = get_link({:id, link_id})
-    if link do
-      link
-      |> Link.edit_changeset(attrs)
-      |> Repo.update()
-    else
-      {:error, "Link does not exist"}
     end
   end
 
@@ -138,58 +128,4 @@ defmodule Bread.Rooms do
     |> Repo.update_all([])
   end
 
-  def get_link {:id, id}, params \\ %{} do
-    query = from l in Link, where: l.id==^id
-
-    query = if params[:preload] do
-      from l in query, preload: ^params[:preload]
-    else
-      query
-    end
-
-    Repo.one(query)
-  end
-
-  def get_links {:list, id_list}, params \\ %{} do
-    query = from l in Link, where: l.id in ^id_list
-
-    query = if params[:preload] do
-      from l in query, preload: ^params[:preload]
-    else
-      query
-    end
-
-    Repo.all(query)
-  end
-
-  def get_link_info link_id do
-    link = get_link({:id, link_id}, preload: [:room])
-    if link do
-      update = case LinkFetcher.fetch(link.link) do
-        {:ok, info} -> 
-          uri = URI.parse(link.link)
-          %{
-            title: (info.title |> String.slice(0..255)),
-            description: info.description,
-            site_name: info.site_name,
-            external_image: (if !!info.image and String.starts_with?(info.image, "/"), do: "https://#{uri.host}#{info.image}", else: info.image)
-          }
-        {:error, message} -> 
-          uri = URI.parse(link.link)
-          IO.inspect(message)
-          %{
-            title: uri.path,
-            site_name: String.replace(uri.host, "www.", "")
-          }
-      end
-      case update_link link_id, update do
-        {:ok, new_link} ->
-          RoomServer.update_link(link.room.name, link.id)
-          {:ok, new_link}
-        other -> other
-      end
-    else
-      {:error, "Link does not exist"}
-    end
-  end
 end

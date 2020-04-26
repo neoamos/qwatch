@@ -1,7 +1,13 @@
 <div class="room_item">
   <a href="/r/<%= @room.name %>"> 
     <div class="room_item__image">
-      <img src="<%= if @room.current_link, do: @room.current_link.external_image || "/images/no-image.png", else: "/images/no-image.png" %>">
+    <%= if !!@room.current_link and !!@room.current_link.image do %>
+      <img src="/cover/<%= @room.current_link.image %>">
+    <% else %>
+      <div class="room_item__img_placeholder">
+        <div><%= if !!@room.current_link and !!@room.current_link.site_name, do: @room.current_link.site_name, else: (@room.title || (@room.user.name <> "'s Room")) %></div>
+      </div>
+    <% end %>
     </div>
     <div class="room_item__title-wrap">
     <div class="room_item__title">

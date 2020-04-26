@@ -2,6 +2,7 @@ defmodule Bread.Rooms.RoomServer do
   use GenServer
 
   alias Bread.Rooms
+  alias Bread.Rooms.Links
 
   # API
 
@@ -70,7 +71,7 @@ defmodule Bread.Rooms.RoomServer do
     room = Rooms.get_room({:name, room_name}, %{preload: [:links]})
     if room do
       queue = deserialize_queue(room.queue)
-      links = Rooms.get_links({:list, queue}) 
+      links = Links.get_links({:list, queue}) 
       |> Map.new(fn link -> 
         {link.id, 
         link_to_map(link)
@@ -123,7 +124,7 @@ defmodule Bread.Rooms.RoomServer do
 
   def handle_cast({:update_link, link_id}, state) do
     IO.inspect("[RS-" <> state[:room_name] <> "] Updating link")
-    link = Rooms.get_link({:id, link_id})
+    link = Links.get_link({:id, link_id})
     if link do
       link_map = link_to_map(link)
       state = Map.update!(state, :links, fn links -> Map.put(links, link.id, link_map) end)
@@ -155,7 +156,7 @@ defmodule Bread.Rooms.RoomServer do
             state
           end
           persist_state(state, %{queue: true})
-          Task.async(fn -> Rooms.get_link_info(link.id) end)
+          Task.async(fn -> Links.get_link_info(link.id) end)
           resp = %{
             links: %{link.id => %{link: link.link, id: link.id}},
             link_queue: state[:link_queue],
@@ -387,7 +388,7 @@ defmodule Bread.Rooms.RoomServer do
       title: link.title,
       description: link.description,
       site_name: link.site_name,
-      image: link.external_image
+      image: link.image
     }
   end
 

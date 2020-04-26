@@ -10,7 +10,8 @@ defmodule Bread.LinkFetcher do
     uri = URI.parse(link)
     domain = if uri.host, do: String.replace(uri.host, "www.", ""), else: ""
     cond do
-      (domain == "youtube.com" or domain == "youtu.be" or domain == "m.youtube.com") -> 
+      (!uri.scheme or !uri.host) -> {:error, "Invalid link"}
+      (domain == "youtube.com" or domain == "youtu.be" or domain == "m.youtube.com") and uri.query-> 
         # id = Enum.at(Regex.run(@youtube_regex, link), 7)
         # fetch_generic("https://www.youtube.com/watch?v=" <> id)
         fetch_youtube link, uri
@@ -38,6 +39,8 @@ defmodule Bread.LinkFetcher do
           {:error, reason} -> 
             {:error, reason}
         end
+      {:ok, other} ->
+        {:error, "Received bad response"}
       {:error, reason} -> 
         {:error, reason}
     end
@@ -64,12 +67,15 @@ defmodule Bread.LinkFetcher do
           {:error, reason} -> 
             {:error, reason}
         end
+      {:ok, other} ->
+        {:error, "Received bad response"}
       {:error, reason} -> 
         {:error, reason}
     end
   end
 
   def fetch_generic link do
+    IO.inspect(link)
     case HTTPoison.get(link, [], ssl: [{:versions, [:"tlsv1.2"]}], follow_redirect: true, max_body_length: 1_000_000) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         parsed = if String.valid?(body), do: parse_metatags(body), else: struct(OpenGraph, %{})
@@ -91,6 +97,9 @@ defmodule Bread.LinkFetcher do
       {:error, %HTTPoison.Error{reason: reason}} ->
         IO.inspect(reason)
         {:error, reason}
+      other -> 
+        IO.inspect(other)
+        {:error, "Failed for some reason"}
     end
   end
 

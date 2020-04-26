@@ -27,6 +27,9 @@ defmodule BreadWeb.Endpoint do
   plug Plug.Static,
     at: "/avatar", from: "../images/avatar", gzip: false
 
+  plug Plug.Static,
+    at: "/cover", from: "../images/cover", gzip: false
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
