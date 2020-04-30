@@ -1,7 +1,0 @@
-<h1>My Rooms</h1>
-
-<div class="room_list">
-<%= Enum.map(@rooms, fn room -> %>
-  <%= render BreadWeb.RoomView, "room_item.html", room: room %>
-<% end) %>
-</div>

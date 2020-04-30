@@ -7,15 +7,15 @@
 # General application configuration
 use Mix.Config
 
-config :bread,
-  ecto_repos: [Bread.Repo]
+config :qwatch,
+  ecto_repos: [Qwatch.Repo]
 
 # Configures the endpoint
-config :bread, BreadWeb.Endpoint,
+config :qwatch, QwatchWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "p5D/Hep188pytpejBjeQUTMMLEhSEkjHaB9bWovhHoI0bfYUEvYNtAtyfX6y9TgG",
-  render_errors: [view: BreadWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Bread.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: QwatchWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Qwatch.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -27,20 +27,21 @@ config :phoenix, :json_library, Jason
 
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,
-  user_schema: Bread.Accounts.User,
-  repo: Bread.Repo,
-  module: Bread,
-  web_module: BreadWeb,
-  router: BreadWeb.Router,
-  messages_backend: BreadWeb.Coherence.Messages,
+  user_schema: Qwatch.Accounts.User,
+  repo: Qwatch.Repo,
+  module: Qwatch,
+  web_module: QwatchWeb,
+  router: QwatchWeb.Router,
+  messages_backend: QwatchWeb.Coherence.Messages,
   logged_out_url: "/",
-  email_from_name: "Bread",
-  email_from_email: "admin@bread.com",
-  opts: [:rememberable, :authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :registerable],
-  changeset: {Bread.Accounts.User, :changeset},
+  email_from_name: "Qwatch",
+  email_from_email: "support@qwatch.tv",
+  opts: [:rememberable, :authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :registerable, :confirmable],
+  changeset: {Qwatch.Accounts.User, :changeset},
   user_token: true,
   rememberable_cookie_expire_hours: 365*24,
-  registration_permitted_attributes: ["email","name","password", "current_password", "password_confirmation", "tos", "country_id", "birthday", "city", "bio", "hobbies", "pm_message", "gender", "avatar"]
+  registration_permitted_attributes: ["email","name","password", "current_password", "password_confirmation", "tos", "avatar"]
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

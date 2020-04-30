@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.CurrentLink do
+defmodule Qwatch.Repo.Migrations.CurrentLink do
   use Ecto.Migration
 
   def change do

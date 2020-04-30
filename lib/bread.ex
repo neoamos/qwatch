@@ -1,6 +1,6 @@
-defmodule Bread do
+defmodule Qwatch do
   @moduledoc """
-  Bread keeps the contexts that define your domain
+  Qwatch keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

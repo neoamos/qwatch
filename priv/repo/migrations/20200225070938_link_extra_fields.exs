@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.LinkExtraFields do
+defmodule Qwatch.Repo.Migrations.LinkExtraFields do
   use Ecto.Migration
 
   def change do

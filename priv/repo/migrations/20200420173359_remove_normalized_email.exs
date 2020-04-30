@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.RemoveNormalizedEmail do
+defmodule Qwatch.Repo.Migrations.RemoveNormalizedEmail do
   use Ecto.Migration
 
   def change do

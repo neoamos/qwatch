@@ -46,8 +46,8 @@ end
 # when running `mix distillery.release`, the first release in the file
 # will be used by default
 
-release :bread do
-  set version: current_version(:bread)
+release :qwatch do
+  set version: current_version(:qwatch)
   set applications: [
     :runtime_tools
   ]

@@ -1,5 +1,5 @@
-defmodule BreadWeb.PageControllerTest do
-  use BreadWeb.ConnCase
+defmodule QwatchWeb.PageControllerTest do
+  use QwatchWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

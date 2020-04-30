@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.RoomSettings do
+defmodule Qwatch.Repo.Migrations.RoomSettings do
   use Ecto.Migration
 
   def change do
