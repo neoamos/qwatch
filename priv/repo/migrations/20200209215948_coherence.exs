@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.Coherence do
+defmodule Qwatch.Repo.Migrations.Coherence do
   use Ecto.Migration
 
   def change do

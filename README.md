@@ -1,4 +1,4 @@
-# Bread
+# Qwatch
 
 To start your Phoenix server:
 

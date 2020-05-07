@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.UniqueUsername do
+defmodule Qwatch.Repo.Migrations.UniqueUsername do
   use Ecto.Migration
 
   def change do

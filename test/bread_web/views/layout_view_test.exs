@@ -1,5 +1,5 @@
-defmodule BreadWeb.LayoutViewTest do
-  use BreadWeb.ConnCase, async: true
+defmodule QwatchWeb.LayoutViewTest do
+  use QwatchWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and
   # use functions such as safe_to_string() to convert the helper

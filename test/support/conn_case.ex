@@ -1,4 +1,4 @@
-defmodule BreadWeb.ConnCase do
+defmodule QwatchWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,7 +11,7 @@ defmodule BreadWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use BreadWeb.ConnCase, async: true`, although
+  by setting `use QwatchWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -21,18 +21,18 @@ defmodule BreadWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      alias BreadWeb.Router.Helpers, as: Routes
+      alias QwatchWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint BreadWeb.Endpoint
+      @endpoint QwatchWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Bread.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Qwatch.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Bread.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Qwatch.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.ChatMessage do
+defmodule Qwatch.Repo.Migrations.ChatMessage do
   use Ecto.Migration
 
   def change do

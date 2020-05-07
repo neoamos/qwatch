@@ -53,7 +53,7 @@ export default class Queue extends React.Component{
       <div className="video__queue-toggle">
         <span className="oi btn-flat" 
           data-glyph={this.state.minimized ? "chevron-top" : "chevron-bottom"} 
-          title={this.state.minimized ? "Maximize Queue" : "Minimize Queue"} 
+          title={this.state.minimized ? "Show Queue" : "Hide Queue"} 
           aria-hidden="true"
           onClick={this.toggleMinimized}></span>
       </div>
@@ -78,6 +78,9 @@ class QueueItem extends React.Component {
   constructor(props){
     super(props)
     // console.log(props)
+    this.state = {
+      imageError: false
+    }
 
     this.handleClick = this.handleClick.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
@@ -104,7 +107,13 @@ class QueueItem extends React.Component {
     return (
       <div className={className} onClick={this.handleClick} title={this.props.item.title || "Unknown title"} >
         <div className="tile__image">
-          <img src={this.props.item.image || "/images/no-image.png"} />
+          { this.state.imageError || this.props.item.image==null ?
+          <div className="tile__img_placeholder">
+          <div>{this.props.item.site_name}</div>
+          </div>
+          :
+          <img src={"/cover/" + this.props.item.image } onError={() => {this.setState({imageError: true})}} />
+          }
         </div>
         <div className="tile__title-wrap">
           <div className="tile__title">{this.props.item.title || "Unknown title"}</div>

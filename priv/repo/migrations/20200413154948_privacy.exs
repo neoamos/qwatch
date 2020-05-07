@@ -1,4 +1,4 @@
-defmodule Bread.Repo.Migrations.Privacy do
+defmodule Qwatch.Repo.Migrations.Privacy do
   use Ecto.Migration
 
   def change do

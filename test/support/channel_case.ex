@@ -1,4 +1,4 @@
-defmodule BreadWeb.ChannelCase do
+defmodule QwatchWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -11,7 +11,7 @@ defmodule BreadWeb.ChannelCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use BreadWeb.ChannelCase, async: true`, although
+  by setting `use QwatchWeb.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -23,15 +23,15 @@ defmodule BreadWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint BreadWeb.Endpoint
+      @endpoint QwatchWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Bread.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Qwatch.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Bread.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Qwatch.Repo, {:shared, self()})
     end
 
     :ok

@@ -1,14 +1,14 @@
-defmodule BreadWeb.ErrorViewTest do
-  use BreadWeb.ConnCase, async: true
+defmodule QwatchWeb.ErrorViewTest do
+  use QwatchWeb.ConnCase, async: true
 
   # Bring render/3 and render_to_string/3 for testing custom views
   import Phoenix.View
 
   test "renders 404.html" do
-    assert render_to_string(BreadWeb.ErrorView, "404.html", []) == "Not Found"
+    assert render_to_string(QwatchWeb.ErrorView, "404.html", []) == "Not Found"
   end
 
   test "renders 500.html" do
-    assert render_to_string(BreadWeb.ErrorView, "500.html", []) == "Internal Server Error"
+    assert render_to_string(QwatchWeb.ErrorView, "500.html", []) == "Internal Server Error"
   end
 end

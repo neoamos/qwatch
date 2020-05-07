@@ -1,9 +1,9 @@
-defmodule Bread.MixProject do
+defmodule Qwatch.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :bread,
+      app: :qwatch,
       version: "0.1.1",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule Bread.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Bread.Application, []},
+      mod: {Qwatch.Application, []},
       extra_applications: [:logger, :runtime_tools, :httpoison]
     ]
   end
@@ -52,6 +52,8 @@ defmodule Bread.MixProject do
       {:mogrify, "~> 0.7.3"},
       {:floki, "~> 0.26.0"},
       {:is_email, "~> 0.0.1"},
+      {:swoosh, "~> 0.25"},
+      {:gen_smtp, "~> 0.13"},
       {:coherence, path: "local_deps/coherence"}
     ]
   end

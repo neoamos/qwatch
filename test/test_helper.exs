@@ -1,2 +1,2 @@
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(Bread.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Qwatch.Repo, :manual)

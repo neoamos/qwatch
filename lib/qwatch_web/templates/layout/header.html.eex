@@ -1,0 +1,73 @@
+<nav class="nav">
+  <a href="/"><h1 class="nav__logo">Qwatch</h1></a>
+  <div class="nav__left">
+    <ul>
+      <li class="nav__item"><a href="/room/new">Create Room</a></li>
+    </ul>
+  </div>
+  <div class="nav__right">
+    <ul>
+      <%= if !assigns[:current_user] do %>
+      <li class="nav__item nav--desktop"><a href="/sessions/new">Sign In</a></li>
+      <li class="nav__item nav__item-green nav--desktop"><a href="/registrations/new">Sign Up</a></li>
+
+      <button class="btn nav--mobile" data-tippy-menu="sing-in-menu">
+        <span class="oi" data-glyph="person" title="previous" aria-hidden="true"></span>
+      </button>
+      <div id="sing-in-menu" style="display: none;">
+        <div class="nav__dropdown"><a href="/sessions/new">Sign In</a></div>
+        <div class="nav__dropdown"><a href="/registrations/new">Sign Up</a></div>
+      </div>
+      <% else %>
+        <!--
+        <li class="menu__btn"><a href="/registrations/edit">Settings</a></li>
+        <li class="menu__btn"><%= link "Log out", to: "/sessions", method: :delete, class: "nav-link" %></li>
+        -->
+        <img data-tippy-menu="user-menu" src="/avatar/<%= @current_user.profile_image %>" class="avatar-sm nav__item">
+        <div id="user-menu" style="display: none;">
+          <div class="nav__dropdown"><a href="/user_rooms">My Rooms</a></div>
+          <div class="nav__dropdown"><a href="/registrations/edit">Settings</a></div>
+          <div class="nav__dropdown"><%= link "Sign out", to: "/sessions", method: :delete, class: "nav-link" %></div>
+        </div>
+      <% end%>
+    </ul>
+  </div>
+</nav>
+<div id="messages">
+  <%= if assigns[:message] do %>
+  <div class="info_message flash_message">
+  <div><%= @message %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
+  <% end %>
+  <% 
+    error = get_flash(@conn, :error)
+    warning = get_flash(@conn, :warning)
+    info = get_flash(@conn, :info)
+    ok = get_flash(@conn, :ok)
+  %>
+  <%= if error do %>
+  <div class="error_message flash_message">
+    <div><%= error %></div>
+    <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
+  <% end %>
+  <%= if warning do %>
+  <div class="warning_message flash_message">
+  </div><%= warning %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
+  <% end %>
+  <%= if info do %>
+  <div class="info_message flash_message">
+  <div><%= info %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
+  <% end %>
+  <%= if ok do %>
+  <div class="ok_message flash_message">
+  <div><%= ok %></div>
+  <span class="oi close-flash btn-flat" data-glyph="x" title="Close" aria-hidden="true"></span>
+  </div>
+  <% end %>
+</div>

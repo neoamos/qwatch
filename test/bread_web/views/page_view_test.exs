@@ -1,3 +1,3 @@
-defmodule BreadWeb.PageViewTest do
-  use BreadWeb.ConnCase, async: true
+defmodule QwatchWeb.PageViewTest do
+  use QwatchWeb.ConnCase, async: true
 end
