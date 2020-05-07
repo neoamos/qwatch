@@ -31,10 +31,13 @@
 
   <div class="form-group">
     <div style="text-align: center">
-      <div class="btn"><a href="/passwords/new">Forgot Password</a></div>
       <div class="btn"><a href="/registrations/new">Sign Up</a></div>
+      <div class="btn"><a href="/passwords/new">Forgot Password</a></div>
+      <div class="btn"><a href="/confirmations/new">Resend Confirmation</a></div>
+      <div class="btn"><a href="/unlocks/new">Unlock account</a></div>
     </div>
   </div>
+
 
 <% end %>
 

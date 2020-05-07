@@ -13,8 +13,13 @@ defmodule Qwatch.Presence do
 
   def get_user_count room do
     users = Phoenix.Presence.list(Qwatch.Presence, "chat:" <> room)
-    count = length(Map.keys(users))
-    count
+
+    users 
+    |> Map.values() 
+    |> Enum.filter(fn value ->
+      !!Enum.at(value[:metas], 0)[:user_id]
+    end)
+    |> length()
     
     # case :ets.lookup(:users_online_count, room) do
     #   [{room, count}] -> count.count

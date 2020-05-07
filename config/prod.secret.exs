@@ -49,7 +49,7 @@ config :coherence, QwatchWeb.Coherence.Mailer,
   tls: :always,
   auth: :always,
   port: 587,
-  retries: 2,
+  retries: 5,
   no_mx_lookups: false
 
 # ## Using releases (Elixir v1.9+)

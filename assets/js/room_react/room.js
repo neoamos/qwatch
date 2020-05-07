@@ -31,7 +31,8 @@ export default class RoomReact extends React.Component{
       live: true,
       playerReady: false,
       initialSync: true,
-      autoplay: true
+      autoplay: true,
+      rtt: 0 
     }
 
     this.chatChannel = this.props.socket.channel("chat:" + props.name, {})
