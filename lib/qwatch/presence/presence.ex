@@ -16,9 +16,11 @@ defmodule Qwatch.Presence do
 
     users 
     |> Map.values() 
-    |> Enum.filter(fn value ->
-      !!Enum.at(value[:metas], 0)[:user_id]
+    |> Enum.map(fn value->
+      Enum.at(value[:metas], 0)[:user_id]
     end)
+    |> Enum.filter(& !is_nil(&1))
+    |> Enum.uniq()
     |> length()
     
     # case :ets.lookup(:users_online_count, room) do

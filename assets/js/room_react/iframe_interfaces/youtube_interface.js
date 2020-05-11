@@ -53,7 +53,7 @@ export default class YoutubeInterface {
     console.log("Enable video with url " + url.href)
     console.log(initialPosition)
     self.url = url;
-    self.videoId = self.url.searchParams.get("v")
+    self.videoId = self.url.searchParams.get("v") || self.extractVideoID(self.url.href)
     self.listId = self.url.searchParams.get("list")
 
     // Playlists that start with RD are random mixes and aren't stable
