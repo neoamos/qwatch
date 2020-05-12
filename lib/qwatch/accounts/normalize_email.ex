@@ -30,7 +30,8 @@ defmodule Qwatch.NormalizeEmail do
       end
 
       email = String.replace(email, ~r/googlemail\.com$/, "gmail.com")
-      String.downcase(email)
+      email = String.downcase(email)
+      Regex.replace(~r/\s+/, email, "")
     else
       email
     end
