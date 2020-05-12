@@ -1,0 +1,24 @@
+.faq_list{
+    height: fit-content;
+    width: 80%;
+    margin-left:20px;
+    padding: 15px;
+}
+
+.faq-item{
+    padding: 8px;
+}
+.faq-item_header{
+    
+    transition-delay: 10s;
+    color: orange;
+    span[title="plus"]{
+        padding :10px;
+    }
+}
+
+.faq-item_content{
+    padding-top: 10px;
+    padding-left : 20px;
+    display:none;
+}

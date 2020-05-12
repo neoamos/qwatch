@@ -24,7 +24,7 @@ let userID = window.userID || null;
 let socket = new Socket("/socket", {params:  { token: window.userToken } })
 socket.connect();
 console.log(window.userToken)
-
+let onFaqMinimise = true;
 // var room = new Room();
 // room.mount(socket, "general");
 
@@ -52,5 +52,19 @@ tippy('[data-tippy-content]');
 $(function() {
   $(".close-flash").click(function(e){
     $(this).parent().remove()
+  })
+});
+
+$(function(){
+  $(".faq-item_header").click(function(e){
+    onFaqMinimise = !onFaqMinimise;
+    if(onFaqMinimise){
+      $('span[title="plus"]').attr("data-glyph","plus");
+      $(".faq-item_content").hide();
+    }
+    else{
+      $('span[title="plus"]').attr("data-glyph","minus");
+      $(".faq-item_content").show();
+    }
   })
 });

@@ -38,6 +38,8 @@ defmodule QwatchWeb.Router do
     get "/about", InfoController, :about
     get "/terms", InfoController, :terms
     get "/privacy", InfoController, :privacy
+    get "/faq", InfoController, :faq
+
 
   end
 
@@ -47,6 +49,7 @@ defmodule QwatchWeb.Router do
     post "/room/create", RoomController, :create
     get "/room/edit/:name", RoomController, :edit_form
     post "/room/edit/", RoomController, :edit
+
 
     get "/user_rooms", UserController, :user_rooms
   end
