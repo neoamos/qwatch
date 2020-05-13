@@ -5,6 +5,7 @@ import DirectVideoInterface from './iframe_interfaces/direct_video_interface.js'
 import BaseInterface from './iframe_interfaces/base_interface.js';
 import SoundCloudInterface from './iframe_interfaces/soundcloud_interface.js';
 import VimeoInterface from './iframe_interfaces/vimeo_interface.js';
+import ScreenCaptureInterface from './iframe_interfaces/screen_capture_interface.js'
 
 export default class Player {
   constructor(listeners){
@@ -18,6 +19,7 @@ export default class Player {
       new DirectVideoInterface(listeners),
       new SoundCloudInterface(listeners),
       new VimeoInterface(listeners),
+      new ScreenCaptureInterface(listeners),
       new BaseInterface(listeners)
     ];
 
