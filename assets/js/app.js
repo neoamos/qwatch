@@ -24,7 +24,7 @@ let userID = window.userID || null;
 let socket = new Socket("/socket", {params:  { token: window.userToken } })
 socket.connect();
 console.log(window.userToken)
-let onFaqMinimise = true;
+
 // var room = new Room();
 // room.mount(socket, "general");
 
@@ -55,16 +55,23 @@ $(function() {
   })
 });
 
-$(function(){
-  $(".faq-item_header").click(function(e){
-    onFaqMinimise = !onFaqMinimise;
-    if(onFaqMinimise){
-      $('span[title="plus"]').attr("data-glyph","plus");
-      $(".faq-item_content").hide();
+$(function () {
+
+  $(".faq-item_header").click(function (e) {
+    var onClickHeader = e.currentTarget.className.split(" ")[1];
+    var showCOntent = ".faq-item_content_" + onClickHeader;
+    var headerInfo = "." + onClickHeader;
+    var x = $(headerInfo).children("span").attr("data-glyph");
+    if (x == "minus")
+    {
+      $(headerInfo).children("span").attr("data-glyph", "plus");
+      $(showCOntent).hide();
     }
-    else{
-      $('span[title="plus"]').attr("data-glyph","minus");
-      $(".faq-item_content").show();
+    
+    else {
+      $(headerInfo).children("span").attr("data-glyph", "minus");
+      $(showCOntent).show();
     }
+    
   })
 });

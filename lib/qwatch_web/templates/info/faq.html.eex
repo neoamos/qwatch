@@ -4,12 +4,12 @@
 
 <div class="faq-item synchronized">
 <div class="faq-item_header synchronized" id="faq-iem_header synchronized">
-<span class="oi" data-glyph="plus" title="plus" aria-hidden="true" >
+<span class="oi" data-glyph="minus" title="synchronized" aria-hidden="true" >
 </span>
 <span >Synchronizing with the room.</span>
 </div>
 
-<div class="faq-item_content synchronized" >
+<div class="faq-item_content_synchronized" >
 <p>To watch what is playing in the room press <span class="oi" data-glyph="media-record" title="synchronize" style="color:red"aria-hidden="true">
 </span>  to synchronise with the room owner playlist.
 </p>
@@ -19,12 +19,12 @@
 
 <div class="faq-item control">
 <div class="faq-item_header control" id="faq-iem_header control">
-<span class="oi" data-glyph="plus" title="plus" aria-hidden="true" >
+<span class="oi" data-glyph="minus" title="control" aria-hidden="true" >
 </span>
 <span >Controlling the room.</span>
 </div>
 
-<div class="faq-item_content control" >
+<div class="faq-item_content_control" >
 <p>Once you have created the room, to enable other users watch your you plat, click on the 
 
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1000 1000" enableBackground="new 0 0 1000 1000" width="25" height="25">
@@ -37,11 +37,11 @@
 
 <div class="faq-item add">
 <div class="faq-item_header add" id="faq-iem_header add">
-<span class="oi" data-glyph="plus" title="plus" aria-hidden="true" >
+<span class="oi" data-glyph="minus" title="add" aria-hidden="true" >
 </span>
 <span >Adding url</span>
 </div>
-<div class="faq-item_content add" >
+<div class="faq-item_content_add" >
 <p>Once you have the remote you can press on <span class="oi" data-glyph="plus" title="add" aria-hidden="true">
 </span>  to add the url of video to the room
 </p>
@@ -51,12 +51,27 @@
 <div class="faq-item normal">
 <div class="faq-item_header normal" id="faq-item_header normal">
 
-<span class="oi" data-glyph="plus" title="plus" aria-hidden="true" >
+<span class="oi" data-glyph="minus" title="normal" aria-hidden="true" >
 </span>
 <span >Switching to normal Mode.</span>
 </div>
-<div class="faq-item_content normal">
+<div class="faq-item_content_normal">
 <p>If the user wants to switch to the normal mode , he just need to press the <span class="oi" data-glyph="media-record" title="synchronize" style="color:red;" aria-hidden="true" > </span> button which will show as <span class="oi" data-glyph="media-record" title="desynchronize" aria-hidden="true"></span> now in this room you can enjoy your own stream of videos.
+</p>
+</div>
+</div>  
+
+
+<div class="faq-item support">
+<div class="faq-item_header support">
+
+<span class="oi" data-glyph="minus" title="support" aria-hidden="true" >
+</span>
+<span >Streams Supported in our channel</span>
+</div>
+<div class="faq-item_content_support">
+<p> We only provide support for videos from platforms like Vimeo, Youtube, SoundCloud, direct Embedding, Streamable, Mixer
+Thank you for your support and enjoy free streaming.
 </p>
 </div>
 </div>
