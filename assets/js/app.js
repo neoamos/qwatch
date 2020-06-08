@@ -57,9 +57,9 @@ $(function() {
 
 $(function () {
 
-  $(".faq-item_header").click(function (e) {
+  $(".faq__item--header").click(function (e) {
     var onClickHeader = e.currentTarget.className.split(" ")[1];
-    var showCOntent = ".faq-item_content_" + onClickHeader;
+    var showCOntent = ".faq__item--content_" + onClickHeader;
     var headerInfo = "." + onClickHeader;
     var x = $(headerInfo).children("span").attr("data-glyph");
     if (x == "minus")

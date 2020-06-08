@@ -48,6 +48,7 @@
 
   &__message{
     display: flex;
+    word-break: break-word;
   }
 
   &__options{

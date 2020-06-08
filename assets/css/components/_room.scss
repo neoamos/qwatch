@@ -89,37 +89,48 @@
   flex-direction: column;
   align-items: center;
   border-radius: 10px;
-  margin: 10px 10px 5px 10px;
-  background-color: $background-player;
-  border: 1px solid black;
-  padding: 5px;
+  margin: 10px 10px 0px 10px;
+  // background-color: $background-player;
+  // border: 1px solid black;
+  // padding: 5px;
 
   &__wrapper{
     width: 100%;
-    max-width: 400px;
+    // max-width: 400px;
   }
 
   &__progress{
-    width: 100%;
-    height: 10px;
-    border-radius: 5px;
+    width: 95%;
+    height: 5px;
+    border-radius: 3px;
     background-color: rgb(78, 77, 77);
-    margin-bottom: 5px;
+    margin: 3px 0 5px 0;
     overflow: hidden;
     cursor: pointer;
-
   }
 
+  &__progress:hover{
+    height: 7px;
+    margin-top: 1px;
+  }
+
+
   &__progress-bar{
-    height: 10px;
-    border-radius: 5px;
+    height: 100%;
+    border-radius: 3px;
     width: 0px;
     background-color: $hightlight-color;
   }
 
+  &__status{
+    line-height: 40px;
+    padding: 0px 10px;
+  }
+
   &__buttons{
+    width: 95%;
     display: flex;
-    align-items: center;
+    align-items: left;
     flex-wrap: wrap;
   }
 
