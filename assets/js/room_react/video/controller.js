@@ -208,6 +208,9 @@ class SettingsMenu extends React.Component{
             checked={this.state.autoplay}
             onChange={this.handleAutoplay} />
         </div>
+        <a className="dropdown__item btn-flat" href={"/faq"} key="faq" target="_blank">
+        FAQ
+        </a>
         {this.props.ownsRoom &&
           [
           <div className="dropdown__item btn-flat" onClick={this.props.closeRoom} key="close">
